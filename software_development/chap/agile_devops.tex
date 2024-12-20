@@ -1,0 +1,82 @@
+\chapter{Metodi agili e DevOps}
+I metodi agili sono tutti quei metodi di sviluppo che:
+\begin{itemize}
+    \item gestire meglio i cambiamenti di requisiti;
+    \item si concentrano sulle persone anziché sulla produzione di artefatti. In processi di sviluppo classici, infatti, la documentazione molto spesso viene prodotta per poi non essere utilizzata;
+    \item prevedono una comunicazione diretta e verbale all'interno del team, e anche tra team e stakeholder;
+    \item prevedono un testing continuo dell'applicazione, in modo da individuare il più presto possibile eventuali errori.
+\end{itemize}
+
+La struttura di un generico processo agile prevede la presenza di diverse iterazioni, ognuna dedicata a un sottoinsieme di requisiti.\\
+A inizio progetto, il team procede con uno studio parziale dei requisiti richiesti dagli stakeholder.
+Vengono poi eseguite le iterazioni, ognuna con una durata specifica. Prima di ogni iterazione, il team sceglie un sottoinsieme di requisiti su cui si vuole concentra nella successiva iterazione.
+Alla fine di un'iterazione, il team avrà prodotto una parte del software completo ma già funzionante e possibilmente testata e integrata.
+Idealmente, il team non dovrebbe tornare a lavorare su parti del prodotto finale sviluppate in precedenti iterazioni, a meno di cambiamenti nei requisiti.
+
+Alcuni esempi di metodi agili sono Scrum e Extreme Programming (XP).
+
+\section{Scrum}
+Scrum è un processo agile con iterazioni di durata compresa tra 1 e 4 settimane.
+
+\begin{defn}
+    Uno \textbf{Sprint} è un'iterazione del processo Scrum.
+\end{defn}
+
+\begin{defn}
+    Un \textbf{Daily Scrum meeting} è un incontro che si tiene ogni giorno (solitamente la mattina) a cui partecipano tutto il team e lo Scrum Master.
+
+    Durante il Daily Scrum meeting, il team discute brevemente sullo stato dell'iterazione e su cosa fare durante la giornata.
+\end{defn}
+
+\begin{defn}
+    Il \textbf{product backlog} è l'insieme dei requisiti parziali definito all'inizio del progetto.
+\end{defn}
+
+\begin{defn}
+    Lo \textbf{Sprint backlog} è il sottoinsieme dei requisiti scelti per una determinata iterazione.
+\end{defn}
+
+\begin{defn}
+    Lo \textbf{Spring planning meeting} è un incontro che si tiene all'inizio di ogni iterazione, in cui vengono definiti la durata dell'interazione e lo Sprint backlog.
+\end{defn}
+
+\begin{rem}
+    Alla fine di ogni iterazione, il team effettua un altro iincontro, in cui discute di eventuali criticità rilevate durante l'iterazione.
+\end{rem}
+
+Il processo Scrum prevede i seguenti ruoli:
+\begin{itemize}
+    \item team: si occupa dello sviluppo del software;
+    \item Scrum master: controlla che il processo Scrum sia correttamente applicato;
+    \item product owner: rappresentante di tutti gli stakeholder, a conoscenza di tutti i requisiti che il software deve rispettare.
+\end{itemize}
+
+\section{DevOps}
+Il processo di sviluppo di un software è distribuito tra tre entità: stakeholder, team di sviluppo e team di operations. Le relazioni tra queste entità sono stakeholder-team di sviluppo e team di sviluppo-team di operations \footnote{Il team di operations si occupa di mettere in campo e rendere operativo il sistema sviluppato dal team di sviluppo. Effettuano inoltre il monitoring del sistema.}.\\
+I metodi agili permettono di migliorare la relazione tra stakeholder e team di sviluppo ma, in alcuni casi, può essere utile anche migliorare la relazione tra team di sviluppo e team di operations, soprattutto in casi di frequenti release che modificano il sistema.
+
+DevOps permette quindi di semplificare e facilitare la messa in campo delle release prodotte dal team di sviluppo.
+
+DevOps si basa su una forte \textbf{automazione} dei processi e sulla loro \textbf{ripetibilità}.
+Tutti i processi automatizzati implementati da DevOps riguardano:
+\begin{itemize}
+    \item Continous Development: 
+    \item Continous Integration: processi che si occupano di integrare correttamente i cambiamenti nel sistema esistente.
+    \item Continous Testing: processi che si occupano di verificare l'adeguatezza dei cambiamenti apportati.
+    \item Continous Deployment: processi che si occupano di rendere operativo il sistema a cui sono state apportate modifiche.
+    \item Continous Monitoring: processi che si occupano di monitorare il sistema e ottenere feedback.
+\end{itemize}
+
+I feedback in DevOps, quindi, non sono raccolti dagli utenti, ma da tool automatici, che forniscono aggiornamenti continui e dettagliati sullo stato del sistema.
+
+I ruoli previsti da DevOps sono:
+\begin{itemize}
+    \item DevOps Evangelist: colui che conosce la pratica DevOps e controlla che sia applicata. Nella pratica, l'evangelist non è quasi mai presente ma vengono adottati gli strumenti tipici di DevOps;
+    \item automation expert: colui che gestisce i processi di automazione, creandoli e modificandoli quando necessario;
+    \item release manager;
+    \item figura per la Quality Assurance;
+    \item ingegnere della sicurezza.
+\end{itemize}
+
+DevOps segue 6 principi: la cosa più importante è che tutto deve essere automatizzato, testato e monitorato.
+

@@ -1,0 +1,38 @@
+\chapter{Introduzione}
+Il machine learning (d'ora in poi ML) è una branca dell'intelligenza artificiale (d'ora in poi AI), il cui obiettivo è quello di individuare e saper riconoscere pattern all'interno di una grande mole di dati.
+Mentre con AI si intende qualsiasi algoritmo che imita il comportamento umano, e include quindi, oltre agli algoritmi basati sull'apprendimento, anche quelli rule-based, con ML si fa riferimento a qualsiasi algoritmo che, basandosi su una grande mole di dati e grazie a metodi statistici, può individuare pattern per risolvere un compito ben specifico.
+
+Un algoritmo di ML si può dividere in due fasi:
+\begin{enumerate}
+    \item \textit{fase di apprendimento}, in cui l'algoritmo riesce a estrarre pattern da una grande mole di dati, detti istanze di addestramento, in modo tale da categorizzarle;
+    \item \textit{fase di inferenza}, in cui l'algoritmo categorizza un'istanza passata in input.
+\end{enumerate}
+L'apprendimento può essere di tre tipi:
+\begin{itemize}
+    \item supervisionato (detto anche apprendimento induttivo): per ogni istanza fornita in input, viene fornito anche il relativo \textit{label}, ovvero la categoria a cui l'istanza appartiene;
+    \item non supervisionato: le istanze non sono categorizzate, ed è quindi compito dell'algoritmo individuare eventuali pattern nascosti;
+    \item per rinforzo: l'algoritmo interagisce con un sistema complesso, e riceve un premio o una punizione in base a come si relaziona con esso. L'algoritmo, ovviamente, cercherà di essere punito il meno possibile, e quindi tenderà ad adottare il comportamento migliore per il sistema complesso in cui è inserito.
+\end{itemize}
+Esiste una funzione ideale, detta \textit{target}, che rappresenta il miglior modo di categorizzare le istanze, e di risolvere quindi il problema che si sta affrontando. Un algoritmo di ML non fa altro che definire un'ulteriore funzione, detta \textit{ipotesi}, che, idealmente, è la migliore approssimazione del target, e dovrebbe quindi permettere di categorizzare correttamente il maggior numero di istanze.
+
+L'ipotesi elaborata dall'algoritmo può essere valutata, in modo da verificare la sua capacità predittiva. Alcune domande che ci si può porre per verificare la sua bontà sono "La categorizzazione delle istanze è corretta?" e "Quanti sono i falsi positivi? E i falsi negativi?".
+Un modo di verificare la qualità dell'ipotesi è tramite l'analisi della sua regressione, ovvero il suo errore nel categorizzare le istanze.
+
+\section{Overfitting}
+L'ipotesi generata in fase di addestramento deve essere consisistene con il dataset, ovvero deve fornire, per ogni istanza, un risultato uguale a quello definito dalla label associata.
+Essere consistente con il dataset non implica, però, una buona capacità predittiva: un'ipotesi troppo specifica può infatti faticare ad effettuare previsioni corrette.
+
+Se la funzione risulta quindi consistente ma non è capace di fare previsioni su istanze nuove, allora si dice che l'algoritmo è andato in \textit{overfitting}.
+
+Sia $h$ un'ipotesi elaborata da un algoritmo di apprendimento, $h$ è un overfitting sui dati di addestramento se esiste un'ipotesi $h'$ tale che:
+\begin{itemize}
+    \item $\textnormal{error}_{\textnormal{ TRAINING}} (h) < \textnormal{error}_{\textnormal{ TRAINING}} (h')$
+    \item $\textnormal{error}_{\textnormal{ INFERENCE}} (h) > \textnormal{error}_{\textnormal{ INFERENCE}} (h')$
+\end{itemize}
+dove l'errore di training è calcolato su tutto il dataset di addestramento, mentre l'errore di inferenza è calcolato su tutto il dominio delle istanze.
+Per poter già individuare in fase di addestramento questo caso, e quindi cercare di evitarlo, il dataset viene partizionato in tre sottoinsiemi:
+\begin{itemize}
+    \item istanze di addestramento: istanze effettivamente usate dall'algoritmo per elaborare le ipotesi. Coprono circa l'80\% del dataset;
+    \item istanze di validazione: istanze utilizzate per verificare la consistenza di un'ipotesi. L'ipotesi è consistente sse concorda con la funzione target su tutte queste istanze. Coprono circa il 10\% del dataset;
+    \item istanze di test: istanze usate per individuare casi di overfitting. Coprono circa il 10\% del dataset.
+\end{itemize}

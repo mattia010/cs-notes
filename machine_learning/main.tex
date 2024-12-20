@@ -1,0 +1,149 @@
+\documentclass[notoc, oneside, openany]{tufte-book}
+\setcounter{tocdepth}{2}
+\setcounter{secnumdepth}{2}
+
+\makeatletter
+% Paragraph indentation and separation for normal text
+\renewcommand{\@tufte@reset@par}{%
+  \setlength{\RaggedRightParindent}{0pt}%
+  \setlength{\JustifyingParindent}{0pt}%
+  \setlength{\parindent}{0pt}%
+  \setlength{\parskip}{4pt}%
+}
+\@tufte@reset@par
+
+% Paragraph indentation and separation for marginal text
+\renewcommand{\@tufte@margin@par}{%
+  \setlength{\RaggedRightParindent}{0pt}%
+  \setlength{\JustifyingParindent}{0pt}%
+  \setlength{\parindent}{0pt}%
+  \setlength{\parskip}{4pt}%
+}
+
+\title{
+    {\huge Appunti di}\\
+    Machine Learning
+}
+\author{Mattia Bolognini}
+\date{Ultima modifica: \today}
+
+\makeatletter
+\renewcommand{\maketitlepage}{%
+\begingroup%
+\setlength{\parindent}{0pt}
+{\fontsize{24}{24}\selectfont\textit{\@author}\par}
+\vspace{1.75in}{\fontsize{36}{54}\selectfont\@title\par}
+\vspace{0.5in}{\fontsize{14}{14}\selectfont\textsf{\smallcaps{\@date}}\par}
+\vfill{\fontsize{14}{14}\selectfont\textit{\@publisher}\par}
+\thispagestyle{empty}
+\endgroup
+}
+\makeatother
+
+\geometry{
+    %showframe, % for debugging purposes -- displays the margins
+	left=13mm, % left margin
+	textwidth=135mm, % main text block
+	marginparsep=8mm, % gutter between main text block and margin notes
+	marginparwidth=50mm % width of margin notes
+}
+\fontsize{10}{20}\selectfont
+
+%--------Package inclusions--------
+\usepackage{clrscode3e} % Pseudocode in the style of "Introduction to algorithms"
+\usepackage{minted} % Code highlighting for different programming languages
+\usepackage[activate={true,nocompatibility},final,tracking=true,kerning=true,spacing=true,factor=1100,stretch=10,shrink=10]{microtype}
+\usepackage{pgf,tikz,tikz-cd}
+\usepackage{amsmath,amsthm,amssymb,amsfonts} % Math packages
+\usepackage{relsize, xfrac} % Math utilities
+\usepackage{bussproofs} % Derivation tree
+\usepackage{optidef} % Write optimization problem
+\usepackage[italian]{babel}
+\usepackage{booktabs} % Makes prettier tables.
+\usepackage{multicol} % Small sections of multiple columns in documents and tables.
+\usepackage{units}
+\usepackage{fancyvrb} % Customization of the formatting of verbatim environments.
+\fvset{fontsize=\normalsize} % Use a smaller font for the verb environment.
+\usepackage{sectsty} % Customization of section commands
+\allsectionsfont{\normalfont \bfseries} % All sections centered, using the default font and small caps
+\usepackage{graphicx}
+\setkeys{Gin}{width=\linewidth,totalheight=\textheight,keepaspectratio}
+\graphicspath{/images}
+\usepackage{hyperref} % Allows hyperlinks in generated PDF file
+\usepackage{lipsum} % Lorem Ipsum text
+\usepackage{fancyhdr} % Custom headers and footers
+\pagestyle{fancyplain} % Makes all pages in the document conform to the custom headers and footers
+\fancyhead{} % No page header - if you want one, create it in the same way as the footers below
+\fancyfoot[L]{} % Empty left footer
+\fancyfoot[C]{} % Empty center footer
+\fancyfoot[R]{\thepage} % Page numbering for right footer
+\renewcommand{\headrulewidth}{0pt} % Remove header underlines
+\renewcommand{\footrulewidth}{0pt} % Remove footer underlines
+\setlength{\headheight}{13.6pt} % Customize the height of the header
+\allowdisplaybreaks
+
+%--------Theorem Environments--------
+%theoremstyle{plain} --- default
+\newtheorem{thm}{Theorem}
+\newtheorem{cor}[thm]{Corollary}
+\newtheorem{prop}[thm]{Proposition}
+\newtheorem{lem}[thm]{Lemma}
+\newtheorem{conj}[thm]{Conjecture}
+\newtheorem{quest}[thm]{Question}
+\newtheorem{claim}{Claim}
+\newtheorem{property}{Proprietà}
+
+\theoremstyle{definition}
+\newtheorem{defn}[thm]{Definition}
+\newtheorem{defns}[thm]{Definitions}
+\newtheorem{con}[thm]{Construction}
+\newtheorem{exmp}[thm]{Example}
+\newtheorem{exmps}[thm]{Examples}
+\newtheorem{notn}[thm]{Notation}
+\newtheorem{notns}[thm]{Notations}
+\newtheorem{addm}[thm]{Addendum}
+\newtheorem{exer}[thm]{Exercise}
+
+\theoremstyle{remark}
+\newtheorem{rem}[thm]{Osservazione}
+\newtheorem{ans}[thm]{Answer}
+\newtheorem{rems}[thm]{Remarks}
+\newtheorem{warn}[thm]{Warning}
+\newtheorem{sch}[thm]{Scholium}
+
+%--------Command Definitions--------
+% Operators
+\newcommand{\Mod}[1]{\ (\text{mod}\ #1)}
+\newcommand{\N}{\mathbb{N}}
+\newcommand{\Z}{\mathbb{Z}}
+\newcommand{\Q}{\mathbb{Q}}
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\C}{\mathbb{C}}
+\newcommand{\OR}{\,|\,}
+\newcommand{\AND}{\,\&\,}
+\newcommand{\NOT}{!}
+
+% Parenthesis
+\newcommand{\bra}[1]{\left(#1\right)}
+\newcommand{\sbra}[1]{\left[#1\right]}
+\newcommand{\cbra}[1]{\left\{#1\right\}}
+\newcommand{\norm}[1]{\left\lVert#1\right\rVert}
+
+% Shortened versions
+\newcommand{\tn}[1]{\textnormal{#1}}
+
+\DeclareMathOperator*{\argmin}{argmin}
+\DeclareMathOperator*{\argmax}{argmax}
+
+
+\begin{document}
+
+\maketitle
+
+\tableofcontents
+
+\include{chapters/intro}
+\include{chapters/supervised}
+\include{chapters/unsupervised}
+
+\end{document}

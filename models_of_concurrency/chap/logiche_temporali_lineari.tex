@@ -1,0 +1,91 @@
+\chapter{Model checking}
+\sub
+Il model checking è un metodo per verificare algoritmicamente la correttezza di sistemi formali. In particolare, dato un modello del sistema \footnote{Con modello del sistema si intende la sua implementazione.} e una specifica \footnote{La specifica è una proprietà che deve essere rispettata dal sistema.}, si vuole stabilire se il modello soddisfa la specifica.\\
+Il modello viene solitamente rappresentato come un sistema di transizioni, mentre la specifica è una WFF di una logica.
+
+La logica di Hoare è un formalismo per il model checking di sistemi (programmi) sequenziali. Si basa sul concetto di comando per il modello, e su pre-condizione e post-condizione per la specifica. La pre-condizione deve valere nello stato iniziale del sistema, mentre la post-condizione deve valere nello stato finale.\\
+Nei sistemi concorrenti, però, non si ha alcuno stato iniziale \footnote{Anche se nella pratica il sistema avrà ovviamente uno stato di partenza.} e alcuno stato finale: l'obiettivo di un sistema concorrente è infatti quello di mantenere la sua esecuzione e far sì che una o più proprietà siano verificate durante questa esecuzione.\\
+La logica di Hoare rimane comunque utile nel model checking di sistemi concorrenti: essi sono infatti molto spesso formati da sottosistemi sequenziali, la cui correttezza può essere verificata tramite la logica di Hoare.
+
+CCS e reti di Petri, invece, sono formalismi che permettono di rappresentare sistemi concorrenti e, attraverso particolari tecniche, di verificarne alcune proprietà. Risultano però algoritmicamente inefficienti \footnote{Ad esempio, stabilire tutti i casi raggiungibili di una rete di Petri per verificare l'implementazione corretta della mutua esclusione porta a un'esplosione combinatoria.} e poco generali.
+
+\begin{defn}
+    Un \textbf{sistema di transizioni} è una coppia $(Q, T)$ dove:
+    \begin{itemize}
+        \item $Q$ è un insieme di stati \footnote[][1cm]{L'insieme di stati può essere infinito, anche non numerabile. In queste note, a meno che venga esplicitato, si tratteranno sistemi di transizioni finiti, ovvero con un insieme di stati finito.}.
+        \item $T \subseteq Q \times Q$ è la relazione di transizione, ovvero quella relazione che stabilisce i collegamenti tra stati del sistema.
+    \end{itemize}
+\end{defn}
+
+\begin{rem}
+    In un sistema di transizioni non etichettato, per ogni coppia di nodi $u$ e $v$ può essere presente al massimo un arco $(u, v)$ che li collega.
+\end{rem}
+
+\begin{defn}
+    Un \textbf{sistema di transizioni etichettato} (Labeled Transition System) è una tripla $(Q, L, T)$ dove: 
+\end{defn}
+
+\begin{defn}
+    Un \textbf{cammino} è una sequenza finita di stati $q_0 q_1 \ldots q_k, q_i \in Q$.
+\end{defn}
+
+\begin{defn}
+    Un \textbf{cammino massimale} è un cammino che non può essere esteso.
+    
+\end{defn}
+
+\section{Logica Temporale Lineare}
+La Logica Temporale Lineare (LTL) è \ldots
+
+La LTL viene usata per enunciare le specifiche che si vogliono verificare sul sistema, rappresentando una specifica come una WFF.
+
+\subsection{Sintassi LTL}
+Sia $AP$ l'insieme delle proposizioni atomiche, $p \in AP$ una proposizione atomica, e $\alpha, \beta$ due WFF della LTL.
+L'insieme $WFF_{\tn{LTL}}$ delle formule ben formate della LTL è definito come:
+\begin{itemize}
+    \item $p \in WFF_{\tn{LTL}}$,
+    \item $\tn{true}, \tn{false} \in WFF_{\tn{LTL}}$
+    \item $\alpha \lor \beta \in WFF_{\tn{LTL}}$ e $\lnot \alpha \in WFF_{\tn{LTL}}$
+    \item $\nextOp \alpha \in WFF_{\tn{LTL}}$
+    \item $\finallyOp \alpha \in WFF_{\tn{LTL}}$
+    \item $\globallyOp \alpha \in WFF_{\tn{LTL}}$
+    \item $\untilOp \alpha \in WFF_{\tn{LTL}}$
+\end{itemize}
+
+\subsection{Semantica LTL}
+Per definire la semantica della LTL è prima necessario definire il modello di Kripke.
+\begin{defn}
+    Il \textbf{modello di Kripke} è una tripla:
+    \[
+        (Q, T, I)
+    \]
+    dove:
+    \begin{itemize}
+        \item $(Q, T)$ è un sistema di transizioni che rappresenta il sistema concorrente;
+        \item $I: Q \rightarrow \mathcal{P}(AP)$ è una funzione che associa a ogni stato un sottoinsieme di proposizioni atomiche vere in quello stato. $I$ viene detta \textbf{funzione di interpretazione}.\\
+        $I(q)$ indica il sottoinsieme di proposizioni atomiche vere in $q$.
+    \end{itemize}
+\end{defn}
+
+A ogni stato $q$ è associato un insieme di cammini massimali per quello stato.\\
+Una WFF è vera in uno stato $q$ sse è vera per tutti i cammini massimali che partono da $q$.
+Se una WFF $p$ è vera in un certo cammino $\pi$, allora si scrive $\pi \vDash p$. 
+
+Un sistema concorrente rappresentato tramite un modello di Kripke soddisfa una specifica, ovvero una WFF della LTL, sse la specifica è vera per tutti i cammini massimali che partono dallo stato iniziale.
+
+\upperAccE ora possibile definire la semantica della LTL.\\
+
+Siano $\pi = q_0 q_1 \ldots, q_i \in Q$ un cammino definito sul modello di Kripke, e $\alpha, \beta \in WFF_{\tn{LTL}}$.
+\begin{itemize}
+    \item $\pi \vDash p \longleftrightarrow p \in I(q_0)$, ovvero $p$ vale nello stato iniziale $q_0$ di $\pi$.
+    \item $\pi \vDash \lnot \alpha \longleftrightarrow \pi \nvDash \alpha$
+    \item $\pi \vDash \alpha \lor \beta \longleftrightarrow \pi \vDash \alpha \lor \pi \vDash \beta$
+    \item $\pi \vDash \nextOp \beta \longleftrightarrow \pi^{(1)} \vDash \beta$, ovvero $\beta$ vale nello stato successivo $\pi^{(1)}$.
+    \marginnote{$\nextOp = \tn{neXt}$\\
+    $\finallyOp = \tn{Finally}$\\
+    $\globallyOp = \tn{Globally}$\\
+    $\untilOp = \tn{Until}$}
+    \item $\pi \vDash \finallyOp \beta \longleftrightarrow \exists i \in \mathbb{N} : \pi^{(i)} \vDash \beta$, ovvero $\beta$ vale in almeno uno stato del cammino $\pi$.
+    \item $\pi \vDash \globallyOp \beta \longleftrightarrow \forall i \in \mathbb{N} : \pi^{(i)} \vDash \beta$, ovvero $\beta$ vale in ogni stato del cammino $\pi$.
+    \item $\pi \vDash \alpha \untilOp \beta \longleftrightarrow (\pi \vDash \finallyOp \beta) \land (\forall h \in \mathbb{N}, h < i : \pi^{(i)} \vDash \alpha)$, ovvero $\beta$ è vera in almeno uno stato $q_i$ del cammino e in ogni stato precedente a $q_i$ vale $\alpha$.
+\end{itemize}

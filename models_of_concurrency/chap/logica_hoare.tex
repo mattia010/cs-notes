@@ -1,0 +1,296 @@
+\chapter{Logica di Hoare}
+\section{Definizione della logica}
+La logica di Hoare è una logica utilizzata per dimostrare la correttezza di programmi sequenziali imperativi.
+
+Si basa sul concetto di tripla:
+\begin{center}
+    $\Hoaretriple{\alpha}{C}{\beta}$
+\end{center}
+dove:
+\begin{itemize}
+    \item $\alpha$, detta precondizione, è una WFF della logica proposizionale che deve essere vera sullo stato della memoria prima di eseguire $C$;
+    \item $C$, detto comando, è il codice che deve essere eseguito;
+    \item $\beta$, detta post-condizione, è una WFF della logica proposizionale che deve essere vera sullo stato della memoria dopo l'esecuzione di $C$.
+\end{itemize}
+Di conseguenza una tripla di questo tipo viene letta come:
+\begin{center}
+    \textit{Se $\alpha$ è vera sullo stato della memoria prima di eseguire $C$ e $C$ termina, allora $\beta$ deve essere vero per lo stato della memoria dopo l'esecuzione di $C$.}
+\end{center}
+Se si dimostra questa affermazione, allora il programma \tn{C} è corretto.
+
+Un linguaggio di programmazione, per essere NP-completo, deve poter:
+\begin{itemize}
+    \item assegnare un valore a una variabile;
+    \item modificare il flusso di esecuzione del programma;
+    \item poter iterare una o più isruzioni.
+\end{itemize}
+La logica di Hoare è NP-completa, perchè possiede un'istruzione di assegnamento, un'istruzione di scelta, e un'istruzione di iterazione. 
+
+Per definire la struttura valida di un programma nella logica di Hoare, è necessario prima definire l'insieme $E$ delle espressioni aritmetiche e l'insieme $B$ delle formule booleane.\\
+Grammatica delle espressioni aritmetiche:
+\begin{itemize}
+    \item $\forall v \in V$ (insieme delle variabili), $v \in E$;
+    \item $\forall z \in \mathbb{Z}$, $z \in E$;
+    \item $\forall e_1, e_2 \in E$, $(e_1+e_2), (e_1-e_2), (e_1*e_2), (e_1/e_2) \in E$.
+\end{itemize}
+Grammatica delle espressioni booleane:
+\begin{itemize}
+    \item $\textnormal{true}, \textnormal{false} \in B$;
+    \item $\forall b_1, b_2 \in B$, $(b_1 \AND b_2), (b_1 \OR b_2), \NOT b_1 \in B$;
+    \item $\forall e_1, e_2 \in E$, $(e_1 < e_2), (e_1 = e_2), (e_1 != e_2), (e_1 \le e_2) \in B$.
+\end{itemize}
+
+Sia $C$ l'insieme dei programmi (detti comandi) validi della logica di Hoare, allora la grammatica per $C$ è:
+\begin{itemize}
+    \item istruzione di skip $\in C$:
+    \begin{center}
+        skip
+    \end{center}
+    \item istruzione di assegnamento $\in C$:
+    \begin{center}
+        $v:=e \quad v \in V \land e \in E$
+    \end{center}
+    \item istruzione di scelta $\in C$:
+    \begin{center}
+        if $b$ then $c_1$ else $c_2$ endif $\quad b \in B \land c_1, c_2 \in C$
+    \end{center}
+    \item istruzione di iterazione $\in C$:
+    \begin{center}
+        while $b$ do $c$ endwhile $\quad b \in B \land c \in C$
+    \end{center}
+    \item istruzione di sequenza $\in C$:
+    \begin{center}
+        $c_1 ; c_2 \quad c_1, c_2 \in C$
+    \end{center}
+\end{itemize}
+
+L'apparato deduttivo contiene tutte le regole di inferenza, che permettono di derivare nuove triple valide a partire da triple già presenti.
+Viene utilizzato per dimostrare la correttezza di un programma. Tutte le regole di inferenza sono corrette, ovvero se le triple premesse sono dimostrate e si può derivare da esse una nuova tripla tramite una regola, allora la tripla derivata è dimostrata.
+
+\begin{itemize}
+    \item regola della sequenza:
+    \begin{center}
+        \begin{prooftree}
+            \AxiomC{$\Hoaretriple{p_1}{C}{p_2}$}
+            \AxiomC{$\Hoaretriple{p_2}{D}{p_3}$}
+            \BinaryInfC{$\Hoaretriple{p_1}{C;D}{p_3}$}
+        \end{prooftree}
+    \end{center}
+    \item regola della scelta:
+    \begin{center}
+        \begin{prooftree}
+            \AxiomC{$\Hoaretriple{p \land b}{C}{q}$}
+            \AxiomC{$\Hoaretriple{p \land \tn{¬b}}{D}{q}$}
+            \BinaryInfC{$\Hoaretriple{p}{\tn{if } b \tn{ then } C \tn{ else } D \tn{ endif}}{q}$}
+        \end{prooftree}
+    \end{center}
+    \item regola di skip:
+    \begin{center}
+        \begin{prooftree}
+            \AxiomC{}
+            \UnaryInfC{$\Hoaretriple{p}{\tn{skip}}{p}$}
+        \end{prooftree}
+    \end{center}
+    \item regola dell'implicazione (su pre-condizione):
+    \begin{center}
+        \begin{prooftree}
+            \AxiomC{$p' \rightarrow p$}
+            \AxiomC{$\Hoaretriple{p}{C}{q}$}
+            \BinaryInfC{$\Hoaretriple{p'}{C}{q}$}
+        \end{prooftree}
+    \end{center}
+    \item regola dell'implicazione (su post-condizione):
+    \begin{center}
+        \begin{prooftree}
+            \AxiomC{$\Hoaretriple{p}{C}{q}$}
+            \AxiomC{$q \rightarrow q'$}
+            \BinaryInfC{$\Hoaretriple{p}{C}{q'}$}
+        \end{prooftree}
+    \end{center}
+    \item regola dell'assegnamento:
+    \begin{center}
+        \begin{prooftree}
+            \AxiomC{}
+            \UnaryInfC{$\Hoaretriple{q[\sfrac{E}{x}]}{x:=E}{q}$}
+        \end{prooftree}
+    \end{center}
+    dove $\cbra{q}$ è un WFF che può contenere la variabile $x$, mentre $\cbra{q[\sfrac{E}{x}]}$ è l'espressione $q$ in cui però ogni occorrenza di $x$ è stata sostituita con l'espressione $E$.
+
+    La logica ammette anche casi in cui l'espressione $E$ contenga a sua volta la stessa variabile su cui si sta procedendo con l'assegnamento, in questo caso $x$  
+    \footnote{
+        Esempio di derivazione della pre-condizione in cui l'espressione contiene a sua volta la variabile:\\
+        $\Hoaretriple{q[\sfrac{i+1}{i}]}{i = i + 1}{s=x^i}$\\
+        $\cbra{q[\sfrac{i+1}{i}]} = \cbra{s=x^{i+1}}$\\
+        $\Hoaretriple{s=x^{i+1}}{i = i + 1}{s=x^i}$
+    }.
+    
+    \item regola di iterazione (per sola correttezza parziale):
+    \begin{center}
+        \begin{prooftree}
+            \AxiomC{$\Hoaretriple{\alpha \land \beta}{C}{\alpha \land \tn{def}(E)}$}
+            \UnaryInfC{$\Hoaretriple{\alpha \land \tn{def}(E)}
+                                    {\tn{while } \beta \tn{ do } C \tn{ endwhile}}
+                                    {\alpha \land \tn{¬}B}$}
+        \end{prooftree}
+    \end{center}
+    $\alpha$ è una WFF vera prima dell'esecuzione di $W$ e a seguito di qualsiasi iterazione, e prende il nome di \textbf{invariante di ciclo}.
+\end{itemize}
+
+\section{Dimostrazione di correttezza}
+Dimostrare la correttezza di un programma (imperativo) usando la logica di Hoare significa dimostrare semplicemente la validità di una tripla $\Hoaretriple{p}{C}{q}$ usando l'apparato deduttivo della logica, dove $C$ è il programma da dimostrare, $\cbra{q}$ è la WFF che esprime ciò che il programma dovrebbe fare (il risultato atteso in funzione degli input), mentre $\cbra{p}$ è la WFF che esprime dei vincoli sui valori di input che si assumono veri prima dell'esecuzione del programma. La dimostrazione della correttezza di una tripla si divide in:
+\begin{itemize}
+    \item dimostrazione di \textbf{correttezza parziale}: viene dimostrata la derivabilità della tripla
+    \footnote{La derivabilità implica la correttezza della tripla, in quanto la logica di Hoare è una logica corretta. La logica di Hoare non è però completa, in quanto più potente dell'aritmetica di Peano (vedi i teoremi di Godel).}.
+    \item dimostrazione di \textbf{correttezza totale}: viene dimostrata sia la derivabilità della tripla che la terminazione di eventuali istruzioni di iterazione.
+\end{itemize}
+\begin{defn}
+    Una \textbf{variante} di ciclo è un'espressione aritmetica $E$ tale per cui:
+    \begin{itemize}
+        \item $\tn{inv} \rightarrow E \ge 0$
+        \item $\Hoaretriple{\tn{inv} \land \beta \land E = k \land E > 0}{C}{\tn{inv} \land E < k}$ \footnote{$k$ è una variabile di appoggio utilizzata per memorizzare il valore di $E$ prima dell'esecuzione di $C$, in modo da poterlo confrontare con il nuovo valore di $E$ al termine dell'esecuzione di $C$.} è una tripla derivabile, e quindi il valore assunto da $E$ diminuisca a seguito di ogni esecuzione di $C$.
+    \end{itemize}
+\end{defn}
+Riuscire a trovare una variante per un'istruzione di iterazione implica la correttezza totale dell'istruzione di iterazione.
+
+\begin{exmp}
+    Dimostrare la correttezza della tripla:
+    \begin{center}
+        $\Hoaretriple{x>1}{y:=x+1}{y>1}$
+    \end{center}
+    A partire da $y:=x+1 \cbra{y>1}$, cerco di derivare una precondizione $p'$ tale per cui $x>1 \rightarrow p'$.
+    Per la regola dell'assegnamento:
+    \begin{center}
+        $\vDash \Hoaretriple{x+1>1}{y:=x+1}{y>1}$
+    \end{center}
+    che si può riscrivere come:
+    \begin{center}
+        $\vDash \Hoaretriple{x>0}{y:=x+1}{y>1}$
+    \end{center}
+    Per la regola dell'implicazione (sulla pre-condizione):
+    \begin{center}
+        \begin{prooftree}
+            \AxiomC{$x>1 \rightarrow x>0$}
+            \AxiomC{$\Hoaretriple{x>0}{y:=x+1}{y>1}$}
+            \BinaryInfC{$\Hoaretriple{x>1}{y:=x+1}{y>1}$}
+        \end{prooftree}
+    \end{center}
+    Sono quindi riuscito a derivare la tripla che si voleva dimostrare.
+    La tripla di partenza è quindi dimostrata.
+\end{exmp}
+
+\begin{exmp}
+    Dimostrare la correttezza della tripla:
+    \begin{center}
+        $\Hoaretriple{s=x^i \land i < N}{i:=i+1; s:=s*x}{s=x^i \land i \le N}$
+    \end{center}
+    Il comando è composto da due istruzioni di assegnamento, e sarebbe quindi necessario applicare due volte la regola di assegnamento.
+    Quando gli assegnamenti consecutivi sono indipendenti \footnote{Per assegnamenti indipendenti si intende che se è presente un assegnamento a una certa variabile, allora quella variabile non può comparire nelle espressioni aritmetiche degli altri assegnamenti.}, però, è possibile effettuare contemporaneamente tutte le sostituzioni sulla post-condizione.
+    \begin{center}
+        $\vDash \Hoaretriple{s*x=x^{i+1} \land i+1 \le N}{i:=i+1; s:=s*x}{s=x^i \land i \le N}$
+    \end{center}
+    che si può riscrivere come:
+    \begin{center}
+        $\vDash \Hoaretriple{s=x^i \land i+1 \le N}{i:=i+1; s:=s*x}{s=x^i \land i \le N}$
+    \end{center}
+    Per la regola dell'implicazione (sulla pre-condizione):
+    \begin{prooftree}
+        \AxiomC{ $i < N \rightarrow i+1 \le N$ }
+        \AxiomC{ $\Hoaretriple{\begin{aligned}
+            &s*x=x^{i+1}\\
+            &\land \; i+1 \le N
+        \end{aligned}}
+        {\begin{aligned}
+            &i:=i+1;\\
+            &s:=s*x
+        \end{aligned}}
+        {\begin{aligned}
+            &s=x^i\\
+            &\land i \le N
+        \end{aligned}}$ }
+        \BinaryInfC{ $\Hoaretriple{s=x^i \land \; i < N}
+        {\begin{aligned}
+            &i:=i+1; \\
+            &s:=s*x
+        \end{aligned}}
+        {s=x^i \land \; i \le N}$ }
+    \end{prooftree}
+    Si è quindi riusciti a derivare la tripla di partenza. La tripla di partenza è quindi dimostrata.
+\end{exmp}
+
+\begin{exmp}
+    Dimostrare la correttezza della tripla:
+    \begin{center}
+        $\Hoaretriple{\textnormal{T}}
+        {\begin{aligned}
+            & \textnormal{if } x<y\\
+            & \textnormal{then } m:=y\\
+            & \textnormal{else } m:=x\\
+            & \textnormal{endif}
+        \end{aligned}}
+        {m \ge x \land m \ge y \land (m=x \lor m=y)}$
+    \end{center}
+    Usando la regola di scelta al contrario, la tripla può essere scomposta in due triple:
+    \begin{center}
+        $t_1 = \Hoaretriple{x<y}{m:=y}{m \ge x \land m \ge y \land (m=x \lor m=y)}$\\
+        $t_2 = \Hoaretriple{x \ge y}{m:=x}{m \ge x \land m \ge y \land (m=x \lor m=y)}$
+    \end{center}
+    Bisogna quindi dimostrare la correttezza di entrambe le triple.
+    Considerando $t_1$, per la regola dell'assegnamento:
+    \begin{center}
+        $\vDash \Hoaretriple{\begin{aligned}
+            &y \ge x \land y \ge y\\
+            &\land (y = x \lor y = y)
+        \end{aligned}}
+        {m:=y}
+        {\begin{aligned}
+            &m \ge x \land m \ge y\\
+            &\land (m=x \lor m=y)
+        \end{aligned}}$
+    \end{center}
+    che si può riscrivere come:
+    \begin{center}
+        $\vDash \Hoaretriple{y \ge x}{m:=y}
+        {\begin{aligned}
+            &m \ge x \land m \ge y\\
+            &\land (m=x \lor m=y)
+        \end{aligned}}$
+    \end{center}
+    Per la regola dell'implicazione (sulla pre-condizione):
+    \begin{prooftree}
+        \AxiomC{$x<y \rightarrow y \ge x$}
+        \AxiomC{$\Hoaretriple{y \ge x}{m:=y}
+        {\begin{aligned}
+            &m \ge x \land m \ge y\\
+            &\land (m=x \lor m=y)
+        \end{aligned}}$}
+        \BinaryInfC{$\Hoaretriple{x<y}{m:=y}
+        {m \ge x \land m \ge y \land (m=x \lor m=y)}$}
+    \end{prooftree}
+    Si è quindi riusciti a derivare $t_1$, e quindi si è dimostrata la sua correttezza.\\
+    Considerando $t_2$, per la regola dell'assegnamento:
+    \begin{center}
+        $\vDash \Hoaretriple{\begin{aligned}
+            &x \ge x \land x \ge y\\ 
+            &\land (x=x \lor x=y)
+        \end{aligned}}
+        {m:=x}
+        {\begin{aligned}
+            &m \ge x \land m \ge y\\
+            &\land (m=x \lor m=y)
+        \end{aligned}}$
+    \end{center}
+    che si può riscrivere come:
+    \begin{center}
+        $\vDash \Hoaretriple{x \ge y}{m:=x}{\begin{aligned}
+            &m \ge x \land m \ge y\\
+            &\land (m=x \lor m=y)
+        \end{aligned}}$
+    \end{center}
+    Si è quindi riusciti a derivare $t_2$, e quindi si è dimostrata la sua correttezza.\\
+    Avendo dimostrato la correttezza di entrambe le triple, allora anche la tripla di partenza è dimostrata.
+\end{exmp}
+
+Per dimostrare la correttezza di una tripla della forma $\{ p \} x:=E \{ q \}$ si deve partire considerando solo comando e la post-condizione. Usando la regola dell'assegnamento, si deriva la pre-condizione $q[\sfrac{E}{x}]$.
+    Se $q[\sfrac{E}{x}] \rightarrow p$ (implicazione logica), allora la tripla di partenza è dimostrata.
+
+    

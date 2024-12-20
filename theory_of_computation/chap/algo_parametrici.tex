@@ -1,0 +1,84 @@
+\chapter{Algoritmi parametrici}
+Un problema NP-hard è un problema difficile da risolvere nel caso generale. Si può osservare, però, non sempre tutte le istanze di un problema NP-hard sono difficili da risolvere, ma lo sono solo un sottoinsieme ristretto di istanze.\\
+L'obiettivo di un algoritmo parametrico è quindi quello di "scartare" velocemente tutte le istanze facilmente risolvibili e di concentrarsi solo su quelle effettivamente importanti da risolvere.
+Per farlo, un algoritmo parametrico introduce un parametro $k$ sull'input, e cerca di manipolare l'istanza di input in modo da poter definire un algoritmo con complessità $O(f(k) \cdot \tn{poly}(n))$.
+
+\begin{defn}
+    Un \textbf{problema parametrizzato} è un linguaggio $L \subseteq \Sigma^* \times \mathbb{N}$, dove $\Sigma$ è un alfabeto finito e l'intero $n \in \mathbb{N}$ è detto parametro.
+\end{defn}
+
+\begin{defn}
+    Un problema parametrizzato è un \textbf{fixed-tractable problem} (FTP) sse esiste un algoritmo con complessità $O(f(k) \cdot \tn{poly}(n))$.
+
+    $f(k)$ è una funzione che dipende \textit{solo} dal parametro $k$ e la cui crescita è arbitraria (può anche essere una funzione esponenziale o una funzione con velocità di crescita maggiore).
+\end{defn}
+
+I problemi parametrizzati sono quindi espressi in funzione di un'istanza e un parametro intero positivo. Data un'istanza, si vuole verificare se essa rispetta una proprietà che dipende da $k$.
+
+\section{Esempi}
+\subsection{Vertex Cover}
+Il problema "classico" di Vertex Cover è un problema di ottimizzazione e chiede, dato un grafo, di trovare la minima Vertex Cover del grafo, dove con Vertex Cover si intende un insieme di nodi tale che ogni arco del grafo ha almeno un estremo in questo insieme di nodi.
+
+Il problema di ottimizzazione può essere risolto in tempo esatto in tempo esponenziale, o può essere risolto in tempo polinomiale con un algoritmo $2$-approssimante.
+
+Il problema può essere riformulato come un problema di decisione parametrizzato.
+\begin{problem}[lined]{Vertex Cover (di decisione e parametrizzato)}
+    Input: & \begin{minipage}[t]{0.8\linewidth}\begin{itemize}
+        \setlength\itemsep{0em}
+        \item un grafo $G = (V, E)$
+        \item $k \in \mathbb{N}$ 
+    \end{itemize}\end{minipage}\\
+    Output: & Esiste $C \subseteq V : |C| \le k \land \forall (u, v) \in E, u \in C \lor v \in C$?
+\end{problem}
+Si vuole quindi verificare se esiste una Vertex Cover di cardinalità (numero di nodi) minore o uguale a $k$.
+
+L'algoritmo più ingenuo per risolvere il problema prevede di enumerare tutti sottoinsiemi di nodi di dimensione minore o uguale a $k$, e verificare se almeno uno di essi è una Vertex Cover. 
+La complessità è quindi $O(n^k \cdot T(n))$, dove $O(n^k)$ è il numero di sottoinsiemi di cardinalità minore o uguale a $k$ e $T(n)$ è il tempo necessario per verificare se un sottoinsieme è una Vertex Cover.
+
+Si può notare che l'algoritmo appena proposto non è un algoritmo FPT, in quanto $f(k)$ non dipende solo da $k$ ma anche da $n$.
+
+Un possibile algoritmo FTP può essere formulato tramite ricorsione ed è semplicemente un algoritmo a forza bruta.
+
+$\tn{Vertex-Cover}(V, E, k)$:\\
+\textbf{Caso base}: 
+    \begin{minipage}[t]
+    {0.8\linewidth}\begin{itemize}
+        \setlength\itemsep{0em}
+        \item $k = 0 \land |E| = 0 \longrightarrow \tn{YES}$
+        \item $k = 0 \land |E| \neq 0 \longrightarrow \tn{NO}$
+    \end{itemize}\end{minipage}
+    
+\textbf{Passo ricorsivo}:
+    \[
+        \tn{Vertex-Cover}(V \setminus \cbra{i}, E \setminus \cbra{i, j} \, \forall j \in V, k-1) \lor \tn{Vertex-Cover}(V \setminus \cbra{j}, E \setminus \cbra{i, j} \, \forall i \in V, k-1)
+    \]
+
+La complessità di questo algoritmo ricorsivo è $O(2^k \cdot n)$, ed è quindi un algoritmo FTP.
+
+L'algoritmo ricorsivo può però essere ulteriormente migliorato facendo due considerazioni.
+\begin{property}
+    Se un nodo $v \in V$ ha grado $\tn{deg}(v) = 0$, allora esso non appartiene alla Vertex Cover.
+\end{property}
+
+\begin{property}
+    Se un nodo $v \in V$ ha grado $\tn{deg}(v) > k$, allora esso appartiene sicuramente alla Vertex Cover.
+\end{property}
+Se infatti esso non appartenesse alla Vertex Cover, allora per 
+poter coprire tutti gli archi incidenti sarebbe necessario 
+inserire tutti i nodi adiacenti. Ma il numero di nodi adiacenti è 
+strettamente maggiore di $k$, e non si avrebbe quindi una 
+soluzione per l'istanza.
+
+Ricevuto quindi un grafo in input, è possibile rimuovere tutti i nodi che rispettano una delle due condizioni, scartandoli se il loro grado è uguale a $0$ o inserendoli nella Vertex Cover se il loro grado è strettamente maggiore di $k$.\\
+Il grafo che si ottiene ha sicuramente un numero massimo di nodi pari a $k$, e prende il nome di \textbf{kernel}.
+Il kernel è la parte "difficile" da risolvere dell'istanza ricevuta in input.
+
+Si può puoi applicare il precedente algoritmo ricorsivo a questo nuovo grafo, e la complessità della sua applicazione sarà $O(2^k \cdot k)$, in quanto $n = k$.
+
+Considerando tutto l'algoritmo, la sua complessità è $O(n^2 + 2^k \cdot k)$, dove $O(n^2)$ è il tempo necessario alla rimozione dei nodi che rispettano una delle due proprietà e $O(2^k \cdot k)$ è il tempo dell'algoritmo ricorsivo sul sottografo.
+
+Per Vertex Cover vale inoltre un'importante proprietà (qui non dimostrata):
+\[
+    |V| > k^2 + k \longrightarrow \tn{NO}
+\]
+Questo non significa che se $|V| \le k^2 + k$ allora il grafo ha una Vertex Cover di cardinalità minore o uguale a $k$. \upperAccE possibile che ci sia, ma non è assicurato: per stabilirlo è quindi necessario applicare l'algoritmo FTP precedentemente descritto.

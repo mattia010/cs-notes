@@ -1,0 +1,41 @@
+\chapter{Git}
+Git è un sistema di controllo di versione distribuito.
+
+\section{Approcci allo sviluppo con Git}
+Git può essere integrato in due modi all'interno di un processo di sviluppo software: GitFlow e Trunk-based.
+\subsubsection{GitFlow}
+Il GitFlow prevede la presenza di più branch all'interno del progetto Git. In particolare, le branch utilizzate sono:
+\begin{itemize}
+    \item main: branch principale che contiene il codice confermato e già rilasciato;
+    \item development: branch secondario in cui risiede il codice modificato, ma ancora da rilasciare;
+    \item hotfix: branch per situazione straordinarie, utilizzato per implementare modifiche urgenti al codice che risiede sul branch main. Nasce dal branch main, e al completamento del fix ne viene fatto il merge su main;
+    \item feature \#n: branch dedicato all'implementazione della feature \#n. Nasce dal branch development e, al termine dell'implementazione della feature, ne viene fatto il merge sempre su development.
+\end{itemize}
+
+I vantaggi del GitFlow sono:
+\begin{itemize}
+    \item implementazione di processi di automazione dedicati per ogni branch. Un evento su una branch non esegue quindi processi automatizzati associati ad altre branch;
+    \item ...
+\end{itemize}
+
+\subsubsection{Trunk-based}
+Lo sviluppo Trunk-based con Git prevede l'esistenza di un unico branch main, che contiene il codice già rilasciato.\\
+Quando uno sviluppatore vuole implementare una qualsiasi modifica, sia essa una nuova feature o una correzione al codice esistente, egli crea un branch di sviluppo dedicata di cui, al termine dell'implementazione, si farà la merge con il branch main.
+
+Lo sviluppo Trunk-based è più rapido e facile da gestire, ma più rischioso, in quanto i cambiamenti finiscono direttamente nel branch principale. \upperAccE quindi adatto a progetti che coinvolgono solo sviluppatori esperti.
+
+\section{DevOps}
+Uno processo di sviluppo che usa Git può essere dotato di processi automatizzati per il DevOps: al verificarsi di particolari tipi di eventi nel repositiry Git, infatti, possono essere lanciati specifici processi con funzioni particolari.
+
+I processi eseguiti a seguito dell'implementazione di una modifica formano un \textbf{Quality Gate}: la modifica è approvata solo se tutti i processi, che solitamente sono processi di test, terminano con successo.
+
+Quando si implementa una modifica, i quality gate
+Quality gate per piccole modifiche:
+\begin{itemize}
+    \item unit test;
+    \item code review delle push request;
+    \item analisi statica del codice.
+\end{itemize}
+Questo tipo di quality gate viene usato ad esempio, in un approccio GitFlow, a seguito di una merge di un ramo \verb|feature #n| e il ramo \verb|development|.
+
+Quality gate per una parte del sistema che usa la piccola modifica:

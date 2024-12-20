@@ -1,0 +1,113 @@
+\chapter{Apprendimento non supervisionato}
+L'apprendimento non supervisionato è un tipo di apprendimento in cui non si è a conoscenza, prima della fase di apprendimento, delle classi in cui devono essere classificate le istanze, ed è quindi l'algoritmo che si occupa di individuare raggruppamenti (e quindi delle classi) con caratteristiche comuni.
+
+Non conoscendo le classi tra cui suddividere le istanze, le istanze di addestramento non hanno alcuna label associata.
+
+
+
+\section{Clustering}
+Gli algoritmi di clustering permettono di suddividere un insieme di dati in cluster, ovvero sottoinsiemi di elementi (più o meno) omogenei.
+Sono basati su tecniche di similarità/dissimilarità tra elementi o cluster, che solitamente definiscono la similarità di due elementi come la distanza tra essi. \\
+La scelta della metrica, ovvero la distanza da calcolare, influisce molto sull'efficacia degli algoritmi di clustering.
+
+Tutte le tecniche di clustering, dovendo calcolare una distanza tra elementi, sono efficienti solo su attributi dotati di ordine interno naturale, come i numeri.
+Un insieme di elementi senza un ordinamento naturale, come l'insieme dei colori, può essere ordinato artificiosamente in moltissimi modi diversi, e l'algoritmi può quindi produrre cluster diversi per ogni ordinamento diverso. Di conseguenza, i raggruppamenti non sono naturali, ma sono influenzati dall'ordinamento definito.
+
+Un algoritmo di clustering presenta i seguenti vantaggi:
+\begin{itemize}
+    \item non è necessario conoscere il dominio delle istanze, e quindi le classi in cui esse sono realmente divise;
+    \item il controllo umano sull'algoritmo è ridotto, e quindi viene ridotto l'errore umano;
+    \item tutte le classi univocamente caratterizzate sono identificate.
+\end{itemize}
+Alcuni svantaggi sono invece:
+\begin{itemize}
+    \item le nuove classi definite dall'algoritmo in fase di apprendimento possono non avere alcun significato;
+    \item colui che definisce l'algoritmo ha poco controllo sull'apprendimento e i risultati ottenuti;
+    \item non adatti ad attributi definiti su un insieme con ordinamento arbitrario.
+\end{itemize}
+
+\subsubsection{Classificazione degli algoritmi di clustering}
+Gli algoritmi di clustering possono essere classificati in:
+\begin{itemize}
+    \item \textbf{algoritmi partizionali} \footnote{Alcuni esempi di algoritmi di clustering partizionali sono K-means, il metodo di Forgy e le aggregazioni dinamiche.}: l'algoritmo crea una $k$-partizione dell'insieme delle istanze, e l'appartenenza di un elemento a un cluster è definita dalla sua distanza da un punto rappresentante il cluster.\\
+    In un approccio partizionale, l'algoritmo deve essere a conoscenza del numero $k$ di cluster che devono formare la partizione.\\
+    \item \textbf{algoritmi gerarchici} \footnote{Alcuni esempi di algoritmi gerarchici sono il Neighbour Joining e il metodo del centroide.}: questi algoritmi creano una gerarchia di partizioni a partire da una partizione di partenza (solitamente l'intero insieme delle istanze o la partizione formata da $n$ sottoinsieme, con $n$ numero di istanze.).\\
+    La gerarchia di partizioni può essere rappresentata tramite un dendrogramma.
+    \item \textbf{algoritmi basati sulla teoria dei grafi} \footnote{Alcuni esempi di algoritmi di clustering basati sulla teoria dei grafi sono Highly Connected Subgraph (HCS) e CLustering Identification via Connectivity Kernels (CLICK).}.
+    \item \textbf{algoritmi euristici} \footnote{Alcuni esempi di algoritmi di clustering euristici sono Clustering Affinity Search Technique (CAST) e Self-Organizing Maps (SOM)}.
+\end{itemize}
+Gli algoritmi di clustering possono anche essere suddivisi in esclusivi, se ogni elemento può appartenere a un solo cluster, o non-esclusivi, se un elemento può appartenere a cluster diversi.
+
+\section{Clustering partizionale}
+\subsection{$k$-means}
+$k$-means è un algoritmo di clustering partizionale divisivo \footnote{Con algoritmo divisivo si intende un algoritmo che inizia la sua esecuzione considerando un unico intero insieme di istanze, e cerca di definire i cluster partizionando iterativamente l'insieme precedente.}, che definisce i $k$ custering cercando di minimizzare le distanze tra gli elementi e i cluster a cui appartengono.
+
+Essendo un algoritmo partizionale, $k$-means è efficace solo su dati con un ordinamento naturale (solitamente numeri).
+
+L'idea dell'algoritmo è quella di partire fissando $k$ centroidi iniziali, e di modificare la loro posizione a ogni iterazione, in modo tale da definire $k$ cluster il più possibile omogenei.
+Un approccio del genere può richiedere però un numero di iterazioni altissimo (e quindi un'alta potenza di calcolo) e, di conseguenza, molto spesso si impone un numero di iterazioni massimo.\\
+L'algoritmo termina quando è stato raggiunto il numero massimo di iterazioni o quando converge, ovvero i la posizione dei centroidi non viene più modificata.
+
+\subsubsection{Vantaggi e svantaggi di $k$-means}
+I vantaggi di $k$-means sono principalmente due:
+\begin{itemize}
+    \item facile da implementare;
+    \item tempo di calcolo pari a $O(tkn)$ \footnote{Dove $t$ è il numero di iterazioni massimo, $k$ è il numero di cluster e $n$ è il numero di elementi.}, e quindi abbastanza contenuto. 
+\end{itemize}
+Presenta però seri svantaggi:
+\begin{itemize}
+    \item la suddivisione in cluster dipende fortemente dalla scelta dei $k$ centroidi iniziali;
+    \item nonostante non si abbia alcuna conoscenza sul dominio degli elementi, l'algoritmo richiede di specificare il numero $k$ di cluster desiderati;
+    \item non esiste un $k$ ottimale;
+    \item è sensibile alla densità degli elementi: non è detto che elementi presenti in una regione di spazio densa vengano raggruppati nello stesso cluster, come naturalmente ci si aspetterebbe;
+    \item è sensibile alla disposizione geometrica degli elementi \footnote{Un esempio di dispozione geometrica che mette in difficoltà l'algoritmo $k$-means è la doppia spirale.}. Una possibile soluzione a questo problema è quella di utilizzare un numero superiore di cluster, per poi procedere alla loro unione fino a ottenere i $k$ cluster desiderati.
+\end{itemize}
+
+\subsubsection{Determinare il miglior numero $k$ di cluster}
+L'algoritmo $k$-means, per essere eseguito, necessita del numero $k$ di cluster in cui si vuole suddividere gli elementi.
+Non avendo però alcuna (o una limitata) conoscenza del dominio, specificare il $k$ ideale può non essere banale.\\
+Per questo motivo, il miglior $k$ può essere trovato procedendo con un'analisi delle silhouette medie dei cluster, ovvero misurando quanto sono raggruppati (o eventualmente dispersi) gli elementi appartenenti a un cluster.
+
+Sia $C_I$ l'$I$-esimo cluster. La silhouette $s(i)$ di un elemento $i \in C_I$ viene calcolata come:
+\begin{align*}
+    s(i) &= \begin{cases}
+        \frac{b(i)-a(i)}{\max\cbra{a(i),b(i)}} & |C_I| > 1\\
+        0 & |C_I| = 1
+    \end{cases}\\
+    a(i) = \frac{1}{|C_I| - 1} &\sum\limits_{j \in C_I, i \neq j} d(i, j) \quad \quad \quad
+    b(i) = \min\limits_{J \neq I} \frac{1}{|C_J|} \sum\limits_{j \in C_J} d(i,j)
+\end{align*}
+dove $a(i)$ è la distanza media di $i$ da ogni altro elemento all'interno del cluster a cui appartiene (distanza media intra-cluster), mentre $b(i)$ è la minima distanza media di $i$ da ogni altro elemento di un qualsiasi altro cluster di cui $i$ non è membro (distanza media inter-cluster).\\
+$a(i)$ può essere vista come una misura della buona assegnazione di $i$ al cluster corrente (più il valore è piccolo, più l'assegnamento è corretto).
+
+Per un qualsiasi elemento $i$, $-1 \le s(i) \le 1$. Più il valore $s(i)$ si avvicina a $1$, più l'elemento appartiene al cluster ideale. Più il valore $s(i)$ si avvicina a $-1$, invece, più l'elemento dovrebbe essere appartenere al cluster neighbour, ovvero al cluster più vicino diverso da quello corrente. Un $s(i) = 0$ indica che l'elemento risiede alla frontiera che separa il cluster corrente e il cluster neighbour. 
+
+Si può procedere con una prima esecuzione dell'algoritmo $k$-means con un valore arbitrario per $k$ (scelto comunque attraverso alcune euristiche).
+Al termine dell'esecuzione, vengono calcolate la silhouette media su tutti gli elementi del dataset. Se la silhouette si avvicina a $1$, allora il $k$ scelto è giusto e il clustering effettuato è naturale.
+Se invece $k$ si avvicina a $-1$, allora il $k$ scelto è sbagliato e bisogna ripetere l'esecuzione dell'algoritmo $k$-means diminuendo o aumentando il valore di $k$ (non si può sapere a priori se bisogna aumentarlo o diminuirlo, si sa solo che bisogna farlo) \footnote{Alcuni algoritmi moderni permettono di effettuare il clustering direttamente con la misura di silhouette, senza quindi aver bisogno di un esecuzione multipla dell'algoritmo di clustering.}.
+
+
+\subsection{Similarità tra elementi: distanza}
+Gli algoritmi di clustering si basano sul concetto di similarità tra elementi.
+Essendo i dati su cui l'algoritmo di clustering opera dotati di un ordine naturale, un elemento può essere visto come un vettore.
+La similarità tra vettori può essere quindi vista come distanza tra essi: più i vettori sono vicini, più sono simili.
+
+I tre tipi di distanze che si possono calcolare su vettori $n$-dimensionali sono:
+\begin{itemize}
+    \item distanza di Manhattan
+    \[
+        d(\vec{x}, \vec{y}) = \sum\limits_{i=1}^n (x_i - y_i)
+    \]
+    La distanza di Manhattan non è invariante rispetto a traslazione e rotazioni dei vettori nello spazio e non aumenta l'influenza di componenti dei vettori con distanze maggiori, in quanto non eleva al quadrato.
+    \item distanza euclidea
+    \[
+        d(\vec{x}, \vec{y}) = \bra{\sum\limits_{i=1}^n (x_i - y_i)^2}^{\frac{1}{2}}
+    \]
+    La distanza euclidea è invariante rispetto aa traslazioni e rotazioni dei vettori nello spazio.
+    \item distanza di Minkowski \footnote{Vedere spazio-tempo di Minkowski.}
+    \[
+        d(\vec{x}, \vec{y}) = \bra{\sum\limits_{i=1}^n (x_i - y_i)^k}^{\frac{1}{k}} \quad k \in 
+    \]
+    La distanza di Minkowski è una generalizzazione della distanza di Manhattan ($q=1$) e della distanza euclidea ($q=2$).
+    è inoltre una metrica sse $p \ge 1$, ovvero soddisfa la disuguaglianza triangolare solo per questi valori.
+\end{itemize}
