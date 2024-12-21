@@ -26,7 +26,7 @@ Alcuni svantaggi sono invece:
     \item non adatti ad attributi definiti su un insieme con ordinamento arbitrario.
 \end{itemize}
 
-\subsubsection{Classificazione degli algoritmi di clustering}
+\subsection{Classificazione degli algoritmi di clustering}
 Gli algoritmi di clustering possono essere classificati in:
 \begin{itemize}
     \item \textbf{algoritmi partizionali} \footnote{Alcuni esempi di algoritmi di clustering partizionali sono K-means, il metodo di Forgy e le aggregazioni dinamiche.}: l'algoritmo crea una $k$-partizione dell'insieme delle istanze, e l'appartenenza di un elemento a un cluster è definita dalla sua distanza da un punto rappresentante il cluster.\\
@@ -39,7 +39,7 @@ Gli algoritmi di clustering possono essere classificati in:
 Gli algoritmi di clustering possono anche essere suddivisi in esclusivi, se ogni elemento può appartenere a un solo cluster, o non-esclusivi, se un elemento può appartenere a cluster diversi.
 
 \section{Clustering partizionale}
-\subsection{$k$-means}
+\subsection{k-means}
 $k$-means è un algoritmo di clustering partizionale divisivo \footnote{Con algoritmo divisivo si intende un algoritmo che inizia la sua esecuzione considerando un unico intero insieme di istanze, e cerca di definire i cluster partizionando iterativamente l'insieme precedente.}, che definisce i $k$ custering cercando di minimizzare le distanze tra gli elementi e i cluster a cui appartengono.
 
 Essendo un algoritmo partizionale, $k$-means è efficace solo su dati con un ordinamento naturale (solitamente numeri).
@@ -48,7 +48,7 @@ L'idea dell'algoritmo è quella di partire fissando $k$ centroidi iniziali, e di
 Un approccio del genere può richiedere però un numero di iterazioni altissimo (e quindi un'alta potenza di calcolo) e, di conseguenza, molto spesso si impone un numero di iterazioni massimo.\\
 L'algoritmo termina quando è stato raggiunto il numero massimo di iterazioni o quando converge, ovvero i la posizione dei centroidi non viene più modificata.
 
-\subsubsection{Vantaggi e svantaggi di $k$-means}
+\subsection{Vantaggi e svantaggi di $k$-means}
 I vantaggi di $k$-means sono principalmente due:
 \begin{itemize}
     \item facile da implementare;
@@ -63,7 +63,7 @@ Presenta però seri svantaggi:
     \item è sensibile alla disposizione geometrica degli elementi \footnote{Un esempio di dispozione geometrica che mette in difficoltà l'algoritmo $k$-means è la doppia spirale.}. Una possibile soluzione a questo problema è quella di utilizzare un numero superiore di cluster, per poi procedere alla loro unione fino a ottenere i $k$ cluster desiderati.
 \end{itemize}
 
-\subsubsection{Determinare il miglior numero $k$ di cluster}
+\subsection{Determinare il miglior numero $k$ di cluster}
 L'algoritmo $k$-means, per essere eseguito, necessita del numero $k$ di cluster in cui si vuole suddividere gli elementi.
 Non avendo però alcuna (o una limitata) conoscenza del dominio, specificare il $k$ ideale può non essere banale.\\
 Per questo motivo, il miglior $k$ può essere trovato procedendo con un'analisi delle silhouette medie dei cluster, ovvero misurando quanto sono raggruppati (o eventualmente dispersi) gli elementi appartenenti a un cluster.

@@ -549,12 +549,6 @@ Inoltre, la scansione in tempo $O(m \log_2 n)$ può essere migliorata in altri a
     ovvero è quella stringa in cui il $q$-suffisso viene posto all'inizio della stringa.
 \end{defn}
 Per calcolare la BWT, si può costruire una matrice delle rotazioni che contiene tutte le possibili rotazioni di $T$ ordinate lessicograficamente.
-\begin{figure}[h]
-    \centering
-    \includegraphics[width=0.5\linewidth]{images/rotation_matrix.png}
-    \caption{}
-    \label{fig:rotation_matrix}
-\end{figure}
 \begin{defn}
     Gli output della trasformazione sono la permutazione $\bwt(T)$, ovvero l'ultima colonna della matrice contenente le rotazioni di $T$ ordinate lessicograficamente, e un indice $I$, che specifica la posizione del simbolo \$ all'interno di $\bwt(T)$.
 \end{defn}
@@ -569,7 +563,7 @@ Essendo, per definizione di rotazione, l'ultimo simbolo di una riga $i$ della ma
     \end{cases}
 \]
 La BWT "in chiaro" ha dimensione pari alla dimensione del testo $T$. Essa però gode di un'importante proprietà: essa memorizza molto spesso simboli uguali in posizioni consecutive, e può quindi essere facilmente compressa. Uno dei modi più utilizzare questa compressione è il \textbf{run-length encoding}: simboli consecutivi uguali non vengono memorizzati esplicitamente, ma viene memorizzato un solo simbolo e il numero di occorrenze consecutive del simbolo 
-\footnote{Esempio: la stringa $\sigma \sigma \sigma \alpha \alpha \sigma$ verrà memorizzata come $\sigma : 3 \; \alpha : 2 \; \sigma : 1$.}.
+Esempio: la stringa $\sigma \sigma \sigma \alpha \alpha \sigma$ verrà memorizzata come $\sigma : 3 \; \alpha : 2 \; \sigma : 1$.
 La BWT compressa occupa quindi meno spazio in memoria rispetto al testo originale $T$, e si può quindi definire come una struttura dati succinta.
 
 \subsubsection{Ricostruzione del testo: algoritmo ingenuo}

@@ -57,7 +57,7 @@ Per farlo, a ogni istante viene scelto come attributo di splitting quello che di
 
 Gli alberi di decisione presentano quindi un \textit{bias}: prediligono infatti, tra tutti gli alberi di decisione (e quindi le ipotesi che rappresentano), quelli di altezza minore. Questo bias è però solitamente fortemente desiderato, perché permette di contenere l'overfitting e di avere efficienza computazionale.
 
-\subsubsection{Costruzione dell'albero di decisione}
+\subsection{Costruzione dell'albero di decisione}
 L'algoritmo di costruzione dell'albero, ad un certo istante della sua esecuzione, seleziona l'attributo che permette di partizionare l'insieme delle istanze corrente in sottoinsiemi il più possibili uniformi. Partendo dalla radice, questo ragionamento viene applicato ricorsivamente a tutti i nodi dell'albero.
 L'algoritmo può quindi essere riassunto come segue:
 \begin{enumerate}
@@ -136,7 +136,7 @@ dove:
     \item $\theta$ è la soglia di attivazione, ovvero il valore minimo necessario per eccitare la connessioni in uscita.
 \end{itemize}
 
-\begin{figure}[h]
+\begin{figure}[ht]
     \centering
     \includegraphics[width=0.7\linewidth]{img/perceptron.png}
     \caption{Struttura di un percettrone}
@@ -147,7 +147,7 @@ A differenza degli alberi di decisione, però, il percettrone supporta \textit{i
 
 Il percettrone può categorizzare correttamente le istanze sse esse sono linearmente separabili in $n$ dimensioni, dove $n$ è il numero di connessioni in ingresso. Se esse sono linearmente separabili, allora esiste un iperpiano in $n-1$ dimensioni che divide correttamente lo spazio delle istanze.
 Un percettrone rappresenta l'iperpiano tramite i propri  pesi di ingresso: la loro modifica nella fase di apprendimento, quindi, non fa altro che spostare l'iperpiano nello spazio delle istanze fino a quando, idealmente, si riesce a separare linearmente tutte le istanze.
-\begin{figure}[h]
+\begin{figure}[ht]
     \centering
     \includegraphics[width=1\linewidth]{img/hyperplane_perceptron.png}
     \caption{Iperpiani definiti da un percettrone in due differenti casi in cui le istanze sono linearmente separabili.}
@@ -155,7 +155,7 @@ Un percettrone rappresenta l'iperpiano tramite i propri  pesi di ingresso: la lo
 \end{figure}
 In un percettrone, l'ipotesi coincide con l'iperpiano ed è quindi di fatto rappresentata dai pesi, che vengono modificati nel corso della fase di apprendimento.
 
-\subsubsection{Inferenza}
+\subsection{Inferenza}
 La computazione del neurone all'istante di tempo $t$ avviene, una volta ricevuti gli input, effettuando la somma pesata degli input, ovvero calcolando la funzione:
 \begin{center}
     $\sum\limits_{i = 1}^{n} (c_i(t) \cdot w_i(t))$
@@ -169,7 +169,7 @@ Sia $u$ la connessione in uscita, allora il valore assunto da $u$ sarà:
 \end{center}
 Di conseguenza, lo stato della connessione in uscita è determinato da una \textit{funzione a gradino}.
 
-\subsubsection{Apprendimento}
+\subsection{Apprendimento}
 L'apprendimento del percettrone avviene, invece, modificando i pesi associati alle connessioni di input.
 Sia $w^t$ il vettore dei pesi all'istante $t$, allora $w^{t+1}$, ovvero il vettore dei pesi all'istante successivo, sarà:
 \begin{center}
@@ -193,7 +193,7 @@ Una rete neurale è composta da strati di neuroni, i quali possono essere divisi
     \item strati nascosti: neuroni interni alla rete neurale, che di fatto permettono di definire una curva di separazione dello spazio delle istanze anzichè un semplice iperpiano.
     \item strato di output: neuroni che forniscono l'output della rete neurale.
 \end{itemize}
-\begin{figure}[h]
+\begin{figure}[ht]
     \centering
     \includegraphics[width=0.75\linewidth]{img/neural_network.jpg}
     \caption{Struttura di una rete neurale}
@@ -269,7 +269,7 @@ Le reti neurali sono abbastanza lente nell'addestramento (comunque più veloci d
 \section{Support Vector Machine}
 Il Support Vector Machine (SVM) è un algoritmo di classificazione che permette di separare le istanze usando funzioni non lineare. Come si vedrà, in realtà SVM non definisce funzioni non lineari, ma definisce funzioni lineari in dimensioni superiori che si traducono in funzioni non lineari in dimensioni inferiori. 
 
-\subsubsection{Perchè usare le SVM, e alcune loro limitazioni}
+\subsection{Perchè usare le SVM, e alcune loro limitazioni}
 Le reti neurali a singolo strato permettono di definire funzioni di separazione lineari (iperpiani) efficientemente. Se però le istanze non sono linearmente separabili, allora possono essere utilizzate le reti neurali multistrato, che permettono di definire funzioni non lineare in maniera, però, poco efficiente.\\
 Le SVM individuano funzioni di separazione non lineare più efficientemente delle reti neurali. Risolvono inoltre un altro problema, che riguarda l'ottimizzazione: le reti neurali, infatti, apprendono cercando di risolvere un problema di ottimizzazione non convessa non vincolata, il quale presenta molti punti di minimo locali. Le SVM, invece, apprendono risolvendo un problema di ottimizzazione quadratico convesso, che presenta un solo minimo globale: non si presenta quindi il rischio di assestarsi su minimi locali durante l'apprendimento.
 
@@ -277,10 +277,10 @@ Le SVM presentano comunque delle limitazioni. Innanzitutto, richiedono che tutte
 Inoltre, le SVM possono essere utilizzate solo in problemi di classificazione binari. Se si desidera poter classificare un'istanza in più di due classi, allora il problema deve essere ridotto a problemi di classificazione binari multipli \footnote{Vedere: multi-class SVM.}.
 Infine, il modello individuato da una SVM offre una buona generalizzazione solo se il dataset di addestramento è stato standardizzato \footnote{Vedere: min-max, Z-score, sottrazione della media e divisione per la varianza.}
 
-\subsubsection{Iperpiani separatori e margine}
+\subsection{Iperpiani separatori e margine}
 Quando si vogliono dividere le istanze usando un iperpiano \footnote{Un iperpiano è una funzione lineare.}, è possibile che più iperpiani diversi le possano dividere correttamente.
 Non tutti gli iperpiani hanno però la stessa capacità di generalizzare, e ciò si ripercuoterà sulla fase di inferenza di nuove istanze.
-\begin{figure}[h]
+\begin{figure}[ht]
     \centering
     \includegraphics[width=0.5\linewidth]{img/hyperplanes.png}
     \caption{$H_1$ non divide correttamente le istanze. $H_2$ divide correttamente le istanze, ma ha un piccolo margine. $H_3$ divide correttamente le istanze ed ha un margine ampio.}
@@ -294,7 +294,7 @@ Non tutti gli iperpiani hanno però la stessa capacità di generalizzare, e ciò
 \end{defn}
 Viene dimostrato \footnote{Vedere: Teoria statistica dell'apprendimento, dimensione di Vapnik-Cervonenkis} che l'iperpiano che permette di avere la generalizzazione massima, ovvero quello che permette al modello di massimizzare il numero di previsioni corrette su nuove istanze nella fase di inferenza, è quello che massimizza il margine.
 
-\subsubsection{Trovare il miglior iperpiano}
+\subsection{Trovare il miglior iperpiano}
 Ogni iperpiano può essere univocamente identificato da un vettore normale \footnote{Con vettore normale si intende un qualsiasi vettore perpendicolare all'iperpiano, non necessariamente di lunghezza unitaria. Se il vettore ha anche lunghezza unitaria, allora si dice che è normalizzato.} e uno scalare $b$.
 $\Vec{w}$ definisce l'orientamento dell'iperpiano, mentre $b$ permette di calcolare l'offset dell'iperpiano rispetto all'origine lungo il vettore normale come $\frac{b}{\norm{\Vec{w}}}$.\\
 L'equazione che descrive l'iperpiano è quindi:
@@ -355,7 +355,7 @@ e potendo scrivere $\Vec{w}$ come $\Vec{w} = \sum\limits_{i \in Q} \alpha_i \Vec
     h(\Vec{x}) = \tn{sign}\bra{\sum\limits_{i \in Q} (\alpha_i \cdot \Vec{x_i} \cdot \Vec{x}) + b}
 \]
 
-\subsubsection{Soft margin}
+\subsection{Soft margin}
 La ricerca dell'iperpiano che massimizza il margine prevede che l'iperpiano classifichi correttamente tutte le istanze. In alcuni casi, però, il dataset potrebbe non essere linearmente separabile.\\
 Viene quindi introdotto il concetto di soft margin, un particolare tipo di margine che tollera la non corretta classificazione di un numero limitato di istanze.
 
@@ -375,7 +375,7 @@ Di conseguenza, il nuovo problema di ottimizzazione che si deve risolvere è:
 \end{mini*}
 dove $C$ è un trade-off tra la dimensione del margine e il numero di istanze non classificate correttamente. Per alti valori di $C$, se le istanze sono linearmente separabili, l'algoritmo apprende in maniera identica a come avviene nel caso del margine rigido. Se invece le istanze non sono linearmente separabili, l'algoritmo riesce comunque a trovare una separazione lineare che minimizza l'errore. 
 
-\subsubsection{Kernel trick (sistemare indici nei problemi di ottimizzazione)}
+\subsection{Kernel trick (sistemare indici nei problemi di ottimizzazione)}
 L'algoritmo SVM "puro" non può trovare una funzione che separa correttamente le istanze se esse non sono linearmente separabili. Il soft margin permette comunque di apprendere, ma compie errori di previsione su un un numero limitato di istanze.
 
 Se però si vuole una classificazione corretta di tutte le istanze, e le istanze non sono linearmente separabili, allora è possibile utilizzare una tecnica chiamata \textbf{kernel trick} \footnote{Vedere: Aizerman et al.}.\\
@@ -421,7 +421,7 @@ I kernel più utilizzati sono:
     \item tangente iperbolica: $K(\Vec{x}, \Vec{y}) = \tanh (\kappa \cdot (\Vec{x} \cdot \Vec{y}) - c), \quad \kappa > 0 \land c < 0$
 \end{itemize}
 
-\subsubsection{Stabilire i parametri}
+\subsection{Stabilire i parametri}
 I parametri che devono essere stabiliti prima di eseguire l'algoritmo SVM su un dataset sono il trade-off $C$, il tipo di kernel $K(x, y)$ che si vuole usare ed eventualmente parametri interni al kernel.
 
 Il kernel più utilizzato è quello gaussiano, che richiede al suo interno un ulteriore parametro $\gamma$. In questo caso, quindi, bisogna individuare solo la migliore combinazione di $C$ e $\gamma$.\\
@@ -507,7 +507,7 @@ Di conseguenza:
     h(\Vec{a}) = \argmax\limits_{v_j \in V} \prod\limits_{i=1}^m P(a_i | v_j)  \cdot P(v_j)
 \]
 
-\subsubsection{Svantaggi del Naive Bayes Classifier}
+\subsection{Svantaggi del Naive Bayes Classifier}
 Naive Bayes presenta alcuni svantaggi:
 \begin{itemize}
     \item molto spesso gli attributi non sono indipendenti, e l'utilizzo di Naive Bayes impone quindi una indipendenza artificiosa;
@@ -515,7 +515,7 @@ Naive Bayes presenta alcuni svantaggi:
     Questo problema si risolve con lo smoothing, ovvero aggiungendo pochissime istanze fittizie che presentano i valori mancanti.
 \end{itemize}
 
-\subsubsection{Complessità di Naive Bayes}
+\subsection{Complessità di Naive Bayes}
 Richiede di memorizzare solo $k \cdot d$ parametri, con $k$ numero di label e $d$ numero di attributi.
 
 \subsection{Gaussian Naive Bayes Classifier}
