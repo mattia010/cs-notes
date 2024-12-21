@@ -1,95 +1,178 @@
-\documentclass[notoc, oneside, openany]{tufte-book}
+\documentclass[nobib, oneside, openany]{tufte-book}
+% nobib     =   do not use package natbib, default in tufte-book. 
+%               it conflicts with biblatex.
+% oneside   =   no blank page between chap and page do not move
+%               left or right based on the page number.
+% openany   = 
+
+% ------------------------------------
+% |            GEOMETRY              |
+% ------------------------------------
 \setcounter{tocdepth}{2}
 \setcounter{secnumdepth}{2}
 
 \makeatletter
 % Paragraph indentation and separation for normal text
-\renewcommand{\@tufte@reset@par}{%
-  \setlength{\RaggedRightParindent}{0pt}%
-  \setlength{\JustifyingParindent}{0pt}%
-  \setlength{\parindent}{0pt}%
-  \setlength{\parskip}{4pt}%
+\renewcommand{\@tufte@reset@par}{
+    \setlength{\RaggedRightParindent}{0pt}
+    \setlength{\JustifyingParindent}{0pt}
+    \setlength{\parindent}{0pt}
+    \setlength{\parskip}{4pt}
 }
 \@tufte@reset@par
 
 % Paragraph indentation and separation for marginal text
-\renewcommand{\@tufte@margin@par}{%
-  \setlength{\RaggedRightParindent}{0pt}%
-  \setlength{\JustifyingParindent}{0pt}%
-  \setlength{\parindent}{0pt}%
-  \setlength{\parskip}{4pt}%
+\renewcommand{\@tufte@margin@par}{
+    \setlength{\RaggedRightParindent}{0pt}
+    \setlength{\JustifyingParindent}{0pt}
+    \setlength{\parindent}{0pt}
+    \setlength{\parskip}{4pt}
 }
 
-\title{
-    {\huge Appunti di}\\ 
-    Processo e Sviluppo\\
-    del Software
-}
-\author{Mattia Bolognini}
-\date{Ultima modifica: \today}
 
 \makeatletter
-\renewcommand{\maketitlepage}{%
-\begingroup%
-\setlength{\parindent}{0pt}
-{\fontsize{24}{24}\selectfont\textit{\@author}\par}
-\vspace{1.75in}{\fontsize{36}{54}\selectfont\@title\par}
-\vspace{0.5in}{\fontsize{14}{14}\selectfont\textsf{\smallcaps{\@date}}\par}
-\vfill{\fontsize{14}{14}\selectfont\textit{\@publisher}\par}
-\thispagestyle{empty}
-\endgroup
+\renewcommand{\maketitlepage}{
+    \begingroup
+        \setlength{\parindent}{0pt}
+            {\fontsize{24}{24}\selectfont\textit{\@author}\par}
+        \vspace{1.75in}
+            {\fontsize{36}{54}\selectfont\@title\par}
+        \vspace{0.5in}
+            {\fontsize{14}{14}\selectfont\textsf{\smallcaps{\@date}}\par}
+        \vfill{\fontsize{14}{14}\selectfont\textit{\@publisher}\par}
+        \thispagestyle{empty}
+    \endgroup
 }
 \makeatother
 
 \geometry{
-    %showframe, % for debugging purposes -- displays the margins
-	left=13mm, % left margin
-	textwidth=135mm, % main text block
-	marginparsep=8mm, % gutter between main text block and margin notes
-	marginparwidth=50mm % width of margin notes
+    %showframe,             % DEBUG ONLY -- displays the margins
+	left=13mm,              % left margin
+	textwidth=135mm,        % width of main text
+	marginparsep=8mm,       % gutter between main text block and margin notes
+	marginparwidth=50mm     % width of margin notes
 }
 \fontsize{10}{20}\selectfont
 
-%--------Package inclusions--------
-\usepackage{clrscode3e} % Pseudocode in the style of "Introduction to algorithms"
-\usepackage{minted} % Code highlighting for different programming languages
-\usepackage[activate={true,nocompatibility},final,tracking=true,kerning=true,spacing=true,factor=1100,stretch=10,shrink=10]{microtype}
-\usepackage{pgf,tikz,tikz-cd}
-\usepackage{amsmath,amsthm,amssymb,amsfonts} % Math packages
-\usepackage{relsize, xfrac} % Math utilities
-\usepackage{bussproofs} % Derivation tree
-\usepackage{optidef} % Write optimization problem
-\usepackage[italian]{babel}
-\usepackage{booktabs} % Makes prettier tables.
-\usepackage{multicol} % Small sections of multiple columns in documents and tables.
-\usepackage{units}
-\usepackage{fancyvrb} % Customization of the formatting of verbatim environments.
-\fvset{fontsize=\normalsize} % Use a smaller font for the verb environment.
-\usepackage{sectsty} % Customization of section commands
-\allsectionsfont{\normalfont \bfseries} % All sections centered, using the default font and small caps
+% chapter format
+\titleformat{\chapter}
+    {\huge\rmfamily\itshape\color{red}}             % format applied to label+text
+    {\llap{\colorbox{red}{\parbox{1.5cm}{\hfill\itshape\huge\color{white}\thechapter}}}}
+    {2pt}   % horizontal separation between label and title body
+    {}      % before the title body
+    []      % after the title body
+
+% section format
+\titleformat{\section}
+    {\normalfont\Large\itshape\color{orange}}       % format applied to label+text
+    {\llap{\colorbox{orange}{\parbox{1.5cm}{\hfill\color{white}\thesection}}}}
+    {1em}   % horizontal separation between label and title body
+    {}      % before the title body
+    []      % after the title body
+
+% subsection format
+\titleformat{\subsection}
+    {\normalfont\large\itshape\color{blue}}% format applied to label+text
+    {\llap{\colorbox{blue}{\parbox{1.5cm}{\hfill\color{white}\thesubsection}}}}
+    {1em}   % horizontal separation between label and title body
+    {}      % before the title body
+    []      % after the title body
+
+% ------------------------------------
+% |        GENERIC PACKAGES          |
+% ------------------------------------
+% Math
+\usepackage{amsmath,amsthm,amssymb,amsfonts}
+\usepackage{relsize, xfrac}
+
+% Pseudocode
+\usepackage{clrscode3e}         % Pseudocode as in "Introduction to algorithms"
+\usepackage{minted}             % Code highlighting
+
+% Hyperlinks in PDFs
+\usepackage{hyperref}
+
+% Lorem Ipsum text
+\usepackage{lipsum}
+
+% Images
 \usepackage{graphicx}
 \setkeys{Gin}{width=\linewidth,totalheight=\textheight,keepaspectratio}
 \graphicspath{/images}
-\usepackage{hyperref} % Allows hyperlinks in generated PDF file
-\usepackage{lipsum} % Lorem Ipsum text
-\usepackage{fancyhdr} % Custom headers and footers
-\pagestyle{fancyplain} % Makes all pages in the document conform to the custom headers and footers
-\fancyhead{} % No page header - if you want one, create it in the same way as the footers below
-\fancyfoot[L]{} % Empty left footer
-\fancyfoot[C]{} % Empty center footer
-\fancyfoot[R]{\thepage} % Page numbering for right footer
-\renewcommand{\headrulewidth}{0pt} % Remove header underlines
-\renewcommand{\footrulewidth}{0pt} % Remove footer underlines
-\setlength{\headheight}{13.6pt} % Customize the height of the header
+
+% Verb environment
+\usepackage{fancyvrb}           % Customization of verb environments.
+\fvset{fontsize=\normalsize}    % Use a smaller font for the verb environment.
+
+% Language
+\usepackage[italian]{babel}
+
+% Bibliography
+\usepackage{csquotes}
+\usepackage[
+    backend=biber,
+    style=alphabetic,
+    sorting=ynt
+]{biblatex}
+\addbibresource{bib/bibliography.bib}
+
+% Filter out some warning
+\usepackage{silence}
+  \WarningFilter*{latex}
+    {Marginpar on page \thepage\space moved}
+  \WarningFilter{biblatex}          % ONLY IF BIBLATEX DOES NOT USE IBID STYLE REF.
+    {Patching footnote}
+
+% IDK
+\usepackage{booktabs}               % Makes prettier tables.
+\usepackage{multicol}               % Small sections of multiple columns in
+                                    % documents and tables.
+
+\usepackage{bookmark}
+\usepackage[
+    activate={true,nocompatibility},
+    final,
+    tracking=true,
+    nopatch=footnote,
+    kerning=true,
+    spacing=false,
+    factor=1100,
+    stretch=10,
+    shrink=10
+]{microtype}
+
+\usepackage{pgf,tikz,tikz-cd}
+
+\usepackage{fancyhdr}               % Custom headers and footers.
+\pagestyle{fancyplain}              % Makes all pages in the document conform 
+                                    % to the custom headers and footers.
+\fancyhead{}                        % No page header - if you want one, create 
+                                    % it in the same way as the footers below.
+\fancyfoot[L]{}                     % Empty left footer.
+\fancyfoot[C]{}                     % Empty center footer.
+\fancyfoot[R]{\thepage}             % Page numbering for right footer.
+\renewcommand{\headrulewidth}{0pt}  % Remove header underlines.
+\renewcommand{\footrulewidth}{0pt}  % Remove footer underlines.
+\setlength{\headheight}{13.6pt}     % Customize the height of the header.
 \allowdisplaybreaks
 
-%--------Theorem Environments--------
+\usepackage{tabularx,environ} % For problem definition
+
+
+% ------------------------------------
+% |      THEOREM ENVIRONMENTS        |
+% ------------------------------------
+\newtheorem{thm}{Theorem}
+\newtheorem{cor}[thm]{Corollary}
+\newtheorem{prop}[thm]{Proposition}
+\newtheorem{lem}[thm]{Lemma}
+\newtheorem{conj}[thm]{Conjecture}
+\newtheorem{quest}[thm]{Question}
+\newtheorem{claim}{Claim}
 \newtheorem{property}{Proprietà}
 
-%theoremstyle{plain} --- default
 \theoremstyle{definition}
-\newtheorem{thm}{Teorema}
-\newtheorem{defn}[thm]{Definizione}
+\newtheorem{defn}[thm]{Definition}
 \newtheorem{defns}[thm]{Definitions}
 \newtheorem{con}[thm]{Construction}
 \newtheorem{exmp}[thm]{Example}
@@ -99,15 +182,6 @@
 \newtheorem{addm}[thm]{Addendum}
 \newtheorem{exer}[thm]{Exercise}
 
-
-\newtheorem{cor}[thm]{Corollary}
-\newtheorem{prop}[thm]{Proposition}
-\newtheorem{lem}[thm]{Lemma}
-\newtheorem{conj}[thm]{Conjecture}
-\newtheorem{quest}[thm]{Question}
-\newtheorem{claim}{Claim}
-
-
 \theoremstyle{remark}
 \newtheorem{rem}[thm]{Osservazione}
 \newtheorem{ans}[thm]{Answer}
@@ -115,7 +189,9 @@
 \newtheorem{warn}[thm]{Warning}
 \newtheorem{sch}[thm]{Scholium}
 
-%--------Command Definitions--------
+% ------------------------------------
+% |       COMMAND DEFINITIONS        |
+% ------------------------------------
 % Operators
 \newcommand{\Mod}[1]{\ (\text{mod}\ #1)}
 \newcommand{\N}{\mathbb{N}}
@@ -137,8 +213,84 @@
 % Shortened versions
 \newcommand{\tn}[1]{\textnormal{#1}}
 
-% Utilities for special chars
+% Other
+\DeclareMathOperator*{\argmin}{argmin}
+\DeclareMathOperator*{\argmax}{argmax}
 \newcommand{\upperAccE}{È \,}
+
+% ------------------------------------
+% |    DOCUMENT-SPECIFIC PACKAGES    |
+% ------------------------------------
+
+% ------------------------------------
+% |    DOCUMENT-SPECIFIC COMMANDS    |
+% ------------------------------------
+
+% Abbreviations for pattern matching
+\newcommand{\occ}{\tn{Occ}}
+\newcommand{\bwt}{\tn{BWT}}
+\newcommand{\lf}{\tn{LF}}
+
+% Cost function for approx algorithms
+\newcommand{\opt}{\tn{opt}}
+\newcommand{\appr}{\tn{A}}
+
+% ------------------------------------
+% |  DOCUMENT-SPECIFIC ENVIRONMENTS  |
+% ------------------------------------
+\makeatletter           % https://tex.stackexchange.com/a/199244/26355
+\newcolumntype{\expand}{}
+\long\@namedef{NC@rewrite@\string\expand}{\expandafter\NC@find}
+\NewEnviron{problem}[2][]{%
+    \def\problem@arg{#1}%
+    \def\problem@framed{framed}%
+    \def\problem@lined{lined}%
+    \def\problem@doublelined{doublelined}%
+    \ifx\problem@arg\@empty%
+        \def\problem@hline{}%
+    \else%
+        \ifx\problem@arg\problem@doublelined%
+        \def\problem@hline{\hline\hline}%
+        \else%
+        \def\problem@hline{\hline}%
+        \fi%
+    \fi%
+    \ifx\problem@arg\problem@framed%
+        \def\problem@tablelayout{|>{\bfseries}lX|c}%
+        \def\problem@title{\multicolumn{2}{|%
+        >{\raisebox{-\fboxsep}}%
+        p{\dimexpr\textwidth-4\fboxsep-2\arrayrulewidth\relax}%
+        |}{%
+            \textsc{\Large #2}%
+        }}%
+    \else
+        \def\problem@tablelayout{>{\bfseries}lXc}%
+        \def\problem@title{\multicolumn{2}{>%
+        {\raisebox{-\fboxsep}}%
+        p{\dimexpr\textwidth-4\fboxsep\relax}%
+        }{%
+            \textsc{\Large #2}%
+        }}%
+    \fi%
+    \bigskip\par\noindent%
+    \renewcommand{\arraystretch}{1.2}%
+    \begin{tabularx}{\textwidth}{\expand\problem@tablelayout}%
+        \problem@hline%
+        \problem@title\\[2\fboxsep]%
+        \BODY\\\problem@hline%
+    \end{tabularx}%
+    \medskip\par%
+}
+\makeatother
+
+
+% ------------------------------------
+% |         Main section             |
+% ------------------------------------
+
+\title{Processo e Sviluppo del Software}
+\author{Mattia Bolognini}
+\date{Ultima modifica: \today}
 
 
 \begin{document}
@@ -147,9 +299,9 @@
 
 \tableofcontents
 
-%\input{chapters/mvc}
-\input{chapters/obm}
-\input{chapters/agile_devops}
-\input{chapters/git}
+%\input{chap/mvc}
+\input{chap/obm}
+\input{chap/agile_devops}
+\input{chap/git}
 
 \end{document}

@@ -6,11 +6,11 @@ Come si vedrà, non tutti i problemi sono computabili, come l'\textit{halting pr
 
 \section{Macchine di Turing}
 \subsection*{La macchina di Turing}
-\subsubsection*{Cenni storici}
+\subsection*{Cenni storici}
 La nozione di algoritmo è stata sempre conosciuta e di facile comprensione: un algoritmo può essere infatti definito come una sequenza finita e ordinata di passi che porta, in un tempo finito, al risultato desiderato.
 Solo nell'ultimo secolo, però, sono stati definiti dei modelli che effettivamente descrivono formalmente la nozione di algoritmo. Queste nuove descrizioni formali sono state sviluppate principalmente per rispondere al problema della decisione (Entscheidungsproblem), introdotto da Hilbert nella sua famosa lista di problemi irrisolti al suo tempo nel campo dei fondamenti della matematica. Il problema chiede se è possibile definire una procedura automatica che, data una qualsiasi WFF della logica del primo ordine, stabilisce se la formula è deducibile all'interno della logica del primo ordine, ovvero è un teorema. Church e Turing hanno risposto negativamente alla domanda, introducendo rispettivamente il lambda calcolo e le macchine di Turing.
 
-\subsubsection*{Definizione formale}
+\subsection*{Definizione formale}
 Una macchina di Turing, formalmente, è una sestupla:
 \begin{center}
     $\langle \Sigma, \textnormal{B}, \textnormal{Q}, q_0, \textnormal{F}, \delta \rangle$
@@ -54,18 +54,18 @@ Una funzione di decisione  può anche essere rappresentata come il linguaggio di
     $L_D = \left\{ x \in \Sigma^* \; | \; f_D (x) = 1 \right\}$
 \end{center}
 Si può quindi affermare che si ha un'equivalenza tra i problemi (di decisione) e i linguaggi.
-\subsubsection*{Rappresentazione informale}
+\subsection*{Rappresentazione informale}
 Una macchina di Turing può essere vista come una \textit{macchina a stati finiti} deterministica operante su un \textit{nastro}, diviso in celle, di lunghezza infinita (e quindi memoria infinita); la macchina possiede, inoltre, una \textit{testina}, che punta ad una singola cella del nastro.
 \begin{figure}[h]
     \centering
-    \includegraphics[width=0.5\linewidth]{images/turing_machine.png}
+    \includegraphics[width=0.5\linewidth]{img/turing_machine.png}
     \caption{Rappresentazione informale della macchina di Turing}
     \label{fig:turing_machine}
 \end{figure}
 
 Per convenzione, d'ora in poi si considereranno solo macchine di Turing con nastro semi-infinito. Non si perde però capacità computazionale: qualsiasi macchina a nastro infinito può essere simulata con una macchina a nastro semi-infinito.
 
-\subsubsection*{Configurazione di una macchina di Turing e complessità}
+\subsection*{Configurazione di una macchina di Turing e complessità}
 Lo stato in cui si trova una macchina di Turing a un certo istante di tempo può
 essere descritto con la sua \textit{configurazione} (CID), ovvero la quadrupla:
 \begin{center}
@@ -106,7 +106,7 @@ La macchina di Turing è stata fin'ora definita su un singolo nastro (semi-infin
 In questo tipo di macchina, la transizione non dipende più, oltre che dallo stato corrente, da un solo simbolo di nastro: detto $k$ il numero di nastri, la funzione dipenderà dagli $k$ simboli puntati dalle $k$ testine, una per nastro. Le testine, inoltre, si possono muovere in modo completamente indipendente l'una dall'altra.
 \begin{figure}[h]
     \centering
-    \includegraphics[width=0.5\linewidth]{images/multitape_turing_machine.png}
+    \includegraphics[width=0.5\linewidth]{img/multitape_turing_machine.png}
     \caption{Macchina di Turing multinastro}
     \label{fig:multitape-turing-machine}
 \end{figure}
@@ -313,7 +313,7 @@ Il grado uscente di una macchina non deterministica è il numero massimo di conf
 
 \subsection*{Esempi}
 
-\subsubsection{Funzione di transizione della macchina che scrive "HELLO"}
+\subsection{Funzione di transizione della macchina che scrive "HELLO"}
 FINIRE
 La macchina di Turing che deve essere descritta si occuperà di scrivere sul suo unico nastro la stringa "HELLO".
 Il suo alfabeto di nastro è $\Sigma = \{ \triangleright , B, H, E, L, L, O \}$, mentre il suo nastro è semi-limitato a destra.\\
@@ -330,7 +330,7 @@ $\delta = \left\{
 (),
 \right\}$
 
-\subsubsection{Decidere il linguaggio $\mathbf{a^nb^nc^n}$ con una macchina di Turing a singolo nastro}
+\subsection{Decidere il linguaggio $\mathbf{a^nb^nc^n}$ con una macchina di Turing a singolo nastro}
 La decisione del linguaggio $a^nb^nc^n$ con una macchina di Turing a singolo nastro avviene in due fasi: nella prima viene controllato che la stringa di input abbia struttura $a^*b^*c^*$, mentre la seconda controlla effettivamente che essa sia nella forma $a^nb^nc^n$.
 L'utilizzo della sola seconda fase permetterebbe di accettare stringhe come $abcabc$, ovviamente non appartenente al linguaggio che si vuole riconoscere.
 
@@ -375,7 +375,7 @@ Fase 2:
 \end{enumerate}
 
 
-\subsubsection{Decidere il linguaggio $\mathbf{a^nb^nc^n}$ con una macchina di Turing multinastro SISTEMARE ITALIANO}
+\subsection{Decidere il linguaggio $\mathbf{a^nb^nc^n}$ con una macchina di Turing multinastro SISTEMARE ITALIANO}
 Un esempio di risoluzione di un problema tramite una macchina deterministica multinastro riguarda il linguaggio $a^nb^nc^n$.
 Si vuole verificare che la stringa di input scritta sul nastro abbia effettivamente questa struttura, e per farlo si usa una macchina multinastro con 3 nastri.
 Un algoritmo potrebbe essere il seguente:

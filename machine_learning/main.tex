@@ -1,90 +1,93 @@
 \documentclass[nobib, oneside, openany]{tufte-book}
-% nobib     = do not use package natbib, default in tufte-book. it conflicts with biblatex.
-% oneside   = no blank page between chapters and page do not move left or right based on the page number.
+% nobib     =   do not use package natbib, default in tufte-book. 
+%               it conflicts with biblatex.
+% oneside   =   no blank page between chapters and page do not move
+%               left or right based on the page number.
 % openany   = 
 
 % ------------------------------------
-% |     Geometry of the document     |
+% |            GEOMETRY              |
 % ------------------------------------
 \setcounter{tocdepth}{2}
 \setcounter{secnumdepth}{2}
 
-% Geometry of a generic page
 \makeatletter
 % Paragraph indentation and separation for normal text
-\renewcommand{\@tufte@reset@par}{%
-  \setlength{\RaggedRightParindent}{0pt}%
-  \setlength{\JustifyingParindent}{0pt}%
-  \setlength{\parindent}{0pt}%
-  \setlength{\parskip}{4pt}%
+\renewcommand{\@tufte@reset@par}{
+    \setlength{\RaggedRightParindent}{0pt}
+    \setlength{\JustifyingParindent}{0pt}
+    \setlength{\parindent}{0pt}
+    \setlength{\parskip}{4pt}
 }
 \@tufte@reset@par
 
 % Paragraph indentation and separation for marginal text
-\renewcommand{\@tufte@margin@par}{%
-  \setlength{\RaggedRightParindent}{0pt}%
-  \setlength{\JustifyingParindent}{0pt}%
-  \setlength{\parindent}{0pt}%
-  \setlength{\parskip}{4pt}%
+\renewcommand{\@tufte@margin@par}{
+    \setlength{\RaggedRightParindent}{0pt}
+    \setlength{\JustifyingParindent}{0pt}
+    \setlength{\parindent}{0pt}
+    \setlength{\parskip}{4pt}
 }
 
 
 \makeatletter
-\renewcommand{\maketitlepage}{%
-\begingroup%
-\setlength{\parindent}{0pt}
-{\fontsize{24}{24}\selectfont\textit{\@author}\par}
-\vspace{1.75in}{\fontsize{36}{54}\selectfont\@title\par}
-\vspace{0.5in}{\fontsize{14}{14}\selectfont\textsf{\smallcaps{\@date}}\par}
-\vfill{\fontsize{14}{14}\selectfont\textit{\@publisher}\par}
-\thispagestyle{empty}
-\endgroup
+\renewcommand{\maketitlepage}{
+    \begingroup
+        \setlength{\parindent}{0pt}
+            {\fontsize{24}{24}\selectfont\textit{\@author}\par}
+        \vspace{1.75in}
+            {\fontsize{36}{54}\selectfont\@title\par}
+        \vspace{0.5in}
+            {\fontsize{14}{14}\selectfont\textsf{\smallcaps{\@date}}\par}
+        \vfill{\fontsize{14}{14}\selectfont\textit{\@publisher}\par}
+        \thispagestyle{empty}
+    \endgroup
 }
 \makeatother
 
 \geometry{
-    %showframe, % for debugging purposes -- displays the margins
-	left=13mm, % left margin
-	textwidth=135mm, % main text block
-	marginparsep=8mm, % gutter between main text block and margin notes
-	marginparwidth=50mm % width of margin notes
+    %showframe,             % DEBUG ONLY -- displays the margins
+	left=13mm,              % left margin
+	textwidth=135mm,        % width of main text
+	marginparsep=8mm,       % gutter between main text block and margin notes
+	marginparwidth=50mm     % width of margin notes
 }
 \fontsize{10}{20}\selectfont
 
 % chapter format
-\titleformat{\chapter}%
-  {\huge\rmfamily\itshape\color{red}}% format applied to label+text
-  {\llap{\colorbox{red}{\parbox{1.5cm}{\hfill\itshape\huge\color{white}\thechapter}}}}% label
-  {2pt}% horizontal separation between label and title body
-  {}% before the title body
-  []% after the title body
+\titleformat{\chapter}
+    {\huge\rmfamily\itshape\color{red}}             % format applied to label+text
+    {\llap{\colorbox{red}{\parbox{1.5cm}{\hfill\itshape\huge\color{white}\thechapter}}}}
+    {2pt}   % horizontal separation between label and title body
+    {}      % before the title body
+    []      % after the title body
 
 % section format
-\titleformat{\section}%
-  {\normalfont\Large\itshape\color{orange}}% format applied to label+text
-  {\llap{\colorbox{orange}{\parbox{1.5cm}{\hfill\color{white}\thesection}}}}% label
-  {1em}% horizontal separation between label and title body
-  {}% before the title body
-  []% after the title body
+\titleformat{\section}
+    {\normalfont\Large\itshape\color{orange}}       % format applied to label+text
+    {\llap{\colorbox{orange}{\parbox{1.5cm}{\hfill\color{white}\thesection}}}}
+    {1em}   % horizontal separation between label and title body
+    {}      % before the title body
+    []      % after the title body
 
 % subsection format
-\titleformat{\subsection}%
-  {\normalfont\large\itshape\color{blue}}% format applied to label+text
-  {\llap{\colorbox{blue}{\parbox{1.5cm}{\hfill\color{white}\thesubsection}}}}% label
-  {1em}% horizontal separation between label and title body
-  {}% before the title body
-  []% after the title body
+\titleformat{\subsection}
+    {\normalfont\large\itshape\color{blue}}% format applied to label+text
+    {\llap{\colorbox{blue}{\parbox{1.5cm}{\hfill\color{white}\thesubsection}}}}
+    {1em}   % horizontal separation between label and title body
+    {}      % before the title body
+    []      % after the title body
 
 % ------------------------------------
-% |        Package inclusions        |
+% |        GENERIC PACKAGES          |
 % ------------------------------------
 % Math
 \usepackage{amsmath,amsthm,amssymb,amsfonts}
 \usepackage{relsize, xfrac}
 
 % Pseudocode
-\usepackage{clrscode3e}                       % Pseudocode in the style of "Introduction to algorithms"
-\usepackage{minted}                           % Code highlighting for different programming languages
+\usepackage{clrscode3e}         % Pseudocode as in "Introduction to algorithms"
+\usepackage{minted}             % Code highlighting
 
 % Hyperlinks in PDFs
 \usepackage{hyperref}
@@ -98,8 +101,8 @@
 \graphicspath{/images}
 
 % Verb environment
-\usepackage{fancyvrb}                         % Customization of the formatting of verbatim environments.
-\fvset{fontsize=\normalsize}                  % Use a smaller font for the verb environment.
+\usepackage{fancyvrb}           % Customization of verb environments.
+\fvset{fontsize=\normalsize}    % Use a smaller font for the verb environment.
 
 % Language
 \usepackage[italian]{babel}
@@ -107,47 +110,56 @@
 % Bibliography
 \usepackage{csquotes}
 \usepackage[
-backend=biber,
-style=alphabetic,
-sorting=ynt
+    backend=biber,
+    style=alphabetic,
+    sorting=ynt
 ]{biblatex}
 \addbibresource{bib/bibliography.bib}
 
 % Filter out some warning
 \usepackage{silence}
-  \WarningFilter*{latex}{Marginpar on page \thepage\space moved}
-  \WarningFilter{biblatex}{Patching footnote}           % This warning can be safely silenced if and only if biblatex does not use ibid style referencing.
-
-% Optimization problems
-\usepackage{optidef} % Write optimization problem
-
-% Derivation trees
-\usepackage{bussproofs}
+  \WarningFilter*{latex}
+    {Marginpar on page \thepage\space moved}
+  \WarningFilter{biblatex}          % ONLY IF BIBLATEX DOES NOT USE IBID STYLE REF.
+    {Patching footnote}
 
 % IDK
-\usepackage{booktabs}                         % Makes prettier tables.
-\usepackage{multicol}                         % Small sections of multiple columns in documents and tables.
+\usepackage{booktabs}               % Makes prettier tables.
+\usepackage{multicol}               % Small sections of multiple columns in
+                                    % documents and tables.
 
 \usepackage{bookmark}
-\usepackage[activate={true,nocompatibility},final,tracking=true,nopatch=footnote,kerning=true,spacing=false,factor=1100,stretch=10,shrink=10]{microtype}
-%\microtypecontext{spacing=nonfrench}
-\usepackage{fancyhdr} % Custom headers and footers
-\pagestyle{fancyplain} % Makes all pages in the document conform to the custom headers and footers
-\fancyhead{} % No page header - if you want one, create it in the same way as the footers below
-\fancyfoot[L]{} % Empty left footer
-\fancyfoot[C]{} % Empty center footer
-\fancyfoot[R]{\thepage} % Page numbering for right footer
-\renewcommand{\headrulewidth}{0pt} % Remove header underlines
-\renewcommand{\footrulewidth}{0pt} % Remove footer underlines
-\setlength{\headheight}{13.6pt} % Customize the height of the header
+\usepackage[
+    activate={true,nocompatibility},
+    final,
+    tracking=true,
+    nopatch=footnote,
+    kerning=true,
+    spacing=false,
+    factor=1100,
+    stretch=10,
+    shrink=10
+]{microtype}
+
+\usepackage{fancyhdr}               % Custom headers and footers.
+\pagestyle{fancyplain}              % Makes all pages in the document conform 
+                                    % to the custom headers and footers.
+\fancyhead{}                        % No page header - if you want one, create 
+                                    % it in the same way as the footers below.
+\fancyfoot[L]{}                     % Empty left footer.
+\fancyfoot[C]{}                     % Empty center footer.
+\fancyfoot[R]{\thepage}             % Page numbering for right footer.
+\renewcommand{\headrulewidth}{0pt}  % Remove header underlines.
+\renewcommand{\footrulewidth}{0pt}  % Remove footer underlines.
+\setlength{\headheight}{13.6pt}     % Customize the height of the header.
 \allowdisplaybreaks
 
+\usepackage{pgf,tikz,tikz-cd}
 
 
 % ------------------------------------
-% |      Theorem Environments        |
+% |      THEOREM ENVIRONMENTS        |
 % ------------------------------------
-%theoremstyle{plain} --- default
 \newtheorem{thm}{Theorem}
 \newtheorem{cor}[thm]{Corollary}
 \newtheorem{prop}[thm]{Proposition}
@@ -178,7 +190,7 @@ sorting=ynt
 
 
 % ------------------------------------
-% |       Command Definitions        |
+% |       COMMAND DEFINITIONS        |
 % ------------------------------------
 % Operators
 \newcommand{\Mod}[1]{\ (\text{mod}\ #1)}
@@ -196,6 +208,7 @@ sorting=ynt
 \newcommand{\sbra}[1]{\left[#1\right]}
 \newcommand{\cbra}[1]{\left\{#1\right\}}
 \newcommand{\norm}[1]{\left\lVert#1\right\rVert}
+\newcommand{\ang}[1]{\left\langle#1\right\rangle}
 
 % Shortened versions
 \newcommand{\tn}[1]{\textnormal{#1}}
@@ -204,10 +217,22 @@ sorting=ynt
 \DeclareMathOperator*{\argmin}{argmin}
 \DeclareMathOperator*{\argmax}{argmax}
 
+% ------------------------------------
+% |    DOCUMENT-SPECIFIC PACKAGES    |
+% ------------------------------------
 
+% Optimization problems
+\usepackage{optidef}
+
+% Derivation trees
+\usepackage{bussproofs}
 
 % ------------------------------------
-% |         Main section             |
+% |    DOCUMENT-SPECIFIC COMMANDS    |
+% ------------------------------------
+
+% ------------------------------------
+% |          MAIN SECTION            |
 % ------------------------------------
 
 \title{

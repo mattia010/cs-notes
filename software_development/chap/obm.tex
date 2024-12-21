@@ -46,7 +46,7 @@ I metodi offerti da UoW sono:
     \item rollback: al verificarsi di qualsiasi errore (come una discrepanza tra numeri di versione) o se desiderato dall'utente, permette di annullare tutti i cambiamenti effettuati durante la business interaction.
 \end{itemize}
 
-\subsubsection{Locking delle risorse nel database}
+\subsection{Locking delle risorse nel database}
 Quando la UoW deve rendere persistenti le modifiche, deve essere possibile applicare qualche tipo di lock alle risorse nel database che si vogliono manipolare., in modo tale da mantenere la consistenza del DB.
 Esistono quindi due approcci al problema:
 \begin{itemize}
@@ -55,7 +55,7 @@ Esistono quindi due approcci al problema:
     \item pessimistic locking: utlizzato quando la probabilità di generare un conflitto è alta. Una UoW che deve apportare una modifica a una risorsa acquisisce un lock su quella risorsa per tutto il tempo necessario al completamento della transazione. Eventuali altre UoW che vorranno accedervi non potranno farlo. Questo approccio, però, riduce la concorrenza.
 \end{itemize}
 
-\subsubsection{Policy di notifica dei cambiamenti}
+\subsection{Policy di notifica dei cambiamenti}
 Quando un oggetto in memoria viene modificato, la UoW associata alla sessione memorizza il cambiamento. Per farlo, però, essa deve essere a conoscenza dell'avvenuta modifica.
 Esistono quindi due approcci di notifica di una modifica alla UoW:
 \begin{itemize}
@@ -93,7 +93,7 @@ A ogni sessione è associata un'Entity Manager diversa.
 
 \begin{figure}[h]
     \centering
-    \includegraphics[width=1\linewidth]{images/entity_manager_factory.png}
+    \includegraphics[width=1\linewidth]{img/entity_manager_factory.png}
     \caption{Creazione di un'Entity Manager tramite una Entity Manager Factory.}
     \label{fig:ent_man_factory}
 \end{figure}
@@ -109,7 +109,7 @@ Un oggetto di una Entity Class può quindi trovarsi in due stati:
     Questo caso si verifica principalmente nei sistemi distribuiti, quando la macchina riceve un oggetto dalla rete.
 \end{itemize}
 
-\subsubsection{Operazioni offerte da una Entity Manager}
+\subsection{Operazioni offerte da una Entity Manager}
 Le principali operazioni offerte da una Entity Manager sono:
 \begin{itemize}
     \item \verb|persist|: rende persistenti le modifiche apportate agli oggetti managed. In realtà, le modifiche non vengono immediatamente rese persistenti, ma solo schedulate.
@@ -133,7 +133,7 @@ Le annotazioni sono molte. Le più importanti sono:
     \item \verb|@SecondaryTable(name="...", @pkJoinColumns(@PrimaryKeyJoinColumn(name="...")))|: l'oggetto è mappato in due tabelle del DB, il cui nome della prima è quello della Entity Class, il nome della seconda è invece quello specificato nell'annotazione. L'oggetto corrisponde quindi a una join delle due tabelle.
 \end{itemize}
 
-\subsubsection{Mappare la cardinalità delle relazioni}
+\subsection{Mappare la cardinalità delle relazioni}
 Le Entity Class possono essere in relazione tra loro, e ognuna di queste relazioni può avere una sua cardinalità.
 I quattro tipi di relazioni sono:
 \begin{itemize}

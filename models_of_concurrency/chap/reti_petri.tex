@@ -48,7 +48,7 @@ Graficamente, gli elementi di una rete di Petri sono rappresentati come:
         \forall x, y \in B \cup E, \preCond{x} = \preCond{y} \land \postCond{x} = \postCond{y} \rightarrow x = y
     \]
     \begin{marginfigure}[-5cm]
-        \includegraphics[width=1\linewidth]{images/reti_non_semplici.png}
+        \includegraphics[width=1\linewidth]{img/reti_non_semplici.png}
         \caption{Reti non semplici}
         \label{fig:reti_non_semplici}
     \end{marginfigure}
@@ -60,7 +60,7 @@ Graficamente, gli elementi di una rete di Petri sono rappresentati come:
         \forall e \in E, \preCond{e} \cap \postCond{e} = \emptyset
     \]
     \begin{marginfigure}[-1cm]
-        \includegraphics[width=0.4\linewidth]{images/rete_non_pura.png}
+        \includegraphics[width=0.4\linewidth]{img/rete_non_pura.png}
         \caption{Rete non pura.}
         \label{fig:rete_non_pura}
     \end{marginfigure}
@@ -162,7 +162,7 @@ Il comportamento di un sistema elementare $\Sigma = (N, c_{\tn{start}})$ può es
     Se un grafo dei casi $CG_{\Sigma}$ per un sistema elementare $\Sigma = (C_{\Sigma}, U_{\Sigma}, A, c_{\tn{start}})$ presenta gli archi $(c_1, U_1, c_2)$, $(c_2, U_2, c_3)$ e $(c_1, U_2, c_4)$, con $c_1, c_2, c_3, c_4 \in C_{\Sigma} \land U_1, U_2 \in U_{\Sigma} \land U_1 \cap U_2 = \emptyset$,\\
     allora sicuramente il sistema $\Sigma$ ammetterà i passi $(c_4, U_1, c_3)$ e $(c_1, U_1 \cup U_2, c_3)$.
     \begin{marginfigure}[1cm]
-        \includegraphics[width=1.05\linewidth]{images/diamond_property.png}
+        \includegraphics[width=1.05\linewidth]{img/diamond_property.png}
         \caption{Diamond property.}
         \label{fig:diamond_property}
     \end{marginfigure}
@@ -171,7 +171,7 @@ La step semantics, e quindi il grafo dei casi, ammette la concorrenza, ovvero am
 \upperAccE però possibile definire il comportamento del sistema $\Sigma$ descrivendo le sole sequenze di eventi possibili nel sistema, senza specificare quali eventi possono essere eseguiti in maniera concorrente. Questo tipo di semantica viene detta \textbf{interleaving}, e altro non è che una simulazione sequenziale non deterministica del sistema. La semantica a interleaving di un sistema elementare $\Sigma$ viene descritta tramite il grafo dei casi sequenziale $SCG_{\Sigma}$.
 
 \begin{marginfigure}
-    \includegraphics[width=0.60\linewidth]{images/grafo_casi_sequenziale.png}
+    \includegraphics[width=0.60\linewidth]{img/grafo_casi_sequenziale.png}
     \caption{Grafo dei casi sequenziale.}
     \label{fig:sequential_case_graph}
 \end{marginfigure}
@@ -204,7 +204,7 @@ La step semantics, e quindi il grafo dei casi, ammette la concorrenza, ovvero am
 \end{rem}
 
 \section{Situazioni particolari}
-\subsubsection{Contatto}
+\subsection{Contatto}
 \begin{defn}
     Siano $\Sigma = (B, E, F, c_{\tn{start}})$ un sistema elementare, $e \in E$ un evento e $c \in C_{\Sigma}$ una possibile configurazione di $\Sigma$, $(e, c)$ è un \textbf{contatto} sse:
     \[
@@ -232,12 +232,12 @@ La step semantics, e quindi il grafo dei casi, ammette la concorrenza, ovvero am
 \end{rem}
 
 \begin{marginfigure}[-10cm]
-    \includegraphics[width=1\linewidth]{images/contatto_complementare.png}
+    \includegraphics[width=1\linewidth]{img/contatto_complementare.png}
     \caption{Rimozione di un contatto tramite l'aggiunta dello stato complementare.}
     \label{fig:sistema_con_contatti}
 \end{marginfigure}
 
-\subsubsection{Conflitto}
+\subsection{Conflitto}
 \begin{defn}
     Siano $\Sigma = (B, E, F, c_{\tn{start}})$ un sistema elementare, $e_1, e_2 \in E$ due evento e $c \in C_{\Sigma}$ una possibile configurazione di $\Sigma$, $e_1$ ed $e_2$ sono in \textbf{conflitto} in $c$ sse:
     \[
@@ -254,31 +254,31 @@ La step semantics, e quindi il grafo dei casi, ammette la concorrenza, ovvero am
     \end{itemize}
 
     \begin{marginfigure}[-11cm]
-        \includegraphics[width=0.75\linewidth]{images/conflitto_avanti.png}
+        \includegraphics[width=0.75\linewidth]{img/conflitto_avanti.png}
     \caption{Conflitto in avanti.}
     \label{fig:conflitto_avanti}
     \end{marginfigure}
 
     \begin{marginfigure}[-3cm]
-        \includegraphics[width=0.75\linewidth]{images/conflitto_indietro.png}
+        \includegraphics[width=0.75\linewidth]{img/conflitto_indietro.png}
         \caption{Conflitto all'indietro.}
         \label{fig:conflitto_indietro}
     \end{marginfigure}
 \end{defn}
 
-\subsubsection{Confusione}
+\subsection{Confusione}
 La confusione si presenta in un sistema con conflitti in cui la struttura non permette di stabilire se, nel passaggio da una configurazione $c$ a una configurazione $c'$, è stato risolto un conflitto.
 
 \begin{figure}
     \centering
-    \includegraphics[width=0.5\linewidth]{images/confusione.png}
+    \includegraphics[width=0.5\linewidth]{img/confusione.png}
     \label{fig:confusione}
 \end{figure}
 In questo sistema non è possibile stabilire se, passando da $c$ a $c'$, sia stato risolto un conflitto tra $e_1$ ed $e_2$ o tra $e_2$ ed $e_3$.
 
 Un altro esempio di confusione si verifica nella mutua esclusione.
 
-\subsubsection{Sequenza}
+\subsection{Sequenza}
 Siano $\Sigma = (B, E, F, c_{\tn{start}})$ un sistema elementare, $e_1, e_2 \in E$ due eventi e $c \in C_{\Sigma}$ una possibile configurazione di $\Sigma$, $e_1$ ed $e_2$ sono in \textbf{sequenza} in $c$ sse:
 \[
     \canFire{c}{e_1}{} \land \lnot \canFire{c}{e_2}{} \land \canFire{\canFire{c}{e_1}{c'}}{e_2}
@@ -288,12 +288,12 @@ C'è quindi una dipendenza causale tra gli eventi $e_1$ ed $e_2$.
 
 \begin{figure}
     \centering
-    \includegraphics[width=0.5\linewidth]{images/sequenza.png}
+    \includegraphics[width=0.5\linewidth]{img/sequenza.png}
     \caption{Due eventi in sequenza.}
     \label{fig:eventi_sequenza}
 \end{figure}
 
-\subsubsection{Concorrenza}
+\subsection{Concorrenza}
 Siano $\Sigma = (B, E, F, c_{\tn{start}})$ un sistema elementare, $e_1, e_2 \in E$ due eventi e $c \in C_{\Sigma}$ una possibile configurazione di $\Sigma$, $e_1$ ed $e_2$ sono \textbf{concorrenti} in $c$ sse:
 \[
     \canFire{c}{\cbra{e_1, e_2}}{}
@@ -302,7 +302,7 @@ ovvero $\cbra{e_1, e_2}$ è un passo abilitato. Questo significa che i due event
 
 \begin{figure}
     \centering
-    \includegraphics[width=0.5\linewidth]{images/eventi_concorrenti.png}
+    \includegraphics[width=0.5\linewidth]{img/eventi_concorrenti.png}
     \caption{Due eventi concorrenti.}
     \label{fig:eventi_concorrenti}
 \end{figure}
@@ -310,7 +310,7 @@ ovvero $\cbra{e_1, e_2}$ è un passo abilitato. Questo significa che i due event
 \section{Processi non sequenziali e processi ramificati}
 Prima di poter spiegare cosa sono i processi non sequenziali e i processi ramificati, è necessario introdurre alcune nozioni.
 
-\subsubsection{Relazioni sugli elementi di una rete}
+\subsection{Relazioni sugli elementi di una rete}
 
 \begin{defn}
     Sia $N = (B, E, F)$ una rete, la \textbf{relazione di conflitto} $\# \subseteq B \cup E$ specifica quali coppie di elementi della rete $N$ sono causalmente dipendenti da un conflitto in avanti, ed è definita come:
@@ -370,7 +370,7 @@ Prima di poter spiegare cosa sono i processi non sequenziali e i processi ramifi
     In una rete causale, la relazione $\tn{co}$ non richiede che i due elementi non siano in conflitto in avanti, in quanto ciò è garantito dalla stessa definizione di rete causale.
 \end{rem}
 
-\subsubsection{Sottoinsiemi di elementi di una rete}
+\subsection{Sottoinsiemi di elementi di una rete}
 \begin{defn}
     Siano $N = (B, E, F)$ una rete e $(B \cup E, \le)$ un poset, $C \subseteq B \cup E$ è un \textbf{coset} sse:
     \[
@@ -439,7 +439,7 @@ Per definizione di rete di occorrenze, $\tn{past}(x)$ è sicuramente un insieme 
     Tutti gli elementi della rete che non appartengono nè a $\tn{past}(x)$ nè a $\tn{future}(x)$ possono essere eseguiti in maniera concorrente rispetto a $x$.
 \end{rem}
 
-\subsubsection{Processo ramificato}
+\subsection{Processo ramificato}
 \begin{defn}
     Una rete $N = (B, E, F)$ è una \textbf{rete di occorrenze} sse:
     \begin{itemize}
@@ -451,7 +451,7 @@ Per definizione di rete di occorrenze, $\tn{past}(x)$ è sicuramente un insieme 
 \end{defn}
 ???
 
-\subsubsection{Processo non sequenziale}
+\subsection{Processo non sequenziale}
 Una rete causale è un tipo particolare di rete di occorrenze, che non presenta alcun conflitto.\\
 Una \textbf{rete causale} è una tripla $N = (B, E, F)$ tale che \footnote[][-1cm]{L'ulteriore condizione presente nelle reti di occorrenza, ovvero che la relazione di conflitto sia irriflessiva, collassa nella prima condizione per le reti clausali: non avendo alcun conflitto, per la rete clausale vale $\# = \emptyset$.}:
 \begin{itemize}

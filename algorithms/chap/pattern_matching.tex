@@ -26,7 +26,7 @@ Dato un pattern $P$, l'automa a stati finiti che lo riconosce è definito come:
 \end{itemize}
 
 
-\subsubsection{Preprocessing del pattern: costruzione della funzione di transizione}
+\subsection{Preprocessing del pattern: costruzione della funzione di transizione}
 Durante la fase di preprocessing, l'algoritmo calcola la funzione di transizione.
 È però prima necessario introdurre la nozione di \textit{bordo di una stringa}. Sia $W = \langle w_1, \ldots, w_m \rangle$ una stringa, il bordo $B(W)$ è il suo più lungo prefisso proprio che è anche suo suffisso, ovvero una sottostringa $B = \langle b_1, \ldots, b_k \rangle$, $k < m$, tale che:
 \begin{center}
@@ -44,7 +44,7 @@ La cella di indici $(i, j)$ conterrà quindi $\delta (i, \sigma_j)$, dove $\sigm
 
 Esiste un algoritmo per il riempimento della tabella, di complessità $O(|P| \times |\Sigma|)$, che calcola induttivamente i valori della riga di indice $i$ a partire da quelli contenuti nella riga $i-1$ (non visto a lezione). 
 
-\subsubsection{Scansione del testo}
+\subsection{Scansione del testo}
 La scansione del testo è molto semplice, e viene effettuata utilizzando la tabella definita nella fase di preprocessing.
 
 Detto $i$ lo stato corrente dell'automa, e $\sigma$ il simbolo ricevuto in input, allora l'automa passerà nello stato $\delta (i, \sigma)$, contenuto nella cella di indici $(i, j)$ della tabella, con $j$ tale che $\sigma_j = \sigma$.
@@ -64,7 +64,7 @@ L'algoritmo di Knuth-Morris-Pratt (KMP) è un algoritmo di string matching esatt
 
 Di base, KMG si comporta come l'automa a stati finiti, ma implementa alcune tecniche che permettono uno spostamento più efficiente della finestra e di evitare di ricontrollare il pattern dalla prima posizione a ogni spostamento della finestra.
 
-\subsubsection{Preprocessing del pattern: calcolo della prefix function}
+\subsection{Preprocessing del pattern: calcolo della prefix function}
 Durante la fase di preprocessing, l'algoritmo analizza il pattern e calcola la \textit{prefix function} (detta anche funzione di fallimento) $\varphi$, una funzione che permetterà di calcolare efficientemente, in caso di fallimento, la nuova posizione di inizio della finestra e la posizione del pattern da cui riprendere il confronto.
 
 In particolare, la prefix function specifica, per ogni posizione $j$ del pattern, come l'algoritmo deve comportarsi quando $P[j]$ è il simbolo del pattern a causare il mismatch, supponendo che $P[1:j-1]$ non abbia generato fallimenti di match per la finestra corrente.
@@ -83,7 +83,7 @@ Dovendo calcolare e memorizzare un valore per ogni posizione del pattern e per l
     Complessità spaziale: $O(|P|)$
 \end{center}
 Di conseguenza, il calcolo della prefix function è più efficiente del calcolo della funzione di transizione dell'automa a stati finiti, che richiede, invece, tempo $O(|\Sigma| \cdot |P|)$.
-\subsubsection{Scansione del testo}
+\subsection{Scansione del testo}
 La scansione del testo, una volta calcola la prefix function, è molto semplice da effettuare.
 
 Siano $i$ la posizione di inizio della finestra corrente, $j$ la posizione all'interno del pattern corrente, e $P[1:j-1]$ il prefisso del pattern per cui si ha match esatto con i primi $j-1$ caratteri della finestra corrente.
@@ -138,7 +138,7 @@ La scansione ha complessità lineare $\Theta(n)$. Le costanti di crescita sono p
 L'algoritmo di Baeza-Yates e Gonnet (BYG) è un algoritmo di string matching esatto basato sul paradigma Shift-And.
 Esso può essere applicato sse la lunghezza del pattern è minore o uguale alla lunghezza della word del calcolatore che lo implementa, in quanto devono essere eseguite operazioni bit a bit su parole di lunghezza pari a quella del pattern.
 
-\subsubsection{Word di bit e operazioni bit a bit}
+\subsection{Word di bit e operazioni bit a bit}
 Per poter capire l'algoritmo, è necessario introdurre il concetto di word di bit: una word è un gruppo di bit trattato come un'unità, rappresentante un valore di un certo tipo.
 Le operazioni su word hanno complessità costante $O(1)$ e sfruttano il $bit-parallelism$: il processore, infatti, applica la stessa operazione a tutti i bit della word contemporaneamente, non sequenzialmente.\\
 D'ora in poi, l'indicizzazione delle posizioni di una word partirà da sinistra e inizierà da 1.
@@ -174,7 +174,7 @@ Le principali operazioni bit a bit su word sono:
     Per generare questa maschera, definisco la stringa $00\ldots01$ ed eseguo $|P|- 1$ operazioni di LSHIFT su essa.
 \end{itemize}
 
-\subsubsection{Preprocessing del pattern: calcolo delle parole di occorrenza}
+\subsection{Preprocessing del pattern: calcolo delle parole di occorrenza}
 La prima fase eseguita dal Baeza-Yates è quella di preprocessing, in cui viene analizzato il pattern e vengono generate le \textit{parole di occorrenza}.
 Sia $\Sigma$ l'alfabeto dei possibili simboli, allora dovranno essere calcolate $|\Sigma|$ parole di occorrenza, ognuna associata a un certo simbolo e di lunghezza pari a $|P|$, con $P$ pattern.
 Di conseguenza, la memoria richiesta per memorizzare tutte le parole è pari a $O(|\Sigma| \cdot |P|)$.
@@ -201,7 +201,7 @@ La fase di preprocessing ha complessità:
 \end{center}
 $O(|\Sigma|)$ deriva dall'inizializzazione delle $|\Sigma|$ parole (l'inizializzazione di una singola parola è costante), mentre $O(|P|)$ è il tempo richiesto per valutare tutte le celle del pattern.
 
-\subsubsection{Scansione del testo}
+\subsection{Scansione del testo}
 La scansione del testo non prevede confronti espliciti tra simboli del testo e simboli del pattern, ma è basata su \textit{confronti impliciti}.
 
 Per ogni posizione $i$ del testo, viene calcolata la parola $D_i$, di lunghezza $|P|$, che contiene informazioni riguardo 
@@ -320,7 +320,7 @@ Ciascun algoritmo è quindi consigliato nelle seguenti situazioni:
 L'algoritmo di Wu e Manber si può considerare un'estensione dell'algoritmo di Baeza-Yates: anch'esso, infatti, adotta il bit-parallelism ed è basato sul paradigma shift-and.
 WM riceve in input un testo $T, |T| = n$, un pattern $P, |P|=m$ e una soglia di errore $k$, e restituisce tutte le posizioni $i$ del testo che sono fine di un'occorrenza approssimata.
 
-\subsubsection{Preprocessing del pattern: calcolo delle parole di occorrenza}
+\subsection{Preprocessing del pattern: calcolo delle parole di occorrenza}
 La prima fase eseguita dal Wu-Manber è quella di preprocessing, in cui viene analizzato il pattern e vengono generate le parole di occorrenza. Sia $\Sigma$ l'alfabeto dei possibili simboli, allora dovranno essere calcolate $|\Sigma|$ parole di occorrenza, ognuna associata a un certo simbolo e di lunghezza pari a $|P|$.
 Di conseguenza, la memoria richiesta per memorizzare tutte le parole è pari a $O(|\Sigma| \cdot |P|)$.
 
@@ -346,7 +346,7 @@ La fase di preprocessing ha complessità:
 \end{center}
 $O(|\Sigma|)$ deriva dall'inizializzazione delle $|\Sigma|$ parole (l'inizializzazione di una singola parola è costante), mentre $O(|P|)$ è il tempo richiesto per valutare tutte le celle del pattern.
 
-\subsubsection{Scansione del testo}
+\subsection{Scansione del testo}
 La scansione del testo non prevede confronti espliciti tra simboli del testo e simboli del pattern, ma è basata su confronti impliciti.
 
 Viene innanzitutto introdotto un nuovo indice $h, 0 \le h \le k$, che indica il numero di errori per una certa occorrenza.
@@ -470,7 +470,7 @@ L'ordine lessicografico è una relazione d'ordine largo totale sulle stringhe $w
 \end{center}
 In pratica, il primo simbolo diverso tra le due stringhe a partire da sinistra determina l'ordine lessicografico delle due stringhe che si stanno confrontando.
 
-\subsubsection{Preprocessing del testo: costruzione del suffix array}
+\subsection{Preprocessing del testo: costruzione del suffix array}
 L'ordinamento lessicografico, nell'algoritmo basato su suffix tree, verrà usato per ordinare tutti i suffissi del testo.
 Una volta ordinati, viene definito un vettore $A$ di dimensione $n$, ovvero di dimensione uguale al testo, che conterrà gli indici dei suffissi, ovvero le loro posizioni di partenza, ordinati in base all'ordinamento lessicografico dei suffissi a cui fanno riferimento.
 Se $A[i] = j$, allora l'$i$-esimo suffisso che compare nell'ordinamento lessicografico è quello che inizia nella posizione di indice $j$ nel testo, ovvero $T[j:]$.
@@ -484,7 +484,7 @@ Si vedrà più avanti, però, che un indice può essere mantenuto compresso in m
 
 La costruzione del suffix array, qui non vista, può essere fatta in tempo lineare $O(n)$, tramite la costruzione di Karkkainen and Sanders (Simple Linear Work Suffix Array Construction, 2003).
 
-\subsubsection{Scansione del testo}
+\subsection{Scansione del testo}
 Un pattern ha un'occorrenza esatta nel testo sse è prefisso di almeno uno dei suoi suffissi.
 Di conseguenza, si potrebbe pensare di effettuare un controllo per ogni possibile suffisso del testo, ma questo porterebbe a una complessità pari a $O(m \cdot n)$.
 Si può però osservare che tutte le occorrenze esatte di un pattern avvengono per suffissi che compaiono consecutivamente nell'ordinamento lessicografico.
@@ -526,7 +526,7 @@ La complessità per trovare tutte le occorrenze una volta trovata una singola oc
 
 Se quindi si vogliono cercare tutte le occorrenze, la complessità è pari a $O(m \log_2 n + n)$.
 
-\subsubsection{Problemi}
+\subsection{Problemi}
 Il suffix array, come già detto, porta a vantaggi in termini di memoria occupata sse $\log_2 |\Sigma| \ge \log_2 n$. Questo caso però si verifica raramente, proprio perchè l'obiettivo delle strutture dati di indicizzazione è quello di trattare testi di grandi dimensioni.
 
 Inoltre, la scansione in tempo $O(m \log_2 n)$ può essere migliorata in altri algoritmi, in modo da ottenere una complessità pari a $O(m)$.
@@ -540,7 +540,7 @@ Inoltre, la scansione in tempo $O(m \log_2 n)$ può essere migliorata in altri a
     \end{itemize}
 \end{defn}
 
-\subsubsection{Preprocessing del testo: costruzione della BWT}
+\subsection{Preprocessing del testo: costruzione della BWT}
 \begin{defn}
     Una \textbf{\textit{q}-rotazione} del testo $T$ è la stringa definita come:
     \[
@@ -566,7 +566,7 @@ La BWT "in chiaro" ha dimensione pari alla dimensione del testo $T$. Essa però 
 Esempio: la stringa $\sigma \sigma \sigma \alpha \alpha \sigma$ verrà memorizzata come $\sigma : 3 \; \alpha : 2 \; \sigma : 1$.
 La BWT compressa occupa quindi meno spazio in memoria rispetto al testo originale $T$, e si può quindi definire come una struttura dati succinta.
 
-\subsubsection{Ricostruzione del testo: algoritmo ingenuo}
+\subsection{Ricostruzione del testo: algoritmo ingenuo}
 La ricostruzione del testo naive sfrutta la $\bwt(T)$ e la prima colonna della matrice delle rotazioni ordinate lessicograficamente, appositamente ricostruita ordinando tutti i simboli contenuti nella $\bwt(T)$.\\
 Siano $F$ la prima colonna e $L$ la $\bwt(T)$, ovvero l'ultima colonna della matrice. Si può affermare che l'$i$-esimo elemento di $L$ è predecessore dell'$i$-esimo elemento di $F$, ovvero $L[i] \, F[i]$ è una stringa che compare sicuramente nel testo originale.
 
@@ -599,7 +599,7 @@ Questa struttura dati prende il nome di FM-index (METTERE CITAZIONE), e viene co
 L'FM-index altro non è che la trasformata $\bwt(T)$, a cui però vengono affiancate due nuove funzioni: $\tn{C}$ e $\occ$.
 Nella prossima sottosezione verrà spiegato cosa calcolano queste funzioni e perchè sono utili nella ricostruzione del testo originale.
 
-\subsubsection{Preprocessing del testo: costruzione delle funzioni ausiliarie}
+\subsection{Preprocessing del testo: costruzione delle funzioni ausiliarie}
 Per capire cosa calcolane le funzioni ausiliarie e perchè lo fanno è necessario prima enunciare due proprietà che valgono per la BWT.\\
 \begin{property}
     $\bwt(T)[i]$ è predecessore di $T[A[i]]$. Di conseguenza, nel testo compare sicuramente la stringa:
@@ -623,7 +623,7 @@ $\occ (i, \sigma)$ restituisce, invece, il numero di occorrenze del simbolo $\si
 \tn{C}: \Sigma \rightarrow \{ 0, \ldots, n-1 \} \quad \occ: \{ 1, \ldots, n \} \times \Sigma \rightarrow \{ 0, \ldots, n \}.
 \]
 
-\subsubsection{Ricostruzione del testo}
+\subsection{Ricostruzione del testo}
 Ricostruire il testo è possibile grazie alla BWT, alle funzioni $\tn{C}$ e $\occ$ e alle proprietà di cui gode la BWT.
 Si comincia dall'ultimo simbolo del testo, ovvero \$, che si trova nella prima posizione della colonna $F$. 
 Per la prima proprietà, il simbolo precedente a \$ è $L[1]$.

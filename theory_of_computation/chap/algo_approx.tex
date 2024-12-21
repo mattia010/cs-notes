@@ -61,7 +61,7 @@ I problemi di ottimizzazione approssimati, così come i problemi di decisione, p
 
 \subsection{Esempi}
 \subsection*{Vertex Cover}
-\subsubsection{Algoritmo $2$-approssimante per Vertex Cover}
+\subsection{Algoritmo $2$-approssimante per Vertex Cover}
 L'algoritmo $2$-approssimante per il problema Vertex Cover è un algoritmo greedy che trova la copertura $C$ di un grafo $G$ calcolando il \textbf{matching massimale} \footnote{Il matching massimale di un grafo è l'insieme di archi senza vertici in comune che ha cardinalità massima.} di $G$. 
 
 Per costruire il matching massimale, l'algoritmo considera tutti gli archi presenti in $E$. Estrae quindi un arco $(u,v)$ in maniera casuale, andando poi ad aggiungere i suoi estremi $u$ e $v$ al matching massimale. Rimuove poi da $E$ tutti gli archi cui almeno un estremo è $u$ o $v$. L'algoritmo itera fino a quando $E$ non è vuoto.
@@ -171,7 +171,7 @@ Il Travelling Salesman Problem metrico è un tipo particolare di Travelling Sale
 Travelling Salesman Problem metrico, al contrario del Travelling Salesman Problem simmetrico generico, ammette un algoritmo di approssimazione $\epsilon$-approssimante. Uno dei migliori algoritmi di approssimazione conosciuti per TSP metrico è l'algoritmo di Christofides, $\frac{3}{2}$-approssimante.
 Esiste però un algoritmo più semplice e abbastanza intuitivo $2$-approssimante.
 
-\subsubsection{Algoritmo $2$-approssimante per TSP metrico}
+\subsection{Algoritmo $2$-approssimante per TSP metrico}
 L'algoritmo $2$-approssimante per TSP metrico qui descritto prevede di costruire un Minimum Spanning Tree \footnote{Il Minimum Spanning Tree di un grafo è un albero che copre tutti i nodi del grafo ed ha costo minimo.} per il grafo, per poi costruire il ciclo Hamiltoniano a partire dal MST.
 
 Innanzitutto bisogna trovare una relazione tra il costo del MST trovato, ovvero il suo peso, e il costo del ciclo Hamiltoniano ottimo del grafo $G$, ovvero il suo costo.
