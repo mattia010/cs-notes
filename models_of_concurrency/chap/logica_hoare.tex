@@ -1,32 +1,61 @@
 \chapter{Logica di Hoare}
 \section{Definizione della logica}
-La logica di Hoare è una logica utilizzata per dimostrare la correttezza di programmi sequenziali imperativi.
+La logica di Hoare è una logica utilizzata per dimostrare la correttezza di
+programmi sequenziali imperativi. Come tutte le logiche, la logica di Hoare
+ha una propria sintassi, una propria semantica e un proprio apparato deduttivo,
+che permette di ottenere nuove formule ben formute.
+In particolare, la logica di Hoare si basa sul concetto di tripla, che definisce
+quali proprietà debbano essere vere prima e dopo l'esecuzione del programma
+considerato.
 
-Si basa sul concetto di tripla:
+Sia $V$ l'insieme delle variabili utilizzare dal programma di cui si vuole
+dimostrare la correttezza.
+$\sigma: V \rightarrow \mathbb{Z}$ è la funzione che assegna
+a ogni variabile un valore intero\footnote{Non si perde di generalità
+considerando sole variabili intere.}. Di conseguenza, si può dire
+che la funzione $\sigma$ definisce lo \textbf{stato della memoria},
+ovvero i valori assunti dalle variabili, i quali risiedono in memoria.
+Una formula della logica proposizionale è vera in uno stato della memoria
+(definito da una certa funzione $\sigma$) sse la funzione $\sigma$
+considerata assegna un valore alle variabili coinvolte nella formula tale
+che essa risulti soddisfatta.
+
+Come già detto, la logica di Hoare si basa sul concetto di tripla:
 \begin{center}
     $\Hoaretriple{\alpha}{C}{\beta}$
 \end{center}
 dove:
 \begin{itemize}
-    \item $\alpha$, detta precondizione, è una WFF della logica proposizionale che deve essere vera sullo stato della memoria prima di eseguire $C$;
+    \item $\alpha$, detta precondizione, è una WFF della logica proposizionale
+    che deve essere vera sullo stato della memoria prima di eseguire $C$;
     \item $C$, detto comando, è il codice che deve essere eseguito;
-    \item $\beta$, detta post-condizione, è una WFF della logica proposizionale che deve essere vera sullo stato della memoria dopo l'esecuzione di $C$.
+    \item $\beta$, detta post-condizione, è una WFF della logica proposizionale
+    che deve essere vera sullo stato della memoria dopo l'esecuzione di $C$.
 \end{itemize}
 Di conseguenza una tripla di questo tipo viene letta come:
 \begin{center}
-    \textit{Se $\alpha$ è vera sullo stato della memoria prima di eseguire $C$ e $C$ termina, allora $\beta$ deve essere vero per lo stato della memoria dopo l'esecuzione di $C$.}
+    \textit{Se $\alpha$ è vera sullo stato della memoria prima di eseguire $C$
+    e $C$ termina, allora $\beta$ deve essere vero per lo stato della memoria
+    dopo l'esecuzione di $C$.}
 \end{center}
-Se si dimostra questa affermazione, allora il programma \tn{C} è corretto.
+Se si dimostra questa affermazione, allora il programma \tn{C} considerato
+risulta corretto.
 
-Un linguaggio di programmazione, per essere NP-completo, deve poter:
-\begin{itemize}
-    \item assegnare un valore a una variabile;
-    \item modificare il flusso di esecuzione del programma;
-    \item poter iterare una o più isruzioni.
-\end{itemize}
-La logica di Hoare è NP-completa, perchè possiede un'istruzione di assegnamento, un'istruzione di scelta, e un'istruzione di iterazione. 
 
-Per definire la struttura valida di un programma nella logica di Hoare, è necessario prima definire l'insieme $E$ delle espressioni aritmetiche e l'insieme $B$ delle formule booleane.\\
+\subsection*{Sintassi}
+La sintassi della logica considera come formule valide tutte le triple
+definite come
+\[
+    \Hoaretriple{p}{C}{q}
+\]
+dove $p$ è la precondizione del programma,
+$C$ è un programma valido secondo la logica di Hoare, e $q$ è la postcondizione
+del programma. $p$ e $q$ sono formule ben formate della logica proposizionale.
+
+Per definire quali programmi sono effettivamente considerati validi, però,
+è prima necessario definire l'insieme $E$ delle espressioni aritmetiche
+e l'insieme $B$ delle formule booleane.
+
 Grammatica delle espressioni aritmetiche:
 \begin{itemize}
     \item $\forall v \in V$ (insieme delle variabili), $v \in E$;
@@ -40,7 +69,9 @@ Grammatica delle espressioni booleane:
     \item $\forall e_1, e_2 \in E$, $(e_1 < e_2), (e_1 = e_2), (e_1 != e_2), (e_1 \le e_2) \in B$.
 \end{itemize}
 
-Sia $C$ l'insieme dei programmi (detti comandi) validi della logica di Hoare, allora la grammatica per $C$ è:
+Si può ora definire l'insieme dei programmi validi nella logica di Hoare.
+Sia $C$ l'insieme dei programmi (detti comandi) validi della logica di Hoare,
+allora la grammatica per $C$ è:
 \begin{itemize}
     \item istruzione di skip $\in C$:
     \begin{center}
@@ -64,8 +95,13 @@ Sia $C$ l'insieme dei programmi (detti comandi) validi della logica di Hoare, al
     \end{center}
 \end{itemize}
 
-L'apparato deduttivo contiene tutte le regole di inferenza, che permettono di derivare nuove triple valide a partire da triple già presenti.
-Viene utilizzato per dimostrare la correttezza di un programma. Tutte le regole di inferenza sono corrette, ovvero se le triple premesse sono dimostrate e si può derivare da esse una nuova tripla tramite una regola, allora la tripla derivata è dimostrata.
+\subsection*{Apparato deduttivo}
+L'apparato deduttivo contiene tutte le regole di inferenza, che permettono di
+derivare nuove triple valide a partire da triple già presenti e di
+dimostrare la correttezza di un programma.
+Tutte le regole di inferenza sono corrette, ovvero se le triple
+premesse sono dimostrate e si può derivare da esse una nuova tripla
+tramite una regola, allora la tripla derivata è dimostrata.
 
 \begin{itemize}
     \item regola della sequenza:
@@ -114,50 +150,150 @@ Viene utilizzato per dimostrare la correttezza di un programma. Tutte le regole 
             \UnaryInfC{$\Hoaretriple{q[\sfrac{E}{x}]}{x:=E}{q}$}
         \end{prooftree}
     \end{center}
-    dove $\cbra{q}$ è un WFF che può contenere la variabile $x$, mentre $\cbra{q[\sfrac{E}{x}]}$ è l'espressione $q$ in cui però ogni occorrenza di $x$ è stata sostituita con l'espressione $E$.
-
-    La logica ammette anche casi in cui l'espressione $E$ contenga a sua volta la stessa variabile su cui si sta procedendo con l'assegnamento, in questo caso $x$  
+    dove $\cbra{q}$ è un WFF che può contenere la variabile $x$, mentre
+    $\cbra{q[\sfrac{E}{x}]}$ è la formula $q$ in cui però ogni occorrenza
+    di $x$ è stata sostituita con l'espressione $E$.
     \footnote{
-        Esempio di derivazione della pre-condizione in cui l'espressione contiene a sua volta la variabile:\\
+        Esempio di derivazione della pre-condizione in cui l'espressione
+        contiene a sua volta la variabile:\\
         $\Hoaretriple{q[\sfrac{i+1}{i}]}{i = i + 1}{s=x^i}$\\
-        $\cbra{q[\sfrac{i+1}{i}]} = \cbra{s=x^{i+1}}$\\
+        $q[\sfrac{i+1}{i}] = s=x^{i+1}$\\
         $\Hoaretriple{s=x^{i+1}}{i = i + 1}{s=x^i}$
     }.
-    
+
     \item regola di iterazione (per sola correttezza parziale):
     \begin{center}
         \begin{prooftree}
-            \AxiomC{$\Hoaretriple{\alpha \land \beta}{C}{\alpha \land \tn{def}(E)}$}
-            \UnaryInfC{$\Hoaretriple{\alpha \land \tn{def}(E)}
+            \AxiomC{$\Hoaretriple{\text{inv} \land \beta}{C}{\text{inv}}$}
+            \UnaryInfC{$\Hoaretriple{\text{inv}}
                                     {\tn{while } \beta \tn{ do } C \tn{ endwhile}}
-                                    {\alpha \land \tn{¬}B}$}
+                                    {\text{inv} \land \tn{¬}B}$}
         \end{prooftree}
     \end{center}
-    $\alpha$ è una WFF vera prima dell'esecuzione di $W$ e a seguito di qualsiasi iterazione, e prende il nome di \textbf{invariante di ciclo}.
+    $\text{inv}$ è una WFF che risulta vera prima dell'esecuzione di $W$
+    e a seguito di qualsiasi iterazione. Per questo motivo, prende il
+    nome di \textbf{invariante di ciclo}.
 \end{itemize}
+
+\subsection*{Correttezza e completezza della logica di Hoare}
+\marginnote{Un linguaggio è Turing-completo sse è dotato di un'istruzione
+di assegnamento, un'istruzione di scelta, e un'istruzione iterativa.
+La logica di Hoare presente tutti questi tipi di istruzioni, ed è
+quindi Turing-completa.}
+La logica di Hoare è corretta, ovvero ogni tripla derivabile a partire
+da triple dimostrate è a sua volta una tripla dimostrata.
+Essa non risulta però completa, ovvero se una tripla è dimostrabile, non
+è detto che sia derivabile. Questo è dovuto al fatto che la logica di Hoare
+è più potente dell'aritmetica di Peano, e per il teorema di Godel, una logica
+di questo tipo non può essere contemporaneamente corretta e completa.
+Se, però, tutte le formule vere dell'aritmetica di Peano vengono assunte
+come assiomi della logica di Hoare, allora la logica di Hoare risulta
+completa. Per questo si dice che la logica di Hoare è parzialmente completa.
 
 \section{Dimostrazione di correttezza}
-Dimostrare la correttezza di un programma (imperativo) usando la logica di Hoare significa dimostrare semplicemente la validità di una tripla $\Hoaretriple{p}{C}{q}$ usando l'apparato deduttivo della logica, dove $C$ è il programma da dimostrare, $\cbra{q}$ è la WFF che esprime ciò che il programma dovrebbe fare (il risultato atteso in funzione degli input), mentre $\cbra{p}$ è la WFF che esprime dei vincoli sui valori di input che si assumono veri prima dell'esecuzione del programma. La dimostrazione della correttezza di una tripla si divide in:
-\begin{itemize}
-    \item dimostrazione di \textbf{correttezza parziale}: viene dimostrata la derivabilità della tripla
-    \footnote{La derivabilità implica la correttezza della tripla, in quanto la logica di Hoare è una logica corretta. La logica di Hoare non è però completa, in quanto più potente dell'aritmetica di Peano (vedi i teoremi di Godel).}.
-    \item dimostrazione di \textbf{correttezza totale}: viene dimostrata sia la derivabilità della tripla che la terminazione di eventuali istruzioni di iterazione.
-\end{itemize}
-\begin{defn}
-    Una \textbf{variante} di ciclo è un'espressione aritmetica $E$ tale per cui:
-    \begin{itemize}
-        \item $\tn{inv} \rightarrow E \ge 0$
-        \item $\Hoaretriple{\tn{inv} \land \beta \land E = k \land E > 0}{C}{\tn{inv} \land E < k}$ \footnote{$k$ è una variabile di appoggio utilizzata per memorizzare il valore di $E$ prima dell'esecuzione di $C$, in modo da poterlo confrontare con il nuovo valore di $E$ al termine dell'esecuzione di $C$.} è una tripla derivabile, e quindi il valore assunto da $E$ diminuisca a seguito di ogni esecuzione di $C$.
-    \end{itemize}
-\end{defn}
-Riuscire a trovare una variante per un'istruzione di iterazione implica la correttezza totale dell'istruzione di iterazione.
+Dimostrare la correttezza di un programma (imperativo) usando la logica di
+Hoare significa dimostrare semplicemente la validità di una tripla
+$\Hoaretriple{p}{C}{q}$ usando l'apparato deduttivo della logica, dove
+$C$ è il programma di cui si vuole dimostrare la correttezza.
+In particolare, dimostrare la tripla $\Hoaretriple{p}{C}{q}$ significa
+poter costruire una tripla valida $\Hoaretriple{p'}{C}{q}$, a partire dai soli comando e postcondizione ed usando
+le regole di inferenza, in modo che $p' \rightarrow p$.
 
+La dimostrazione di un programma inizia dalla sua ultima istruzione:
+si cerca infatti di trovare una precondizione tale che la tripla
+che coinvolge la sola ultima istruzione e la postcondizione data sia valida.
+Una volta individuata questa precondizione, questo passaggio viene ripetuto
+prendendo in considerazione la penultima istruzione e considerando come
+sua postcondizione la precondizione appena trovata.
+Questo passaggio viene effettuato per tutte le istruzioni del programma,
+procedendo all'indietro, fino a quando non si ottiene una precondizione $p'$
+per la prima istruzione del programma: se $p'$ implica la precondizione $p$
+della tripla che si vuole dimostrare, allora la tripla sarà dimostrata.
+
+Dimostrare la correttezza di programmi non iterativi risulta relativamente
+semplice, e può essere fare in maniera completamente algoritmica.
+Se invece il programma presenta almeno un'istruzione iterativa, allora
+la dimostrazione si complica: per gestire questa istruzione, infatti,
+devono essere individuati un invariante e un variante. Questa attività
+è però un'attività "creativa", e sta quindi al dimostratore occuparsi di
+trovare l'invariante e il variante più adatti alla dimostrazione.
+
+La dimostrazione della correttezza di una tripla si divide in:
+\begin{itemize}
+    \item dimostrazione di \textbf{correttezza parziale}: viene dimostrata
+    la derivabilità della tripla.\\
+    Se si esegue il ciclo a partire da uno stato della memoria in cui vale
+    la precondizione e si assume che il ciclo termini,
+    allora nello stato di memoria finale vale la post-condizione.
+    \footnote{La derivabilità implica la correttezza della tripla, in quanto
+    la logica di Hoare è una logica corretta.}.
+    \item dimostrazione di \textbf{correttezza totale}: viene dimostrata sia
+    la derivabilità della tripla che la terminazione di eventuali istruzioni
+    di iterazione.
+\end{itemize}
+
+\subsection*{Dimostrazione di correttezza di un'istruzione iterativa}
+Per la dimostrazione della correttezza parziale di un programma
+con almeno un'istruzione iterativa, bisogna individuare
+un'invariante di ciclo, ovvero una WFF che è vera sia prima del ciclo
+che dopo la sua esecuzione.
+Un'istruzione iterativa può però ammettere più di un'invariante: bisogna
+quindi individuare quella più utile per la dimostrazione che si sta effettuando.
+
+Sia $W$ il ciclo definito come:
+\[
+    W \equiv \text{ while } \beta \text{ do } C \text{ endwhile}
+\]
+Si vuole trovare un'invariante inv tale che:
+\begin{enumerate}
+    \item la tripla $\Hoaretriple{\beta \land \text{ inv}}{C}{\text{inv}}$
+    sia valida. Per considerarla valida, la tripla deve essere dimostrata.
+    \item una volta dimostrata la tripla
+    $\Hoaretriple{\beta \land \text{ inv}}{C}{\text{inv}}$, si può utilizzare
+    la regola dell'iterazione per derivare una nuova tripla
+    $\Hoaretriple{\text{inv}}{W}{\lnot \beta \land \text{ inv}}$.
+    La postcondizione di questa nuova tripla, ovvero
+    $\lnot \beta \land \text{ inv}$, deve implicare la postcondizione
+    data per il ciclo che si sta considerando. Se ciò non accade, allora
+    l'invariante individuata non è adatta.
+\end{enumerate}
+Se è stato possibile derivare una nuova tripla con la regola di
+iterazione e la postcondizione ottenuta, ovvero $\lnot \beta \land \text{ inv}$,
+implica la postcondizione data, allora inv è la precondizione del ciclo.
+Si continua poi con la dimostrazione dell'intero programma e, se la precondizione
+finale che si ottiene implica la precondizione della tripla che coinvolge
+tutto il programma e che si vuole dimostrare, allora si è dimostrata la correttezza
+parziale dell'intero programma.
+
+La dimostrazione della sola correttezza parziale non implica la correttezza
+di un programma con almeno un'istruzione iterativa: non è infatti garantito
+che questi cicli, effettivamente, terminino. Si deve quindi procedere con
+la dimostrazione di correttezza totale.
+Per dimostrare che un ciclo termina è semplicemente necessario trovare
+una espressione $E$, detta variante, tale che:
+\begin{itemize}
+    \item $\text{inv } \rightarrow E \ge$, ovvero l'invariante del ciclo considerato,
+    precedentemente trovata nella dimostrazione di correttezza parziale,
+    implica che il variante assume un valore maggiore o uguale a 0.
+    \item $\Hoaretriple{\tn{inv} \land \beta \land E = k \land E > 0}{C}{\tn{inv} \land E < k}$
+    \footnote{$k$ è una variabile di appoggio utilizzata per memorizzare
+    il valore di $E$ prima dell'esecuzione di $C$, in modo da poterlo
+    confrontare con il nuovo valore di $E$ al termine dell'esecuzione di $C$.}
+    è una tripla derivabile, e quindi il valore assunto da $E$ diminuisce a
+    seguito di ogni iterazione del ciclo, ovvero a seguito di ogni esecuzione
+    di $C$.
+\end{itemize}
+Riuscire a trovare una variante per un'istruzione di iterazione implica la
+correttezza totale dell'istruzione di iterazione, ovvero la sua terminazione.
+
+\subsection{Esempi}
 \begin{exmp}
     Dimostrare la correttezza della tripla:
     \begin{center}
         $\Hoaretriple{x>1}{y:=x+1}{y>1}$
     \end{center}
-    A partire da $y:=x+1 \cbra{y>1}$, cerco di derivare una precondizione $p'$ tale per cui $x>1 \rightarrow p'$.
+    A partire da $y:=x+1 \cbra{y>1}$, cerco di derivare una precondizione
+    $p'$ tale per cui $x>1 \rightarrow p'$.
     Per la regola dell'assegnamento:
     \begin{center}
         $\vDash \Hoaretriple{x+1>1}{y:=x+1}{y>1}$
@@ -183,8 +319,14 @@ Riuscire a trovare una variante per un'istruzione di iterazione implica la corre
     \begin{center}
         $\Hoaretriple{s=x^i \land i < N}{i:=i+1; s:=s*x}{s=x^i \land i \le N}$
     \end{center}
-    Il comando è composto da due istruzioni di assegnamento, e sarebbe quindi necessario applicare due volte la regola di assegnamento.
-    Quando gli assegnamenti consecutivi sono indipendenti \footnote{Per assegnamenti indipendenti si intende che se è presente un assegnamento a una certa variabile, allora quella variabile non può comparire nelle espressioni aritmetiche degli altri assegnamenti.}, però, è possibile effettuare contemporaneamente tutte le sostituzioni sulla post-condizione.
+    Il comando è composto da due istruzioni di assegnamento, e sarebbe
+    quindi necessario applicare due volte la regola di assegnamento.
+    Quando gli assegnamenti consecutivi sono indipendenti
+    \footnote{Per assegnamenti indipendenti si intende che se è presente un
+    assegnamento a una certa variabile, allora quella variabile non può
+    comparire nelle espressioni aritmetiche degli altri assegnamenti.},
+    però, è possibile effettuare contemporaneamente tutte le sostituzioni
+    sulla post-condizione.
     \begin{center}
         $\vDash \Hoaretriple{s*x=x^{i+1} \land i+1 \le N}{i:=i+1; s:=s*x}{s=x^i \land i \le N}$
     \end{center}
@@ -214,7 +356,8 @@ Riuscire a trovare una variante per un'istruzione di iterazione implica la corre
         \end{aligned}}
         {s=x^i \land \; i \le N}$ }
     \end{prooftree}
-    Si è quindi riusciti a derivare la tripla di partenza. La tripla di partenza è quindi dimostrata.
+    Si è quindi riusciti a derivare la tripla di partenza. La tripla di
+    partenza è quindi dimostrata.
 \end{exmp}
 
 \begin{exmp}
@@ -229,7 +372,8 @@ Riuscire a trovare una variante per un'istruzione di iterazione implica la corre
         \end{aligned}}
         {m \ge x \land m \ge y \land (m=x \lor m=y)}$
     \end{center}
-    Usando la regola di scelta al contrario, la tripla può essere scomposta in due triple:
+    Usando la regola di scelta al contrario, la tripla può essere scomposta
+    in due triple:
     \begin{center}
         $t_1 = \Hoaretriple{x<y}{m:=y}{m \ge x \land m \ge y \land (m=x \lor m=y)}$\\
         $t_2 = \Hoaretriple{x \ge y}{m:=x}{m \ge x \land m \ge y \land (m=x \lor m=y)}$
@@ -266,11 +410,12 @@ Riuscire a trovare una variante per un'istruzione di iterazione implica la corre
         \BinaryInfC{$\Hoaretriple{x<y}{m:=y}
         {m \ge x \land m \ge y \land (m=x \lor m=y)}$}
     \end{prooftree}
-    Si è quindi riusciti a derivare $t_1$, e quindi si è dimostrata la sua correttezza.\\
+    Si è quindi riusciti a derivare $t_1$, e quindi si è dimostrata la sua
+    correttezza.\\
     Considerando $t_2$, per la regola dell'assegnamento:
     \begin{center}
         $\vDash \Hoaretriple{\begin{aligned}
-            &x \ge x \land x \ge y\\ 
+            &x \ge x \land x \ge y\\
             &\land (x=x \lor x=y)
         \end{aligned}}
         {m:=x}
@@ -286,11 +431,56 @@ Riuscire a trovare una variante per un'istruzione di iterazione implica la corre
             &\land (m=x \lor m=y)
         \end{aligned}}$
     \end{center}
-    Si è quindi riusciti a derivare $t_2$, e quindi si è dimostrata la sua correttezza.\\
-    Avendo dimostrato la correttezza di entrambe le triple, allora anche la tripla di partenza è dimostrata.
+    Si è quindi riusciti a derivare $t_2$, e quindi si è dimostrata la sua
+    correttezza.\\
+    Avendo dimostrato la correttezza di entrambe le triple, allora anche la
+    tripla di partenza è dimostrata.
 \end{exmp}
 
-Per dimostrare la correttezza di una tripla della forma $\{ p \} x:=E \{ q \}$ si deve partire considerando solo comando e la post-condizione. Usando la regola dell'assegnamento, si deriva la pre-condizione $q[\sfrac{E}{x}]$.
-    Se $q[\sfrac{E}{x}] \rightarrow p$ (implicazione logica), allora la tripla di partenza è dimostrata.
+Per dimostrare la correttezza di una tripla della forma $\{ p \} x:=E \{ q \}$
+si deve partire considerando solo comando e la post-condizione.
+Usando la regola dell'assegnamento, si deriva la pre-condizione
+$q[\sfrac{E}{x}]$. Se $q[\sfrac{E}{x}] \rightarrow p$ (implicazione logica),
+allora la tripla di partenza è dimostrata.
 
-    
+\section{Weakest precondition}
+Siano $t(\sigma)$ la funzione che restituisce l'insieme delle formule valide
+nello stato della memoria $\sigma$, e sia $m(p)$ la funzione che ritorna
+l'insieme degli stati della memoria in cui vale $p$.
+
+Per dimostrare la correttezza di una tripla, bisogna individuare, dati
+un comando e una post-condizione, una precondizione, per cui se il comando
+è eseguito da uno stato della memoria in cui vale la pre-condizione, allora
+nello stato finale della memoria dopo l'esecuzione vale la post-condizione.
+Una precondizione non è altro che un vincolo sui possibili stati della memoria
+che vengono accettati. Ovviamente, sono ammesse più precondizioni valide per
+una dimostrazione, ovvero sottoinsiemi di stati della memoria in cui se viene
+eseguito il comando si raggiunge uno stato in cui vale la post-condizione.
+
+La weakest precondition è quindi la precondizione che comprende più stati
+della memoria, ovvero la precondizione più generica.
+è la precondizione che impone meno vincoli sullo stato iniziale del programma.
+Di fatto, la weakest precondition comprende tutti i possibili stati per cui
+se viene eseguito il comando, si raggiunge uno stato della memoria in cui vale
+la post-condizione.
+
+Dato un comando $C$ e una post-condizione $q$, per trovare la precondizione più debole $wp(C, q)$
+per cui la tripla risulta valida può essere fatto nel seguente modo:
+\begin{itemize}
+    \item la regola dell'assegnamento restituisce sempre la precondizione più debole.
+    \item sequenza: $wp(C_1;C_2, q) = wp(C_1, wp(C_2, q))$
+    \item scelta: $wp(if B then C else D endif, q) = (B \land wp(C, q)) \lor
+    (\lnot B \land wp(D, q))$
+    \item iterazione: $wp(while B do C endwhile, q) = (\lnot B \land q)) \lor
+    (B \land wp(C;while B do C endwhile, q))$.\\
+    Ovviamente questa definizione ricorsiva non può essere tradotta in una procedura
+    automatica. è comunque corretta.
+\end{itemize}
+
+\section{Design by Contract}
+Una tripla di Hoare può essere usata per un particolare tipo di programmazione,
+detta programming by contract: la precondizione funge da un'obbligazione
+del cliente, la post condizione un'obbligazione del fornitore.
+Di conseguenza la precondizione è qualcosa che il cliente che vuole il
+software garantisce, mentre la postcondizione è qualcosa che noi sviluppatori
+garantiamo al cliente.

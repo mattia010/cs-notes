@@ -1,7 +1,7 @@
 \chapter{Pattern matching}
 \section{Algoritmi di string matching esatto}
 
-\subsection*{Automa a stati finiti}
+\subsection{Automa a stati finiti}
 Un generico automa a stati finiti è una quintupla:
 \begin{center}
     $(Q, \Sigma, \delta, q_0, F)$
@@ -19,32 +19,32 @@ Ogni pattern genera un automa differente e riconosce, quindi, un linguaggio diff
 Dato un pattern $P$, l'automa a stati finiti che lo riconosce è definito come:
 \begin{itemize}
     \item $Q = \left\{ 0, 1, \ldots, m \right\}$;
-    \item $\Sigma = $ insieme dei simboli su cui sono definiti pattern e testo; 
+    \item $\Sigma = $ insieme dei simboli su cui sono definiti pattern e testo;
     \item $\delta : \{ 0, \ldots, m \} \times \Sigma \rightarrow \{ 0, \ldots, m \}$;
     \item $q_0 = 0$;
     \item $F = \{ m \}$
 \end{itemize}
 
 
-\subsection{Preprocessing del pattern: costruzione della funzione di transizione}
+\subsection*{Preprocessing del pattern: costruzione della funzione di transizione}
 Durante la fase di preprocessing, l'algoritmo calcola la funzione di transizione.
 È però prima necessario introdurre la nozione di \textit{bordo di una stringa}. Sia $W = \langle w_1, \ldots, w_m \rangle$ una stringa, il bordo $B(W)$ è il suo più lungo prefisso proprio che è anche suo suffisso, ovvero una sottostringa $B = \langle b_1, \ldots, b_k \rangle$, $k < m$, tale che:
 \begin{center}
     $b_1 = w_1 \land \ldots \land b_k = w_k \quad \textnormal{e} \quad b_1 = w_{n-k+1} \land \ldots \land b_k = w_n$
-\end{center} 
+\end{center}
 Dato un pattern $P$ e detti $j$ lo stato corrente dell'automa, per cui $P[1:j]$ è match esatto, e $\sigma$ il simbolo ricevuto in input dall'automa, allora la funzione di transizione è definita come:
 \begin{center}
     $\delta (j, \sigma) = \begin{cases}
         j+1 & \quad j < m \land P[j+1] = \sigma \\
-        \vert \textnormal{B}(P[1:j]\sigma) \vert & \quad j = m \lor P[j+1] \neq \sigma 
+        \vert \textnormal{B}(P[1:j]\sigma) \vert & \quad j = m \lor P[j+1] \neq \sigma
     \end{cases}$
 \end{center}
 La funzione di transizione viene memorizzata in una tabella $|P| \times |\Sigma|$, dove le righe rappresentano lo stato corrente, mentre le colonne il simbolo ricevuto in input.
 La cella di indici $(i, j)$ conterrà quindi $\delta (i, \sigma_j)$, dove $\sigma_j$ è il simbolo associato all'indice $j$.
 
-Esiste un algoritmo per il riempimento della tabella, di complessità $O(|P| \times |\Sigma|)$, che calcola induttivamente i valori della riga di indice $i$ a partire da quelli contenuti nella riga $i-1$ (non visto a lezione). 
+Esiste un algoritmo per il riempimento della tabella, di complessità $O(|P| \times |\Sigma|)$, che calcola induttivamente i valori della riga di indice $i$ a partire da quelli contenuti nella riga $i-1$ (non visto a lezione).
 
-\subsection{Scansione del testo}
+\subsection*{Scansione del testo}
 La scansione del testo è molto semplice, e viene effettuata utilizzando la tabella definita nella fase di preprocessing.
 
 Detto $i$ lo stato corrente dell'automa, e $\sigma$ il simbolo ricevuto in input, allora l'automa passerà nello stato $\delta (i, \sigma)$, contenuto nella cella di indici $(i, j)$ della tabella, con $j$ tale che $\sigma_j = \sigma$.
@@ -59,12 +59,12 @@ Dovendo modificare lo stato dell'automa per ogni singolo simbolo letto dal testo
 
 
 
-\subsection*{Algoritmo di Knuth-Morris-Pratt}
+\subsection{Algoritmo di Knuth-Morris-Pratt}
 L'algoritmo di Knuth-Morris-Pratt (KMP) è un algoritmo di string matching esatto, detto anche automa compatto, in quanto costruisce un automa indipendente dalla dimensione dell'alfabeto.
 
 Di base, KMG si comporta come l'automa a stati finiti, ma implementa alcune tecniche che permettono uno spostamento più efficiente della finestra e di evitare di ricontrollare il pattern dalla prima posizione a ogni spostamento della finestra.
 
-\subsection{Preprocessing del pattern: calcolo della prefix function}
+\subsection*{Preprocessing del pattern: calcolo della prefix function}
 Durante la fase di preprocessing, l'algoritmo analizza il pattern e calcola la \textit{prefix function} (detta anche funzione di fallimento) $\varphi$, una funzione che permetterà di calcolare efficientemente, in caso di fallimento, la nuova posizione di inizio della finestra e la posizione del pattern da cui riprendere il confronto.
 
 In particolare, la prefix function specifica, per ogni posizione $j$ del pattern, come l'algoritmo deve comportarsi quando $P[j]$ è il simbolo del pattern a causare il mismatch, supponendo che $P[1:j-1]$ non abbia generato fallimenti di match per la finestra corrente.
@@ -83,7 +83,7 @@ Dovendo calcolare e memorizzare un valore per ogni posizione del pattern e per l
     Complessità spaziale: $O(|P|)$
 \end{center}
 Di conseguenza, il calcolo della prefix function è più efficiente del calcolo della funzione di transizione dell'automa a stati finiti, che richiede, invece, tempo $O(|\Sigma| \cdot |P|)$.
-\subsection{Scansione del testo}
+\subsection*{Scansione del testo}
 La scansione del testo, una volta calcola la prefix function, è molto semplice da effettuare.
 
 Siano $i$ la posizione di inizio della finestra corrente, $j$ la posizione all'interno del pattern corrente, e $P[1:j-1]$ il prefisso del pattern per cui si ha match esatto con i primi $j-1$ caratteri della finestra corrente.
@@ -134,11 +134,11 @@ La scansione ha complessità lineare $\Theta(n)$. Le costanti di crescita sono p
 %\end{algorithm}
 
 
-\subsection*{Algoritmo di Baeza-Yates e Gonnet}
+\subsection{Algoritmo di Baeza-Yates e Gonnet}
 L'algoritmo di Baeza-Yates e Gonnet (BYG) è un algoritmo di string matching esatto basato sul paradigma Shift-And.
 Esso può essere applicato sse la lunghezza del pattern è minore o uguale alla lunghezza della word del calcolatore che lo implementa, in quanto devono essere eseguite operazioni bit a bit su parole di lunghezza pari a quella del pattern.
 
-\subsection{Word di bit e operazioni bit a bit}
+\subsection*{Word di bit e operazioni bit a bit}
 Per poter capire l'algoritmo, è necessario introdurre il concetto di word di bit: una word è un gruppo di bit trattato come un'unità, rappresentante un valore di un certo tipo.
 Le operazioni su word hanno complessità costante $O(1)$ e sfruttano il $bit-parallelism$: il processore, infatti, applica la stessa operazione a tutti i bit della word contemporaneamente, non sequenzialmente.\\
 D'ora in poi, l'indicizzazione delle posizioni di una word partirà da sinistra e inizierà da 1.
@@ -174,7 +174,7 @@ Le principali operazioni bit a bit su word sono:
     Per generare questa maschera, definisco la stringa $00\ldots01$ ed eseguo $|P|- 1$ operazioni di LSHIFT su essa.
 \end{itemize}
 
-\subsection{Preprocessing del pattern: calcolo delle parole di occorrenza}
+\subsection*{Preprocessing del pattern: calcolo delle parole di occorrenza}
 La prima fase eseguita dal Baeza-Yates è quella di preprocessing, in cui viene analizzato il pattern e vengono generate le \textit{parole di occorrenza}.
 Sia $\Sigma$ l'alfabeto dei possibili simboli, allora dovranno essere calcolate $|\Sigma|$ parole di occorrenza, ognuna associata a un certo simbolo e di lunghezza pari a $|P|$, con $P$ pattern.
 Di conseguenza, la memoria richiesta per memorizzare tutte le parole è pari a $O(|\Sigma| \cdot |P|)$.
@@ -201,10 +201,10 @@ La fase di preprocessing ha complessità:
 \end{center}
 $O(|\Sigma|)$ deriva dall'inizializzazione delle $|\Sigma|$ parole (l'inizializzazione di una singola parola è costante), mentre $O(|P|)$ è il tempo richiesto per valutare tutte le celle del pattern.
 
-\subsection{Scansione del testo}
+\subsection*{Scansione del testo}
 La scansione del testo non prevede confronti espliciti tra simboli del testo e simboli del pattern, ma è basata su \textit{confronti impliciti}.
 
-Per ogni posizione $i$ del testo, viene calcolata la parola $D_i$, di lunghezza $|P|$, che contiene informazioni riguardo 
+Per ogni posizione $i$ del testo, viene calcolata la parola $D_i$, di lunghezza $|P|$, che contiene informazioni riguardo
 il match tra prefissi del pattern e suffissi di $T[1:i]$:
 \begin{center}
     $D_i[j] = 1 \longleftrightarrow P[1:j] == \textnormal{suff}(T[1:i])$
@@ -230,7 +230,7 @@ Un algoritmo generico per la scansione del testo è quindi:
 È stato detto che l'algoritmo calcola $D_{i+1}$ induttivamente, a partire da $D_i$. In particolare, è stato detto che:
 \begin{center}
     $D_i[j] = 1 \longleftrightarrow P[1:j] == \textnormal{suff}(T[1:i])$
-\end{center} 
+\end{center}
 Ma si può affermare che:
 \begin{center}
     $P[1:j] == \textnormal{suff}(T[1:i]) \longleftrightarrow P[1:j-1] == \textnormal{suff}(T[1:i-1]) \textnormal{ AND } T[i] == P[j]$
@@ -256,7 +256,7 @@ Essendo $j = 1$, allora:
 Inoltre $\textnormal{suff}(T[1:i])$ deve essere di lunghezza 1, quindi:
 \begin{center}
     $\textnormal{suff}(T[1:i]) = T[i]$
-\end{center} 
+\end{center}
 La regola non ricorsiva può quindi essere riscritta come:
 \begin{center}
     $D_i[j] = P[j] == T[i] \rightarrow D_i[j] = B_{T[i]}[j] \quad \quad \textnormal{sse } j = 1$
@@ -288,7 +288,7 @@ Per farlo, la formula viene ridefinita come:
     $D_i = \textnormal{RSHIFT1}(D_{i-1}) \textnormal{ AND } B_{T[i]}$
 \end{center}
 
-\subsection*{Confronto tra algoritmi di string matching esatto}
+\subsection{Confronto tra algoritmi di string matching esatto}
 \begin{table}[h]
     \centering
     \begin{tabular}{|c|c|c|c|}
@@ -301,8 +301,8 @@ Per farlo, la formula viene ridefinita come:
     \caption{Complessità degli algoritmi di string matching esatto.}
     \label{tab:exact_string_match}
 \end{table}
-Si può notare che tutti gli algoritmi presentano una complessità di scansione lineare in $n$. 
-Essi però, nella pratica, si differenziano molto. L'algoritmo più performante è, infatti, BYG, che però presenta come grosso svantaggio quello di essere applicabile solo su pattern di lunghezza inferiore alla word del calcolatore che implementa l'algoritmo. Per quanto riguarda KMP e l'automa a stati finiti, invece, le costanti di crescita nascoste della complessità di scansione non sono affatto uguali: KMP è infatti meno performante nella scansione rispetto all'automa. KMP presenta però come vantaggio un utilizzo minore di memoria e una fase di preprocessing molto rapida, soprattutto se paragonata a quella dell'automa. 
+Si può notare che tutti gli algoritmi presentano una complessità di scansione lineare in $n$.
+Essi però, nella pratica, si differenziano molto. L'algoritmo più performante è, infatti, BYG, che però presenta come grosso svantaggio quello di essere applicabile solo su pattern di lunghezza inferiore alla word del calcolatore che implementa l'algoritmo. Per quanto riguarda KMP e l'automa a stati finiti, invece, le costanti di crescita nascoste della complessità di scansione non sono affatto uguali: KMP è infatti meno performante nella scansione rispetto all'automa. KMP presenta però come vantaggio un utilizzo minore di memoria e una fase di preprocessing molto rapida, soprattutto se paragonata a quella dell'automa.
 
 Ciascun algoritmo è quindi consigliato nelle seguenti situazioni:
 \begin{itemize}
@@ -316,11 +316,11 @@ Ciascun algoritmo è quindi consigliato nelle seguenti situazioni:
 \end{itemize}
 
 \section{Algoritmi di string matching approssimato}
-\subsection*{Algoritmo di Wu e Manber}
+\subsection{Algoritmo di Wu e Manber}
 L'algoritmo di Wu e Manber si può considerare un'estensione dell'algoritmo di Baeza-Yates: anch'esso, infatti, adotta il bit-parallelism ed è basato sul paradigma shift-and.
 WM riceve in input un testo $T, |T| = n$, un pattern $P, |P|=m$ e una soglia di errore $k$, e restituisce tutte le posizioni $i$ del testo che sono fine di un'occorrenza approssimata.
 
-\subsection{Preprocessing del pattern: calcolo delle parole di occorrenza}
+\subsection*{Preprocessing del pattern: calcolo delle parole di occorrenza}
 La prima fase eseguita dal Wu-Manber è quella di preprocessing, in cui viene analizzato il pattern e vengono generate le parole di occorrenza. Sia $\Sigma$ l'alfabeto dei possibili simboli, allora dovranno essere calcolate $|\Sigma|$ parole di occorrenza, ognuna associata a un certo simbolo e di lunghezza pari a $|P|$.
 Di conseguenza, la memoria richiesta per memorizzare tutte le parole è pari a $O(|\Sigma| \cdot |P|)$.
 
@@ -346,7 +346,7 @@ La fase di preprocessing ha complessità:
 \end{center}
 $O(|\Sigma|)$ deriva dall'inizializzazione delle $|\Sigma|$ parole (l'inizializzazione di una singola parola è costante), mentre $O(|P|)$ è il tempo richiesto per valutare tutte le celle del pattern.
 
-\subsection{Scansione del testo}
+\subsection*{Scansione del testo}
 La scansione del testo non prevede confronti espliciti tra simboli del testo e simboli del pattern, ma è basata su confronti impliciti.
 
 Viene innanzitutto introdotto un nuovo indice $h, 0 \le h \le k$, che indica il numero di errori per una certa occorrenza.
@@ -359,7 +359,7 @@ Come per l'algoritmo di Baeza-Yates, se $D_i^h[m] = 1$, ovvero il bit meno signi
 
 $D_i^0, 0 \le i \le |T|$, ovvero le parole che ammettono al massimo 0 errori, equivalgono alle parole calcolate nel corso dell'esecuzione dell'algoritmo di Baeza-Yates.
 
-$D_0^h, 0 \le h \le k$, ovvero le parole sul prefisso vuoto del testo e che ammettono un qualsiasi numero di errori, avranno solo i primi $h$ impostati a 1, mentre il resto della parola sarà composto da soli bit impostati a 0. 
+$D_0^h, 0 \le h \le k$, ovvero le parole sul prefisso vuoto del testo e che ammettono un qualsiasi numero di errori, avranno solo i primi $h$ impostati a 1, mentre il resto della parola sarà composto da soli bit impostati a 0.
 \begin{center}
     $D_0^h[j] = \begin{cases}
         1 & j \le h \\
@@ -425,7 +425,7 @@ L'algoritmo generico per la scansione del testo in Wu e Manber è:
 %            \For{i $\gets$ 1 to $|T|$}
 %                \State $D_i^h$ $\gets$ $(\textnormal{RSHIFT1}(D_{i-1}^h) \textnormal{ AND } P[j] = T[i]) \textnormal{ OR }
 %                \textnormal{RSHIFT1}(D_{i-1}^{h-1}) \textnormal{ OR }$ \\$
-%                \textnormal{RSHIFT1}(D_i^{h-1}) \textnormal{ OR } 
+%                \textnormal{RSHIFT1}(D_i^{h-1}) \textnormal{ OR }
 %                D_{i-1}^{h-1}$
 %                \If{h = k AND $D_i^h[|P|]$ = 1}
 %                    \State \Return i
@@ -438,195 +438,428 @@ La scansione del testo nell'algoritmo Wu e Manber ha complessità $O(kn)$.
 
 
 \section{Strutture dati di indicizzazione}
-Gli algoritmi di pattern matching visti fin ora effettuano il preprocessing solo del pattern.
-Per testi molto grandi, però, può essere utile trovare un modo per effettuare più efficientemente la scansione del testo e un modo di memorizzare il testo che permetta di ridurre la quantità di memoria occupata.
+Gli algoritmi di pattern matching visti fin ora effettuano, per velocizzare
+la ricerca, il preprocessing del solo pattern.
+Per testi molto grandi, però, può essere utile trovare un modo per effettuare
+più efficientemente la scansione del testo e un modo di memorizzare il testo
+che permetta di ridurre la quantità di memoria occupata.
 
-Per questo viene definita una particolare struttura dati, detta indice, che memorizza informazioni sul testo senza effettivamente memorizzare il testo o i suoi simboli.
+Per questo viene definita una particolare struttura dati, detta indice, che
+memorizza informazioni sul testo senza effettivamente memorizzare il testo o
+i suoi simboli.
 Il pattern matching verrà poi fatto sul testo, e non sul testo originale.
 
-Le strutture dati più utilizzate per l'implementazione di un indice sono suffix-array e FM-index.
+Le strutture dati più utilizzate per l'implementazione di un indice sono
+suffix-array e FM-index.
 
-\subsection*{Suffix array}
-Un suffix array (Myers e Manber, 1990) è un vettore che contiene informazioni sui suffissi e del testo e sul loro ordinamento topologico.
-Per poterli spiegare è necessario, innanzitutto, definire che cos'è un ordinamento topologico.
+\subsection{Suffix array}
+Un suffix array (Myers e Manber, 1990) è un vettore che contiene informazioni
+sui suffissi del testo e sul loro ordinamento topologico.
+Per poterlo spiegare è necessario, innanzitutto, definire che cos'è un
+ordinamento topologico.
 
-Per prima cosa, il testo considerato nel corso dell'algoritmo non è il testo originale $T$, ma $T$ a cui viene concatenato un nuovo simbolo terminatore $\$$.
-Il simbolo terminatore $\$$ fa sì che nessun suffisso del testo sia anche prefisso del testo $T$, in quanto questa è una proprietà indesiderata.
-Questo simbolo viene anche aggiunto all'alfabeto $\Sigma$, in quanto, come si vedrà, sarà necessario definire la relazione d'ordine anche su questo carattere.
+Per prima cosa, il testo considerato nel corso dell'algoritmo non è il testo
+originale $T$, ma $T$ a cui viene concatenato un nuovo simbolo terminatore $\$$.
+Il simbolo terminatore $\$$ fa sì che nessun suffisso del testo sia anche suo
+prefisso, in quanto questa è una proprietà indesiderata.
+Questo simbolo viene anche aggiunto all'alfabeto $\Sigma$, in quanto, come si
+vedrà, la relazione d'ordine che deve essere definita sui caratteri
+dell'alfabeto deve coinvolgere anche questo carattere.
 D'ora in poi, $T$ indicherà il testo con carattere terminatore.
 
-Si intenderà inoltre con $q$-suffisso il suffisso del testo $T$ che inizia alla posizione $q$ del testo.
-Il numero di possibili suffissi di un testo (con terminatore $\$$) di lunghezza $n$ è pari a $n+1$, in quanto anche $\epsilon$ è suffisso del testo.
-Non si considererà però il suffisso $\epsilon$.
-Si ricorda che anche $\$$ è suffisso del testo.
+Si intenderà inoltre con \textbf{\textit{q}-suffisso} il suffisso del testo
+$T$ che inizia alla posizione $q$ del testo.
+Dato un testo di lunghezza $n$ che comprende il carattere terminatore \$,
+il numero di possibili suffissi del testo è pari a $n+1$,
+in quanto anche $\epsilon$ è suffisso del testo. Questo suffisso non verrà,
+però, considerato.
 
-Sia $\Sigma$ l'alfabeto dei simboli su cui sono definiti testo e pattern, sui suoi simboli viene definita una relazione d'ordine stretto, ovvero una relazione irriflessiva, asimmetrica e transitiva.
-La relazione d'ordine viene definita arbitrariamente (comunque rispettando le specifiche dettate dal contesto in cui si usa l'algoritmo), ma in tutti i casi il simbolo terminatore $\$$ è il minimo dell'ordinamento.
+Sia $\Sigma$ l'alfabeto dei simboli su cui sono definiti testo e pattern, sui
+suoi simboli viene definita una relazione d'ordine stretto, ovvero una relazione
+irriflessiva, asimmetrica e transitiva.
+La relazione d'ordine viene definita arbitrariamente (comunque rispettando le
+specifiche dettate dal contesto in cui si usa l'algoritmo), ma in tutti i casi
+il simbolo terminatore $\$$ è il minimo dell'ordinamento.
 L'ordine lessicografico viene definito a partire da questa relazione d'ordine.
 
-L'ordine lessicografico è una relazione d'ordine largo totale sulle stringhe $w \in \Sigma^*$ tale che:
+L'\textbf{ordine lessicografico} è una relazione d'ordine largo totale sulle
+stringhe $w \in \Sigma^*$ tale che:
 \begin{center}
-    $\forall s_1, s_2 \in \Sigma^*, \; s_1 < s_2 \longleftrightarrow \exists i \in \mathbb{N} : \left( \forall j \in \mathbb{N}, j < i, \; s_1[j] = s_2[j] \land s_1[i] \neq s_2[i] \right) \lor \left( i = |s_1| \land |s_1| < |s_2| \right)$
+    $\forall s_1, s_2 \in \Sigma^*, \; s_1 < s_2 \longleftrightarrow
+    \exists i \in \mathbb{N} :
+    \cbra{\forall j \in \mathbb{N}, j<i, \; s_1[j]=s_2[j] \land s_1[i] \neq s_2[i]}
+    \lor \left( i = |s_1| \land |s_1| < |s_2| \right)$
 \end{center}
-In pratica, il primo simbolo diverso tra le due stringhe a partire da sinistra determina l'ordine lessicografico delle due stringhe che si stanno confrontando.
+In pratica, il primo simbolo diverso tra le due stringhe a partire da sinistra
+determina l'ordine lessicografico delle due stringhe che si stanno confrontando.
 
-\subsection{Preprocessing del testo: costruzione del suffix array}
-L'ordinamento lessicografico, nell'algoritmo basato su suffix tree, verrà usato per ordinare tutti i suffissi del testo.
-Una volta ordinati, viene definito un vettore $A$ di dimensione $n$, ovvero di dimensione uguale al testo, che conterrà gli indici dei suffissi, ovvero le loro posizioni di partenza, ordinati in base all'ordinamento lessicografico dei suffissi a cui fanno riferimento.
-Se $A[i] = j$, allora l'$i$-esimo suffisso che compare nell'ordinamento lessicografico è quello che inizia nella posizione di indice $j$ nel testo, ovvero $T[j:]$.
+\subsection*{Preprocessing del testo: costruzione del suffix array}
+L'ordinamento lessicografico, nell'algoritmo basato su suffix array, viene usato
+per ordinare tutti i suffissi del testo.
+Una volta ordinati, viene definito un vettore $A$ di dimensione $n$, ovvero di
+dimensione uguale al testo, che conterrà gli indici dei suffissi, ovvero le loro
+posizioni di partenza, ordinati in base all'ordinamento lessicografico dei
+suffissi a cui fanno riferimento.
+Se $A[i] = j$, allora l'$i$-esimo elemento del suffix array è la posizione
+di partenza $j$ dell'$i$-esimo suffisso che compare nell'ordinamento
+lessicografico, ovvero $T[j:]$.
 
-Ogni cella del suffix array memorizza un indice del testo. Per codificare un numero di indici pari a $n$, serve un numero di bit pari a $\log_2 n$: di conseguenza, una singola cella del suffix array sarà composta da $\log_2 n$ bit.
-Ma il numero di celle del suffix array è pari a $n$ dimensione del testo.
-Di conseguenza, la dimensione totale del suffix array è pari a $O(n \log_2 n)$.
-
-Si può notare che, al momento, l'utilizzo del suffix array porta vantaggi in termini di risparmio della memoria solo se $\log_2 n < \log_2 |\Sigma|$, e quindi $n < |\Sigma|$.
-Si vedrà più avanti, però, che un indice può essere mantenuto compresso in memoria, decomprimendo i dati solo al loro effettivo utilizzo. Questo permetterà di avere anche un risparmio di memoria, qualsiasi sia la relazione tra $|\Sigma|$ e $n$.
-
-La costruzione del suffix array, qui non vista, può essere fatta in tempo lineare $O(n)$, tramite la costruzione di Karkkainen and Sanders (Simple Linear Work Suffix Array Construction, 2003).
-
-\subsection{Scansione del testo}
-Un pattern ha un'occorrenza esatta nel testo sse è prefisso di almeno uno dei suoi suffissi.
-Di conseguenza, si potrebbe pensare di effettuare un controllo per ogni possibile suffisso del testo, ma questo porterebbe a una complessità pari a $O(m \cdot n)$.
-Si può però osservare che tutte le occorrenze esatte di un pattern avvengono per suffissi che compaiono consecutivamente nell'ordinamento lessicografico.
-Questo perchè iniziano tutti con lo stesso pattern.
-
-Si può quindi affermare che gli indici dei suffissi di cui il pattern è prefisso (e per cui quindi si ha un'occorrenza esatta), che compaiono consecutivamente nel suffix array, si trovano in un intervallo di celle del suffix array, che può essere definito come $A[L : R]$
+La costruzione del suffix array, qui non vista, può essere fatta in tempo
+lineare $O(n)$, tramite la costruzione di Karkkainen and Sanders
+(Simple Linear Work Suffix Array Construction, 2003).
 
 \begin{rem}
-    Sia $\le$ la relazione d'ordine lessicografico, se $P$ è prefisso di un $q$-suffisso e $P \le q'$-suffisso, allora $q$-suffisso $\le q'$-suffisso.
+    Ogni cella del suffix array memorizza un indice del testo. Per codificare un
+    numero di indici pari a $n$, serve un numero di bit pari a $\log_2 n$: di
+    conseguenza, una singola cella del suffix array sarà composta da $\log_2 n$ bit.
+    Ma il numero di celle del suffix array è pari a $n$ dimensione del testo.
+    Di conseguenza, la dimensione totale del suffix array è pari a $O(n \log_2 n)$.
+
+    Si può notare che l'utilizzo del suffix array porta vantaggi in
+    termini di risparmio della memoria solo se $\log_2 n < \log_2 |\Sigma|$, e
+    quindi $n < |\Sigma|$.
 \end{rem}
-Basta quindi trovare un'occorrenza esatta del pattern come prefisso di un suffisso del testo, e basterà poi semplicemente valutare i suffissi precedenti e successivi nell'ordinamento lessicografico per trovare tutte le occorrenze esatte.
 
-Per effettuare la ricerca di un'occorrenza esatta si può sfruttare il fatto che il suffix array è ordinato (secondo ordine lessicografico), e usare quindi una ricerca dicotomica.
-A ogni passo dell'algoritmo si valuta quindi l'elemento $q$ intermedio ai due estremi correnti $L$ e $R$ dell'intervallo, e si possono verificare tre casi:
+\subsection*{Scansione del testo}
+Un pattern ha un'occorrenza esatta nel testo sse è prefisso di almeno uno dei
+suoi suffissi.
+Di conseguenza, si potrebbe pensare di effettuare un controllo per ogni
+possibile suffisso del testo, ma questo porterebbe a una complessità pari a
+$O(|P| \cdot n)$.
+Si può però osservare che tutte le occorrenze esatte di un pattern avvengono
+per suffissi che compaiono consecutivamente nell'ordinamento lessicografico.
+Questo perchè iniziano tutti con lo stesso pattern.
+
+Si può quindi affermare che gli indici dei suffissi di cui il pattern è
+prefisso (e per cui quindi si ha un'occorrenza esatta), che compaiono
+consecutivamente nel suffix array, si trovano in un intervallo di celle del
+suffix array, che può essere definito come $A[L : R]$
+
+\begin{rem}
+    Sia $\le$ la relazione d'ordine lessicografico, se $P$ è prefisso di un
+    $q$-suffisso e $P \le q'$-suffisso, allora $q$-suffisso $\le q'$-suffisso.
+\end{rem}
+Basta quindi trovare un'occorrenza esatta del pattern come prefisso di un
+suffisso del testo, e basterà poi semplicemente valutare i suffissi precedenti
+e successivi nell'ordinamento lessicografico per trovare tutte le occorrenze
+esatte.
+
+Per effettuare la ricerca di un'occorrenza esatta si può sfruttare il fatto che
+il suffix array è ordinato (secondo ordine lessicografico), e usare quindi una
+ricerca dicotomica.
+A ogni passo dell'algoritmo si valuta quindi l'elemento $q$ intermedio ai due
+estremi correnti $L$ e $R$ dell'intervallo, e si possono verificare tre casi:
 \begin{itemize}
-    \item $P$ è prefisso di $A[q]$. In questo caso si è trovata l'occorrenza esatta, e si può quindi passare a valutare i suffissi vicini nell'ordinamento lessicografico, in modo da individuare tutte le occorrenze;
-    \item $P < A[q]$ nell'ordinamento lessicografico. Allora si può affermare che l'intervallo di occorrenze esatte compare sicuramente nella prima metà, ovvero nell'intervallo con estremi $L$ e $q-1$;
+    \item $P$ è prefisso di $A[q]$. In questo caso si è trovata l'occorrenza
+    esatta, e si può quindi passare a valutare i suffissi vicini
+    nell'ordinamento lessicografico, in modo da individuare tutte le occorrenze;
+    \item $P < A[q]$ nell'ordinamento lessicografico. Allora si può affermare
+    che l'intervallo di occorrenze esatte compare sicuramente nella prima metà,
+    ovvero nell'intervallo con estremi $L$ e $q-1$;
     \item $P > A[q]$ nell'ordinamento lessicografico.
-    Allora si può affermare che l'intervallo di occorrenze esatte compare sicuramente nella seconda metà, ovvero nell'intervallo con estremi $q+1$ e $R$.
+    Allora si può affermare che l'intervallo di occorrenze esatte compare
+    sicuramente nella seconda metà, ovvero nell'intervallo con estremi $q+1$ e
+    $R$.
 \end{itemize}
-
-%\begin{algorithm}[H]
-%    \begin{algorithmic}[1]
-%        \Procedure{SuffixArrayScan}{A, P}
-%            \State L $\gets$ 1
-%            \State R $\gets$ A.length 
-%        \EndProcedure
-%    \end{algorithmic}
-%\end{algorithm}
 
 La scansione del testo tramite suffix array può essere effettuata in:
 \begin{center}
-    $O(m \log_2 n)$    
+    $O(m \log_2 n)$
 \end{center}
 con $m = |P|$ e $n = |T|$.
-La ricerca dicotomica, infatti, valuta al massimo $\log_2 n$ celle del suffix array (e quindi suffissi), e per ognuno suffisso valutato controlla se il pattern è prefisso di quel suffisso, avendo di conseguenza complessità $O(m)$ per ogni valutazione.
+La ricerca dicotomica, infatti, valuta al massimo $\log_2 n$ celle del suffix
+array (e quindi suffissi), e per ogni suffisso valutato controlla se il
+pattern è prefisso di quel suffisso, avendo di conseguenza complessità $O(m)$
+per ogni valutazione.
 
-La complessità per trovare tutte le occorrenze una volta trovata una singola occorrenza, invece, è pari a $O(n)$: devono infatti essere valutati i suffissi vicini nell'ordinamento lessicografico per cercarla (e quindi le celle adiacenti nel suffix array), e nel caso peggiore si possono avere esattamente $n$ occorrenze del pattern nel testo.
+La complessità per trovare tutte le occorrenze una volta trovata una singola
+occorrenza, invece, è pari a $O(n)$: devono infatti essere valutati i suffissi
+vicini nell'ordinamento lessicografico (e quindi le celle adiacenti
+nel suffix array), e nel caso peggiore si possono avere esattamente $n$
+occorrenze del pattern nel testo.
 
-Se quindi si vogliono cercare tutte le occorrenze, la complessità è pari a $O(m \log_2 n + n)$.
+Se quindi si vogliono cercare tutte le occorrenze, la complessità è pari a
+$O(m \log_2 n + n)$.
 
-\subsection{Problemi}
-Il suffix array, come già detto, porta a vantaggi in termini di memoria occupata sse $\log_2 |\Sigma| \ge \log_2 n$. Questo caso però si verifica raramente, proprio perchè l'obiettivo delle strutture dati di indicizzazione è quello di trattare testi di grandi dimensioni.
+\subsection*{Problemi}
+Il suffix array, come già detto, porta a vantaggi in termini di memoria occupata
+sse $\log_2 |\Sigma| \ge \log_2 n$, e quindi solo se $|\Sigma| > n$.
+Questo caso però si verifica raramente,
+proprio perchè l'obiettivo delle strutture dati di indicizzazione è quello di
+trattare testi di grandi dimensioni.
 
-Inoltre, la scansione in tempo $O(m \log_2 n)$ può essere migliorata in altri algoritmi, in modo da ottenere una complessità pari a $O(m)$.
+Inoltre, la scansione in tempo $O(m \log_2 n)$ non è ottimale, ed esistono
+algoritmi con complessità di ricerca del pattern pari a $O(m)$.
 
-\subsection*{Burrows-Wheeler Transform}
+\subsection{Burrows-Wheeler Transform}
 \begin{defn}
-    La Burrows-Wheeler Transform (BWT) è una permutazione del testo originale $T$ che gode di due importanti vantaggi:
+    La Burrows-Wheeler Transform (BWT) è una permutazione del testo originale
+    $T$ (compreso il carattere terminatore \$) che gode di due importanti
+    proprietà:
     \begin{itemize}
-        \item è reversibile, ovvero è possibile ricostruire il testo $T$ a partire dalla BWT. Per essere reversibile, i prefissi del testo non devono essere anche suffissi (e viceversa): di conseguenza, il testo $T$ deve obbligatoriamente terminare con il carattere \$.
-        \item è facilmente comprimibile, e permette quindi di risparmiare memoria.
+        \item è reversibile, ovvero è possibile ricostruire il testo $T$ a
+        partire dalla BWT. Per essere reversibile, i prefissi del testo non
+        devono essere anche suffissi (e viceversa): di conseguenza, il testo
+        $T$ deve obbligatoriamente terminare con il carattere \$.
+        \item è facilmente comprimibile, e permette quindi di risparmiare
+        memoria.
     \end{itemize}
 \end{defn}
 
-\subsection{Preprocessing del testo: costruzione della BWT}
+\subsection*{Preprocessing del testo: costruzione della BWT}
 \begin{defn}
     Una \textbf{\textit{q}-rotazione} del testo $T$ è la stringa definita come:
     \[
         T\sbra{q:n}T\sbra{1, q-1}
     \]
-    ovvero è quella stringa in cui il $q$-suffisso viene posto all'inizio della stringa.
+    ovvero è quella stringa in cui il $q$-suffisso viene posto all'inizio della
+    stringa.
 \end{defn}
-Per calcolare la BWT, si può costruire una matrice delle rotazioni che contiene tutte le possibili rotazioni di $T$ ordinate lessicograficamente.
+Per calcolare la BWT, si può costruire una matrice delle rotazioni che contiene
+tutte le possibili rotazioni di $T$ ordinate lessicograficamente.
 \begin{defn}
-    Gli output della trasformazione sono la permutazione $\bwt(T)$, ovvero l'ultima colonna della matrice contenente le rotazioni di $T$ ordinate lessicograficamente, e un indice $I$, che specifica la posizione del simbolo \$ all'interno di $\bwt(T)$.
+    Gli output della trasformazione sono la permutazione $\bwt(T)$, ovvero
+    l'ultima colonna della matrice contenente le rotazioni di $T$ ordinate
+    lessicograficamente, e un indice $I$, che specifica la posizione del simbolo
+    \$ all'interno di $\bwt(T)$.
 \end{defn}
 \begin{rem}
-    Si può notare che la colonna contenente gli indici $q$ delle $q$-rotazioni ordinate lessicograficamente corrisponde al suffix array.
+    Si può notare che la prima colonna della matrice delle $q$-rotazioni
+    ordinate lessicograficamente contiene i simboli di posizione pari agli
+    indici contenuti nel suffix array.
 \end{rem}
-Essendo, per definizione di rotazione, l'ultimo simbolo di una riga $i$ della matrice ordinata il predecessore del primo simbolo dell'$i$-esima riga, ed essendo il primo simbolo della $i$-esima riga in posizione $SA[i]$, allora la BWT può essere facilmente ed efficientemente calcolata a partire dal suffix array. Sia $SA$ il suffix array, allora l'array contenente la BWT può essere calcolato come:
+Essendo, per definizione di rotazione, l'ultimo simbolo di una riga $i$ della
+matrice ordinata il predecessore del primo simbolo dell'$i$-esima riga, ed
+essendo il primo simbolo della $i$-esima riga in posizione $SA[i]$, allora la
+BWT può essere facilmente ed efficientemente calcolata a partire dal suffix
+array. Sia $SA$ il suffix array, allora l'array contenente la BWT può essere
+calcolato come:
 \[
     \bwt(T)[i] = \begin{cases}
         T[SA[i]-1] & SA[i] > 1 \\
         T[n] & SA[i] = 1
     \end{cases}
 \]
-La BWT "in chiaro" ha dimensione pari alla dimensione del testo $T$. Essa però gode di un'importante proprietà: essa memorizza molto spesso simboli uguali in posizioni consecutive, e può quindi essere facilmente compressa. Uno dei modi più utilizzare questa compressione è il \textbf{run-length encoding}: simboli consecutivi uguali non vengono memorizzati esplicitamente, ma viene memorizzato un solo simbolo e il numero di occorrenze consecutive del simbolo 
-Esempio: la stringa $\sigma \sigma \sigma \alpha \alpha \sigma$ verrà memorizzata come $\sigma : 3 \; \alpha : 2 \; \sigma : 1$.
-La BWT compressa occupa quindi meno spazio in memoria rispetto al testo originale $T$, e si può quindi definire come una struttura dati succinta.
 
-\subsection{Ricostruzione del testo: algoritmo ingenuo}
-La ricostruzione del testo naive sfrutta la $\bwt(T)$ e la prima colonna della matrice delle rotazioni ordinate lessicograficamente, appositamente ricostruita ordinando tutti i simboli contenuti nella $\bwt(T)$.\\
-Siano $F$ la prima colonna e $L$ la $\bwt(T)$, ovvero l'ultima colonna della matrice. Si può affermare che l'$i$-esimo elemento di $L$ è predecessore dell'$i$-esimo elemento di $F$, ovvero $L[i] \, F[i]$ è una stringa che compare sicuramente nel testo originale.
+\begin{rem}
+    La costruzione della BWT a partire dal suffix array richiede una quantità
+    di memoria principale pari a $n\log_2 n + n\log_2 |\Sigma|$ bit,
+    in quanto sia il testo, che occupa $n\log_2 n$ bit, sia il suffix array,
+    che occupa $n\log_2 |\Sigma|$ bit, devono risiedere contemporaneamente in
+    memoria.\\
+    Esistono comunque approcci alternativi che costruiscono la BWT direttamente
+    dal testo, richiedendo quindi una quantità di memoria principale minore
+    (Okanohara e Sadakane).
+\end{rem}
 
-Concatenando $L$ e $F$ si ottiene una matrice $n \times 2$. Le righe di questa matrice possono essere ordinate lessicograficamente, e la prima riga conterrà sicuramente il prefisso di lunghezza $2$ del testo originale.
-Si consideri la concatenazione seguita dall'ordinamento lessicografico delle righe come un'iterazione, è possibile definire le iterazioni seguenti come la concatenazione di $L$ e del risultato della precedente iterazione, seguita dall'ordinamento lessicografico delle righe della matrice ottenuta.\\
-Alla fine della $k$-esima iterazione, la matrice conterrà nella prima riga la stringa:
+\subsection*{Compressione della BWT}
+La BWT "in chiaro" ha dimensione pari alla dimensione del testo $T$. Essa però
+gode di un'importante proprietà: essa memorizza molto spesso simboli uguali in
+posizioni consecutive, e può quindi essere facilmente compressa. Un tipo di
+compressione che puà essere usata è il \textbf{run-length encoding}: simboli
+consecutivi uguali, che prendono il nome di run, non vengono memorizzati
+esplicitamente, ma viene memorizzato
+un solo simbolo e il numero di occorrenze consecutive del simbolo.
+Esempio: la stringa $\sigma \sigma \sigma \alpha \alpha \sigma$ verrà
+memorizzata come $\sigma : 3 \; \alpha : 2 \; \sigma : 1$.
+La BWT compressa occupa quindi meno spazio in memoria rispetto al testo
+originale $T$, e si può quindi definire come una struttura dati succinta.
+
+DA RISCRIVERE BENE.
+Solitamente, prima di applicare il run-length encoding e altre tecniche
+di compressione lossless, viene applicato il move-to-front encoding, che
+permette di ridurre l'entropia della BWT e permette quindi di rappresentarla
+usando meno bit.
+Questo encoding prevede di utilizzare una lista, indicizzata a partire da 0 e
+inizialmente ordinata, di
+tutti i simboli in $\Sigma$. Si scorre poi, dall'inizio, il testo su cui
+si vuole applicare il move-to-front (in questo caso la BWT): ogni qualvolta
+viene analizzato un simbolo, al testo compresso viene aggiunto un intero,
+che indica la posizione del simbolo all'interno della lista.
+Dopo aver concatenato l'intero, il simbolo considerato contenuto nella lista
+viene spostato dalla posizione corrente alla cima della lista.
+Questi passaggi vengono ripetuti fino a quando tutto il testo è stato analizzato.
+Questo encoding si rivela molto utile proprio perchè la BWT si compone di
+numerose run, ovvero sequenze di simboli uguali: una run, a seguito dell'encoding,
+sarà composta da un intero, che indica la posizione del simbolo all'interno
+della lista in quel momento, seguito da un numero di 0 pari alla lunghezza della
+run meno 1 (ovvero il primo simbolo il cui indice è già stato inserito),
+in quanto quel simbolo è stato spostato all'inizio della lista dopo averlo
+incontrato la prima volta.
+Di conseguenza, run differenti differiranno solo nel primo intero.
+Questo permette una compressione maggiore: ad esempio, l'Huffman encoding
+permetterebbe di rappresentare lo 0 con pochi bit, e la run-length risulterebbe
+quindi molto efficiente.
+
+\subsection*{Ricostruzione del testo: algoritmo ingenuo}
+La ricostruzione del testo naive sfrutta la $\bwt(T)$ e la prima colonna della
+matrice delle rotazioni ordinate lessicograficamente, appositamente ricostruita
+ordinando tutti i simboli contenuti nella $\bwt(T)$.\\
+Siano $F$ la prima colonna e $L$ la $\bwt(T)$, ovvero l'ultima colonna della
+matrice. Si può affermare che l'$i$-esimo elemento di $L$ è predecessore
+dell'$i$-esimo elemento di $F$, ovvero $L[i] \, F[i]$ è una stringa che compare
+sicuramente nel testo originale.
+
+Concatenando $L$ e $F$ si ottiene una matrice $n \times 2$. Le righe di questa
+matrice possono essere ordinate lessicograficamente, e la prima riga conterrà
+sicuramente il prefisso di lunghezza $2$ del testo originale.
+Si consideri la concatenazione seguita dall'ordinamento lessicografico delle
+righe come un'iterazione, è possibile definire le iterazioni seguenti come la
+concatenazione di $L$ e del risultato della precedente iterazione, seguita
+dall'ordinamento lessicografico delle righe della matrice ottenuta.\\
+Alla fine della $k$-esima iterazione, la matrice conterrà nella prima riga la
+stringa:
 \[
     \$ \, P_T[1:k]
 \]
-dove $P_T[1:k]$ è il prefisso di lunghezza $k$ del testo. Di conseguenza, dopo $n-1$ iterazioni, la prima riga sarà della forma:
+dove $P_T[1:k]$ è il prefisso di lunghezza $k$ del testo. Di conseguenza, dopo
+$n-1$ iterazioni, la prima riga sarà della forma:
 \[
     \$ \, P_T[1:n-1]
 \]
-Alla $(n-1)$-esima iterazione, quindi, il testo sarà completamente ricostruito: basterà infatti spostare il simbolo \$ alla fine della stringa, ottenendo quindi il testo originale:
+Alla $(n-1)$-esima iterazione, quindi, il testo sarà completamente ricostruito:
+basterà infatti spostare il simbolo \$ alla fine della stringa, ottenendo quindi
+il testo originale:
 \[
     P_T[1:n-1] \, \$
 \]
 
-Il numero di iterazioni sono $O(n)$, e a ogni iterazione le righe della tabella devono essere ordinate lessicograficamente con un algoritmo di sorting. Ma l'algoritmo di sorting effettua $O(n \log_2n)$ confronti tra due stringhe, e ogni confronto tra due stringhe chiede $O(n)$ confronti tra simboli. Di conseguenza, la complessità dell'algoritmo di ricostruzione naive è:
+Il numero di iterazioni sono $O(n)$, e a ogni iterazione le righe della tabella
+devono essere ordinate lessicograficamente con un algoritmo di sorting.
+Ma l'algoritmo di sorting effettua $O(n \log_2n)$ confronti tra due stringhe,
+e ogni confronto tra due stringhe chiede $O(n)$ confronti tra simboli.
+Di conseguenza, la complessità dell'algoritmo di ricostruzione naive è:
 \[
     O(n^3\log_2n)
 \]
-Dovendo costruire una matrice $n \times n$, la memoria richiesta per la ricostruzione è pari a $O(n^2)$.
+Dovendo costruire una matrice $n \times n$, la memoria richiesta per la
+ricostruzione è pari a $O(n^2)$.
 
-\subsection*{FM-index}
-L'algoritmo ingenuo di ricostruzione del testo originale a partire da $\bwt(T)$, visto nella precedente sezione, è poco efficiente sia dal punto di vista della complessità temporale che da quello della complessità spaziale.
-Si può però modificare leggermente la struttura dati di indicizzazione in modo da velocizzare i tempi di esecuzione e ridurre la quantità di memoria usata, mantenendola lineare in $n$.\\
-Questa struttura dati prende il nome di FM-index (METTERE CITAZIONE), e viene considerata un \textbf{compressed self-index}, in quanto permette sia di comprimere il testo originale che di indicizzare il testo, in modo da velocizzare la ricerca di pattern.
+\subsection*{Problemi della BWT}
+La BWT è di fatto una tecnica che permette di comprimere un testo di grandi
+dimensioni, evitando quindi di tenere in memoria il testo originale.
+Di per sè, però, la BWT non offre alcun modo di effettuare la ricerca
+del pattern, o per meglio dire lo permette ma è prima necessario
+decomprimere la BWT e ricostruire il testo originale.
+La BWT risulta, inoltre, onerosa da calcolare, è usata solo in pochi ambiti,
+come la bioinformatica, mentre applicazione che riguardano gli editor di
+testo preferiscono algoritmi come KMP o Boyes-qualcosa.
 
-L'FM-index altro non è che la trasformata $\bwt(T)$, a cui però vengono affiancate due nuove funzioni: $\tn{C}$ e $\occ$.
-Nella prossima sottosezione verrà spiegato cosa calcolano queste funzioni e perchè sono utili nella ricostruzione del testo originale.
+\subsection{FM-index}
+L'algoritmo ingenuo di ricostruzione del testo originale a partire da $\bwt(T)$,
+visto nella precedente sezione, è poco efficiente sia dal punto di vista della
+complessità temporale che da quello della complessità spaziale.
+La BWT, inoltre, non offre di per sè capacità di ricerca del pattern,
+e funge solo come una tecnica di compressione del testo.
+Essa può, però, essere leggermente modificata in modo da
+ridurre la quantità di memoria usata,
+mantenendola lineare in $n$, e di offrire la possibilità
+di ricercare il pattern, senza nemmeno dover ricostruire il testo originale
+a partire dalla BWT.\\
+Questa struttura dati prende il nome di FM-index, e viene
+considerata un \textbf{compressed self-index}, proprio perchè permette sia di
+comprimere il testo originale che di indicizzare il testo, e quindi permettere
+una ricerca più rapida.
 
-\subsection{Preprocessing del testo: costruzione delle funzioni ausiliarie}
-Per capire cosa calcolane le funzioni ausiliarie e perchè lo fanno è necessario prima enunciare due proprietà che valgono per la BWT.\\
+L'FM-index altro non è che la trasformata $\bwt(T)$, a cui però vengono
+affiancate due nuove funzioni: $\tn{C}$ e $\occ$.
+Nella prossima sottosezione verrà spiegato cosa calcolano queste funzioni e
+perchè sono utili nella ricostruzione del testo originale.
+
+\subsection*{Preprocessing del testo: costruzione delle funzioni ausiliarie}
+Per capire cosa calcolano le funzioni ausiliarie e perchè lo fanno è necessario
+prima enunciare due proprietà che valgono per la BWT.\\
 \begin{property}
-    $\bwt(T)[i]$ è predecessore di $T[A[i]]$. Di conseguenza, nel testo compare sicuramente la stringa:
+    $\bwt(T)[i]$ è predecessore di $T[A[i]]$. Di conseguenza, nel testo compare
+    sicuramente la stringa:
     \[
         \bwt(T)[i] \; T[A[i]]
     \]
 \end{property}
 \begin{property}
-    Sia $\sigma$ un simbolo che compare nel testo. L'$i$-esima occorrenza di $\sigma$ nella BWT è esattamente l'$i$-esima occorrenza di $\sigma$ nella prima colonna della tabella delle rotazioni ordinate lessicograficamente.
-    Non solo sono quindi lo stesso simbolo, ma rappresentano la stessa posizione nella tabella.
+    Sia $\sigma$ un simbolo che compare nel testo.
+    L'$i$-esima occorrenza di $\sigma$ nella BWT è esattamente l'$i$-esima
+    occorrenza di $\sigma$ nella prima colonna della tabella delle rotazioni
+    ordinate lessicograficamente.
+    Non solo sono quindi lo stesso simbolo, ma rappresentano lo stesso identico
+    simbolo nella stessa identica posizione nel testo.
 \end{property}
-Sia quindi $i$ la posizione del simbolo $\sigma$ nella $\bwt(T)$, allora è possibile definire una funzione che restituisce la rispettiva posizione nella prima colonna di quell'esatto simbolo $\sigma$. Questa funzione prende il nome di \textbf{last-first mapping}.
+Sia quindi $i$ la posizione del simbolo $\sigma$ nella $\bwt(T)$, allora è
+possibile definire una funzione che restituisce la rispettiva posizione nella
+prima colonna di quell'esatto simbolo $\sigma$. Questa funzione prende il nome
+di \textbf{last-first mapping}.
 \[
-    \lf: \cbra{1, \ldots, n} \rightarrow \cbra{1, \ldots, n} \quad \lf \bra{i} = \tn{C}(\sigma) + \occ \bra{i, \sigma}
+    \lf: \cbra{1, \ldots, n} \rightarrow \cbra{1, \ldots, n} \quad
+    \lf \bra{i} = \tn{C}(\sigma) + \occ \bra{i, \sigma} + 1
 \]
 
-$\tn{C}$ e $\occ$ sono le due funzioni ausiliarie che si affiancano alla $\bwt(T)$.\\
-$\tn{C}(\sigma)$ restituisce il numero di simboli nel testo $T$ che sono strettamente minori di $\sigma$, compreso \$.\\
-$\occ (i, \sigma)$ restituisce, invece, il numero di occorrenze del simbolo $\sigma$ nell'intervallo $\sbra{1, i}$ della $\bwt(T)$.
+$\tn{C}$ e $\occ$ sono le due funzioni ausiliarie che si affiancano alla
+$\bwt(T)$.\\
+$\tn{C}(\sigma)$ restituisce il numero di simboli nel testo $T$ che sono
+strettamente minori di $\sigma$, compreso \$.\\
+$\occ (i, \sigma)$ restituisce, invece, il numero di occorrenze del simbolo
+$\sigma$ nell'intervallo $\sbra{1, i-1}$ della $\bwt(T)$.
 \[
-\tn{C}: \Sigma \rightarrow \{ 0, \ldots, n-1 \} \quad \occ: \{ 1, \ldots, n \} \times \Sigma \rightarrow \{ 0, \ldots, n \}.
+    \tn{C}: \Sigma \rightarrow \cbra{0, \ldots, n} \quad
+    \occ: \cbra{1, \ldots, n+1} \times \Sigma \rightarrow \cbra{0, \ldots, n}.
 \]
 
-\subsection{Ricostruzione del testo}
-Ricostruire il testo è possibile grazie alla BWT, alle funzioni $\tn{C}$ e $\occ$ e alle proprietà di cui gode la BWT.
-Si comincia dall'ultimo simbolo del testo, ovvero \$, che si trova nella prima posizione della colonna $F$. 
+\subsection*{Ricostruzione del testo}
+Ricostruire il testo è possibile grazie alla BWT, alle funzioni $\tn{C}$ e
+$\occ$ e alle proprietà di cui gode la BWT.
+Si comincia dall'ultimo simbolo del testo, ovvero \$, che si trova nella prima
+posizione della colonna $F$.
 Per la prima proprietà, il simbolo precedente a \$ è $L[1]$.
-A sua volta $L[1]$, per la seconda proprietà, è l'esatto simbolo che si trova alla posizione $j = \lf(L[1])$ della colonna $F$. Di conseguenza, il simbolo precedente a $L[1]$ è $L[\lf(L[1])]$.
-Lo stesso ragionamento può essere applicato iterativamente fino ad aver ricostruito l'intero testo.\\
-L'ultima iterazione viene segnalata da $\lf(k) = 1$: se si ottiene questo valore, allora il testo è stato completamente ricostruito.
+A sua volta $L[1]$, per la seconda proprietà, è l'esatto simbolo che si trova
+alla posizione $j = \lf(L[1])$ della colonna $F$. Di conseguenza, il simbolo
+precedente a $L[1]$ è $L[\lf(L[1])]$.
+Lo stesso ragionamento può essere applicato iterativamente fino ad aver
+ricostruito l'intero testo.\\
+L'ultima iterazione viene segnalata da $\lf(k) = 1$: se si ottiene questo
+valore, allora il testo è stato completamente ricostruito.
+
+\subsection*{Ricerca del pattern}
+Essendo l'FM-index un compressed self-index, esso permette di effettuare
+la ricerca del pattern all'interno del testo usando l'indice compresso stesso,
+senza alcun bisogno di ricostruire il testo originale tramite decompressione.\\
+Per poter spiegare come funziona la ricerca del pattern, però, è necessario
+capire cosa sia un $Q$-intervallo, e di quali proprietà esso gode.
+\begin{defn}
+    Un \textbf{\textit{Q}-intervallo} per la BWT è un intervallo
+    $[b,e), 1 \le b,e \le n+1$ di indici della BWT che contengono i simboli
+    che precedono suffissi del testo che iniziano con un'occorrenza
+    esatta del pattern.
+\end{defn}
+\begin{rem}
+    Si può notare che $1 \le b,e \le n+1$: questo perchè il limite destro
+    dell'intervallo è escluso, e quindi il suo valore è al più il
+    numero di caratteri nel testo (compreso il terminatore) + 1.
+    Il fatto che l'estremo destro sia escluso permette di segnalare
+    un eventuale assenza del pattern nel testo: se, infatti, il pattern non è
+    presente, l'algoritmo pone il $Q$-intervallo uguale a $[n+1, n+1)$.
+\end{rem}
+\begin{defn}
+    Un \textit{Q}-intervallo sul suffix array è un intervallo di indici
+    del suffix array, le cui celle contengono le posizioni di inizio
+    di occorrenze esatte del pattern nel testo.
+\end{defn}
+
+L'idea di ricerca del pattern è come segue:\\
+1) Parto con $Q = \epsilon$. Di conseguenza, il $Q$-intervallo è
+l'$\epsilon$-intervallo, ovvero $[1,n+1)$.\\
+2) Sia $P = P'\sigma$ il pattern, calcolo il $\sigma Q$-intervallo a partire
+dal $Q$-intervallo.\\
+3) Ripeto il punto 2 fino a quando non ho elaborato tutto il pattern.\\
+4) Alla fine, il $Q$-intervallo applicato al suffix array permetterà di
+ottenere tutte le posizioni nel testo di inizio di un'occorrenza esatta.\\
+
+\begin{thm}
+    Dato un $Q$-intervallo $[b,e)$, il $\sigma Q$-intervallo $[b',e')$ viene calcolato
+    come:
+    \begin{align*}
+        b' &= c(\sigma) + Occ(b, \sigma) + 1\\
+        e' &= c(\sigma) + Occ(e, \sigma) + 1
+    \end{align*}
+\end{thm}
+La procedura di calcolo dei nuovi indici dell'intervallo prende il nome di
+backword-extent.

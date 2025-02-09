@@ -1,13 +1,21 @@
 \chapter{Teoria della complessità computazionale}
 \section{Problemi di decisione}
 \subsection*{Classi di complessità}
-I problemi di decisione, o più precisamente i linguaggi, possono essere classificati in base alla loro complessità computazionale. Un problema viene classificato in base all'algoritmo di complessità più bassa tra tutti gli algoritmi di risoluzione conosciuti per il problema.
-La classificazione non indica, però, che il problema non può avere un algoritmo migliore: la complessità migliore fornisce quindi solo un upper-bound alla complessità del miglior algoritmo possibile.
+I problemi di decisione, o più precisamente i linguaggi, possono essere
+classificati in base alla loro complessità computazionale. Un problema viene
+classificato in base all'algoritmo di complessità più bassa tra tutti gli
+algoritmi di risoluzione conosciuti per il problema.
+La classificazione non indica, però, che il problema non può avere un algoritmo
+migliore: la complessità migliore fornisce quindi solo un upper-bound alla
+complessità del miglior algoritmo possibile.
 
 \begin{thm}
-    La classe $\textnormal{PTIME} \left( f(n) \right)$ è la classe che contiene tutti i problemi di decisione risolvibili in tempo $O(f(n))$ da una macchina di Turing deterministica.
+    La classe $\textnormal{PTIME} \left( f(n) \right)$ è la classe che contiene
+    tutti i problemi di decisione risolvibili in tempo $O(f(n))$ da una macchina
+    di Turing deterministica.
     \begin{center}
-        $\textnormal{DTIME} \left( f(n) \right) = \left\{ L \subseteq \Sigma^* \; | \; L \textnormal{ è deciso da una DTM in tempo } O \left( f(n) \right) \right\}$
+        $\textnormal{DTIME} \left( f(n) \right) =
+        \bra{ L \subseteq \Sigma^* \; | \; L \textnormal{ è deciso da una DTM in tempo } O \bra{ f(n) }}$
     \end{center}
 \end{thm}
 
@@ -36,7 +44,7 @@ La classificazione non indica, però, che il problema non può avere un algoritm
     Vale la relazione $\textnormal{P} \subseteq \textnormal{NP}$, in quanto ogni macchina deterministica può essere simulata in tempo polinomiale da una macchina non deterministica usando un solo ramo di computazione.
 \end{rem}
 
-È possibile definire due ulteriori classi, coP e coNP, che contengono i problemi complementari dei problemi di decisione contenuti rispettivamente in P e NP. Con problema complementare $\overline{L}$ si intende quel problema definito allo stesso modo del problema $L$, ma in cui le risposte fornite sono invertite: $w \in L \rightarrow w \notin \overline{L}$ e $w \in \overline{L} \rightarrow w \notin L$. 
+È possibile definire due ulteriori classi, coP e coNP, che contengono i problemi complementari dei problemi di decisione contenuti rispettivamente in P e NP. Con problema complementare $\overline{L}$ si intende quel problema definito allo stesso modo del problema $L$, ma in cui le risposte fornite sono invertite: $w \in L \rightarrow w \notin \overline{L}$ e $w \in \overline{L} \rightarrow w \notin L$.
 \begin{center}
     coP = $\left\{ L \subseteq \Sigma^* \; | \; \overline{L} \in P \right\}$\\
     coNP = $\left\{ L \subseteq \Sigma^* \; | \; \overline{L} \in NP \right\}$
@@ -102,12 +110,12 @@ Un certificato indica, di fatto, quale dei possibili rami di esecuzione della ma
 \end{defn}
 Le riduzioni di Karp non sono l'unico tipo di riduzioni esistenti:
 \begin{itemize}
-    \item riduzioni di Turing: un problema DA FINIRE 
+    \item riduzioni di Turing: un problema DA FINIRE
     \item riduzione di Cook: riduzione di Turing rappresentata da una funzione calcolabile in tempo polinomiale.
 \end{itemize}
 La riducibilità da un linguaggio $L_A$ a un linguaggio $L_B$ viene indicata $L_A \le_{P} L_B$ perchè le riduzioni definiscono una \textit{relazione d'ordine parziale} sui problemi (e quindi sui linguaggi): il problema $L_A$ è sicuramente \textit{non più difficile} da risolvere del problema $L_B$, in quanto un algoritmo che risolve il problema definito da $L_B$ può essere usato per risolvere il problema definito da $L_A$.
 
-Per le riduzioni vale anche la \textit{transitività}: 
+Per le riduzioni vale anche la \textit{transitività}:
 \begin{center}
     $L_A \le_P L_B \land L_B \le_P L_C \rightarrow L_A \le_P L_C$
 \end{center}
@@ -132,7 +140,7 @@ I problemi NP-completi si possono quindi considerare come i problemi più diffic
 Se si trovasse un algoritmo efficiente (almeno polinomiale) per un problema NP-completo, allora esso potrebbe essere applicato a tutti i problemi in NP, e di conseguenza P = NP.
 
 \begin{thm}[di Cook-Levin]
-    Il problema SAT è NP-completo.    
+    Il problema SAT è NP-completo.
 \end{thm}
 \begin{proof}
     Per dimostrare che un problema è NP-completo bisogna, per definizione, dimostrare che è in NP ed è NP-hard.
@@ -156,9 +164,9 @@ Alcune relazioni dimostrate sulle classi di complessità descritte nelle precede
 
 
 \subsection{Esempi}
-\subsection{Il problema dell'arco minimo è in P}
+\subsection*{Il problema dell'arco minimo è in P}
 Il problema dell'arco minimo è un problema di ricerca che, dato un grafo $G$, chiede di ritornare l'arco minimo di $G$, ovvero l'arco di peso minore.
-Lo si può, però, trattare anche come un problema di decisione: in questo caso, il problema dell'arco minimo, dati in input un grafo $G$ e un arco $e$, chiede di stabilire se $e$ è l'arco minimo di $G$. 
+Lo si può, però, trattare anche come un problema di decisione: in questo caso, il problema dell'arco minimo, dati in input un grafo $G$ e un arco $e$, chiede di stabilire se $e$ è l'arco minimo di $G$.
 In realtà, il problema di decisione dell'arco minimo è solitamente formulato diversamente: dati un grafo $G$ e un valore $k$, esiste un arco $e$ con $w(e) \le k$?.
 Per trovare il peso minimo all'interno del grafo basta risolvere più volte il problema, decrementando man mano il valore $k$. Se il problema afferma che ci sono archi di peso minore o uguale a $k$, ma non sono presenti archi di peso minore o uguale a $k-1$, allora $k$ è il peso minimo.
 Una volta trovato il peso minimo, per trovare l'arco minimo basta risolvere più volte il problema modificando il peso di un singolo arco (rendendolo quello di peso maggiore): se la modifica varia la soluzione del problema sul peso minimo $k$, allora l'arco modificato è quello di peso minimo; altrimenti, l'arco modificato non è quello di peso minimo e bisogna quindi procedere con un'ulteriore modifica.
@@ -169,16 +177,16 @@ Di conseguenza, il problema appartiene a P.
 Questo approccio può essere utilizzato anche per risolvere qualsiasi problema di ottimizzazione, ovvero di ricerca di un minimo o di un massimo.
 
 
-\subsection{Il problema di connettività di un grafo è in P}
+\subsection*{Il problema di connettività di un grafo è in P}
 Il problema di connettività di un grafo, dati un grafo $G$ e due vertici $s, t \in V$, chiede di stabilire se esiste un cammino da $s \leadsto t$.
 È quindi un problema di decisione.
 Il problema è risolvibile usando l'algoritmo DFS a partire da $s$.
-Al termine dell'esecuzione dell'algoritmo, se $t$ appartiene alla stessa componente connessa di cui $s$ è radice, allora 
+Al termine dell'esecuzione dell'algoritmo, se $t$ appartiene alla stessa componente connessa di cui $s$ è radice, allora
 $t$ è raggiungibile da $s$ ed esiste quindi $s \leadsto t$.
 La complessità dell'algoritmo DFS è $O(|V| + |E|)$.
 Di conseguenza, il problema è in P.
 
-\subsection{Il problema di primalità è in P}
+\subsection*{Il problema di primalità è in P}
 Il problema di primalità è un problema di decisione che, dato un intero $k$, chiede di stabilire se $k$ è un numero primo.
 
 L'approccio più ingenuo prevede di verificare che $d \nmid k, \forall d \in \mathbb{N}, 2 \le d \le \sqrt{k}$, per un totale di $\sqrt{k} - 1$ volte.
@@ -188,7 +196,7 @@ Di conseguenza, $k = 2^n$ e la complessità sarà $O({(2^n)}^\frac{1}{2}) = O(2^
 Un algoritmo migliore è AKS, che ha complessità polinomiale $O(n^12)$, e di conseguenza il problema di primalità è trattabile.
 Negli ultimi anni si è riusciti ad abbassare ulteriormente la complessità, arrivando a $O(n^6)$.
 
-\subsection{UNSAT è in coNP}
+\subsection*{UNSAT è in coNP}
 UNSAT è il problema di decisione complementare rispetto a SAT.
 Data una formula della logica proposizionale, UNSAT chiede di stabilire se la formula è insoddisfacibile, ovvero non esistono assegnamenti per cui risulta vera.
 
@@ -196,7 +204,7 @@ Si può sicuramente affermare che $\textnormal{UNSAT} \in \textnormal{coNP}$, in
 
 Più difficile è invece affermare che $\textnormal{UNSAT} \in \textnormal{NP}$. Non si è, infatti, ancora riusciti a costruire un certificato, polinomiale nel numero di variabili $n$ della formula, che possa essere verificato in tempo polinomiale da una macchina deterministica: l'unico certificato al momento conosciuto per UNSAT è quello che contiene tutti i possibili assegnamenti da verificare, che è esponenziale in $n$ (i possibili assegnamenti su $n$ variabili sono $2^n$).
 
-\subsection{Traveling Salesman Problem è in NP}
+\subsection*{Traveling Salesman Problem è in NP}
 La dimostrazione avviene sfruttando l'equivalenza tra decidibilità non deterministica in tempo polinomiale e verificabilità deterministica in tempo polinomiale.
 TSP richiede di verificare, dato il grafo $G$ e un intero $k$, se esiste un ciclo hamiltoniano di peso minore di $k$.
 Il relativo certificato altro non è che la sequenza $\langle v_1, \ldots, v_n \rangle$ dei nodi attraversati in un cammino del grafo $G$.
@@ -213,7 +221,7 @@ Di conseguenza, il verificatore ha tempo di esecuzione polinomiale in $|G|$.
 
 Uno dei migliori algoritmi conosciuti per la risoluzione di TSP è basato sulla programmazione dinamica, ed ha complessità $O(2^{|V|} \cdot |V|^2)$.
 
-\subsection{SAT è in NP}
+\subsection*{SAT è in NP}
 La dimostrazione avviene sfruttando l'equivalenza tra decidibilità non deterministica in tempo polinomiale e verificabilità deterministica in tempo polinomiale.
 SAT richiede di stabilire se una data formula della logica proposizionale su $n$ variabili è soddisfacibile, ovvero esiste un assegnamento per cui risulta vera.
 Il relativo certificato altro non è che una stringa binaria di lunghezza $n$, il cui bit di indice $i$ rappresenta l'assegnamento alla variabile $v_i$.

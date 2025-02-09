@@ -1,0 +1,19 @@
+\chapter{Algoritmi di compressione}
+\section{LZ77/LZ78}
+Algo di compressione che usano poca memoria principale nel corso della compressione:
+l'algo comprime mentre legge, e quindi non si necessita che tutto il testo
+sia in memoria per la compressione, ma si può caricare solo un pezzo
+da leggere e scorrere una volta compresso.
+
+Sono inoltre algo molto semplici da implementare, ma efficaci.
+
+Si legge la porzione di testo $T[i:n]$ (quindi da $i$ fino alla fine del testo)
+supponendo che $T[1:i-1]$ sia già stato compresso.\\
+Se l'input è $T[i:n]$, l'output è una sequenza di triple $(o, |P|, S[k])$,
+dove $o$ è un offset all'indietro dalla posizione $i$, che indica
+la posizione di partenza di un'occorrenza del prefisso $P$ in $T[1:i]$,
+$|P|$ è la lunghezza del prefisso che si è trovato e
+$T[|P|]$ è il simbolo che segue il prefisso che si sta considerando. \\
+Si cerca infatti il prefisso $P$ del testo $T[i:n]$ che occorre in $T[1:i-1]$.
+Il testo compresso sarà questa sequenza di triple.
+

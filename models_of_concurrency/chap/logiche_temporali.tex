@@ -1,0 +1,333 @@
+\chapter{Model checking}
+Il model checking è un metodo per verificare algoritmicamente la correttezza di
+sistemi formali. In particolare, dato un modello del sistema \footnote{Con
+modello del sistema si intende la sua implementazione.} e una specifica
+\footnote{La specifica è una proprietà che deve essere rispettata dal sistema.},
+si vuole stabilire se il modello soddisfa la specifica.\\
+Il modello viene solitamente rappresentato come un sistema di transizioni,
+mentre la specifica è una WFF di una logica.
+
+I sistemi reattivi sono sistemi concorrenti, distribuiti e asincroni,
+che non obbediscono al paradigma input-computazione-output, in quanto
+idealmente non hanno uno stato di partenza e non terminano, ma continuano
+a offrire le loro funzionalità.
+Per questo la logica di Hoare non si rivela adatta alla verifica di
+sistemi reattivi.
+
+La logica di Hoare è un formalismo per il model checking di sistemi (programmi)
+sequenziali. Si basa sul concetto di comando per il modello, e su
+pre-condizione e post-condizione per la specifica. La pre-condizione deve
+valere nello stato iniziale del sistema, mentre la post-condizione deve
+valere nello stato finale.\\
+Nei sistemi concorrenti, però, non si ha alcuno stato iniziale
+\footnote{Anche se nella pratica il sistema avrà ovviamente uno stato di
+partenza.} e alcuno stato finale: l'obiettivo di un sistema concorrente è
+infatti quello di mantenere la sua esecuzione e far sì che una o più
+proprietà siano verificate durante questa esecuzione.\\
+La logica di Hoare rimane comunque utile nel model checking di sistemi
+concorrenti: essi sono infatti molto spesso formati da sottosistemi
+sequenziali, la cui correttezza può essere verificata tramite la logica
+di Hoare.
+
+CCS e reti di Petri, invece, sono formalismi che permettono di rappresentare
+sistemi concorrenti e, attraverso particolari tecniche, di verificarne alcune
+proprietà. Risultano però algoritmicamente inefficienti \footnote{Ad esempio,
+stabilire tutti i casi raggiungibili di una rete di Petri per verificare
+l'implementazione corretta della mutua esclusione porta a un'esplosione
+combinatoria.} e poco generali.
+Vengono quindi usate le logiche temporali, che in alcuni casi permettono di
+evitare l'esplosione combinatoria degli stati che avviene solitamente
+quando si costruisce il grafo dei casi raggiungibili nelle reti di Petri
+(utile per verificare raggiungibilità).
+
+\begin{defn}
+    Un \textbf{sistema di transizioni} è una coppia $(Q, T)$ dove:
+    \begin{itemize}
+        \item $Q$ è un insieme di stati \footnote[][1cm]{L'insieme di stati
+        può essere infinito, anche non numerabile. In queste note, a meno che
+        venga esplicitato, si tratteranno sistemi di transizioni finiti,
+        ovvero con un insieme di stati finito.}.
+        \item $T \subseteq Q \times Q$ è la relazione di transizione, ovvero
+        quella relazione che stabilisce i collegamenti tra stati del sistema.
+    \end{itemize}
+\end{defn}
+
+\begin{rem}
+    In un sistema di transizioni non etichettato, per ogni coppia di nodi $u$
+    e $v$ può essere presente al massimo un arco $(u, v)$ che li collega.
+\end{rem}
+
+\begin{defn}
+    Un \textbf{sistema di transizioni etichettato} (Labeled Transition System)
+    è una tripla $(Q, L, T)$ dove:
+\end{defn}
+
+\begin{defn}
+    Un \textbf{cammino} è una sequenza finita di stati
+    $q_0 q_1 \ldots q_k, q_i \in Q$.
+\end{defn}
+
+\begin{defn}
+    Un \textbf{cammino massimale} è un cammino che non può essere esteso.
+\end{defn}
+
+\section{Logica Temporale Lineare}
+La Logica Temporale Lineare (LTL) è \ldots
+
+La LTL viene usata per enunciare le specifiche che si vogliono verificare
+sul sistema, rappresentando una specifica come una WFF.
+
+\subsection{Sintassi LTL}
+Sia $AP$ l'insieme delle proposizioni atomiche, $p \in AP$ una proposizione
+atomica, e $\alpha, \beta$ due WFF della LTL.
+L'insieme $WFF_{\tn{LTL}}$ delle formule ben formate della LTL è definito come:
+\begin{itemize}
+    \item $p \in WFF_{\tn{LTL}}$,
+    \item $\tn{true}, \tn{false} \in WFF_{\tn{LTL}}$
+    \item $\alpha \lor \beta \in WFF_{\tn{LTL}}$ e $\lnot \alpha \in WFF_{\tn{LTL}}$
+    \item $\nextOp \alpha \in WFF_{\tn{LTL}}$
+    \item $\finallyOp \alpha \in WFF_{\tn{LTL}}$
+    \item $\globallyOp \alpha \in WFF_{\tn{LTL}}$
+    \item $\untilOp \alpha \in WFF_{\tn{LTL}}$
+\end{itemize}
+
+\subsection{Semantica LTL}
+Per definire la semantica della LTL è prima necessario definire il modello di
+Kripke.
+\begin{defn}
+    Il \textbf{modello di Kripke} è una tripla:
+    \[
+        (Q, T, I)
+    \]
+    dove:
+    \begin{itemize}
+        \item $(Q, T)$ è un sistema di transizioni che rappresenta il sistema
+        concorrente;
+        \item $I: Q \rightarrow \mathcal{P}(AP)$ è una funzione che associa a
+        ogni stato un sottoinsieme di proposizioni atomiche vere in quello
+        stato. $I$ viene detta \textbf{funzione di interpretazione}.\\
+        $I(q)$ indica il sottoinsieme di proposizioni atomiche vere in $q$.
+    \end{itemize}
+\end{defn}
+
+A ogni stato $q$ è associato un insieme di cammini massimali per quello stato.\\
+Una WFF è vera in uno stato $q$ sse è vera per tutti i cammini massimali che
+partono da $q$. Se una WFF $p$ è vera in un certo cammino $\pi$, allora si
+scrive $\pi \vDash p$.
+
+Un sistema concorrente rappresentato tramite un modello di Kripke soddisfa una
+specifica, ovvero una WFF della LTL, sse la specifica è vera per tutti i
+cammini massimali che partono dallo stato iniziale.
+
+Due modelli di Kripke $M_1$ e $M_2$, con stati iniziali rispettivamente
+$q_0$ e $s_0$, sono equivalenti rispetto a una logica $L$ sse $\forall \alpha \in L$,
+ovvero per tutte le formule della logica,
+\[
+    M_1, q_0 \vDash \alpha \longleftrightarrow M_2, s_0 \vDash \alpha
+\]
+ovvero se una formula logica vale nello stato iniziale di un modello, allora
+deve valere anche nello stato iniziale dell'altro modello.
+
+\upperAccE ora possibile definire la semantica della LTL.\\
+
+Siano $\pi = q_0 q_1 \ldots, q_i \in Q$ un cammino definito sul modello di
+Kripke, e $\alpha, \beta \in WFF_{\tn{LTL}}$.
+\begin{itemize}
+    \item $\pi \vDash p \longleftrightarrow p \in I(q_0)$, ovvero $p$ vale
+    nello stato iniziale $q_0$ di $\pi$.
+    \item $\pi \vDash \lnot \alpha \longleftrightarrow \pi \nvDash \alpha$
+    \item $\pi \vDash \alpha \lor \beta \longleftrightarrow \pi \vDash \alpha \lor \pi \vDash \beta$
+    \item $\pi \vDash \nextOp \beta \longleftrightarrow \pi^{(1)} \vDash \beta$,
+    ovvero $\beta$ vale nello stato successivo $\pi^{(1)}$.
+    \marginnote{$\nextOp = \tn{neXt}$\\
+    $\finallyOp = \tn{Finally}$\\
+    $\globallyOp = \tn{Globally}$\\
+    $\untilOp = \tn{Until}$}
+    \item $\pi \vDash \finallyOp \beta \longleftrightarrow
+    \exists i \in \mathbb{N} : \pi^{(i)} \vDash \beta$,
+    ovvero $\beta$ vale in almeno uno stato del cammino $\pi$.
+    \item $\pi \vDash \globallyOp \beta \longleftrightarrow
+    \forall i \in \mathbb{N} : \pi^{(i)} \vDash \beta$,
+    ovvero $\beta$ vale in ogni stato del cammino $\pi$.
+    \item $\pi \vDash \alpha \untilOp \beta \longleftrightarrow
+    (\pi \vDash \finallyOp \beta) \land
+    (\forall h \in \mathbb{N}, h < i : \pi^{(i)} \vDash \alpha)$,
+    ovvero $\beta$ è vera in almeno uno stato $q_i$ del cammino e in ogni stato
+    precedente a $q_i$ vale $\alpha$.
+    \item $\pi \vDash \alpha \weakOp \beta \longleftrightarrow
+    \pi \vDash \globallyOp \alpha \lor (\alpha \lor \beta)$, ovvero
+    si comporta come l'operatore $\untilOp$ ma non è detto che $\beta$ prima
+    o poi diventi vera.
+    \item $\pi \vDash \alpha \releaseOp \beta \longleftrightarrow
+    \pi \vDash \beta \weakOp (\alpha \land \beta)$, ovvero vale $\beta$
+    fino a quando non valgono contemporaneamente $\alpha$ e $\beta$ nello
+    stesso stato. Non è però detto che $(\alpha \land \beta)$ prima o
+    poi sia vero (c'è l'operatore weak), e quindi in questo caso
+    sarà sempre vero $\beta$.
+\end{itemize}
+
+\subsection{Esempi di formule LTL}
+\begin{itemize}
+    \item $\finallyOp \globallyOp \alpha$: $\alpha$ è invariante da un certo
+    istante in poi.
+    \item $\globallyOp \finallyOp \alpha$: $\alpha$ è vera in un numero
+    infinito di stati.
+    \item $\globallyOp \lnot (c_1 \land c_2)$: mutua esclusione. $c_1$ e
+    $c_2$ sono le sezioni critiche dei due processi che interagiscono.
+    \item $\globallyOp (\text{req} \rightarrow \nextOp \finallyOp \text{ack})$:
+    ogni richiesta viene sempre prima o poi gestita.
+    \item $\globallyOp (\text{req} \rightarrow (\text{req} \untilOp \text{ack}))$:
+    fino a quando la richiesta viene gestita, la richiesta rimane pending.
+\end{itemize}
+
+\subsection{Insieme minimale di operatori}
+Gli operatori temporali LTL possono essere descritti anche in funzione
+di altri operatori temporali LTL.
+Di conseguenza, non tutti gli operatori LTL sono richiesti, ma è possibile
+definire un insieme minimale di operatori.
+Un esempio di insieme minimale di operatori LTL è $\cbra{\nextOp, \untilOp}$,
+anche se non è l'unico. Ogni altro operatore può poi essere derivate da
+questi operatori.
+
+
+\subsection{Limiti di LTL}
+LTL non può essere esprimere proprietà riguardanti insiemi di cammini.
+Ad esempio, non può richiedere che tutti i cammini abbiano una certa Proprietà
+o che solo alcuni di essi abbiano quella proprietà.
+
+
+\section{Computational Tree Logic}
+La Computational Tree Logic è una logica temporale che permette di esprimere
+proprietà su insiemi di cammini.
+
+Sintassi:
+\begin{itemize}
+    \item Proposizione atomiche sono formule valide
+    \item la negazione di formule ben formate è una formula ben formata
+    \item stessa cosa per implicazione, congiunzione, disgiunzione.
+    \item $AX \alpha, EX \alpha$ sono FBF
+    \item $AF \alpha, EF \alpha$ sono FBF
+    \item $AG \alpha, EG \alpha$ sono FBF
+    \item $A(\alpha \untilOp \beta), E(\alpha \untilOp \beta)$ sono FBF
+\end{itemize}
+
+A ed E sono quantificatori sui cammini: A indica per ogni cammino, mentre
+E indica esiste un cammino tale che.
+
+\section{Algoritmo per model checking con CTL}
+Per poter spiegare l'algoritmo di model checking per CTL, è necessario prima
+capire cos'è l'estensione di una formula $\alpha$.
+\begin{defn}
+    Sia $M = (Q, T, I)$ un modello di Kripke e $\alpha$ una formula CTL.
+    L'\textbf{estensione} di $\alpha$ è un sottoinsieme di stati del modello
+    in cui vale $\alpha$.
+    \[
+        \llbracket \alpha \rrbracket = \cbra{q \in Q \,|\, M, q \vDash \alpha}
+    \]
+\end{defn}
+
+\section{LTL e CTL}
+Alcune proprietà possono essere espresse sia in LTL che in CTL.
+Esempi sono le invarianti:
+\[
+    A \globallyOp \lnot p \equiv G \lnot p
+\]
+Reattività:
+\[
+    A \globallyOp (p \rightarrow A \finallyOp  q) \equiv
+    G (p \rightarrow \finallyOp q)
+\]
+
+Alcune proprietà CTL non possono essere espresse in LTL.
+Un esempio è la reset property, ovvero che da ogni stato raggiungibile
+in ogni cammino sia sempre possibile raggiungere uno stato in cui vale
+$p$. Reset property in CTL:
+\[
+    A \globallyOp E \finallyOp p
+\]
+
+Un esempio di formula LTL che invece non si può esprimere in CTL è
+$\finallyOp \globallyOp p$, ovvero che in ogni cammino, prima o poi
+$p$ diventa sempre vera.
+
+
+\section{$\text{CTL}^*$}
+$\text{CTL}^*$ è la logica che estende sia LTL che CTL. Mantiene i quantificatori
+sui cammini A ed E ma rimuove il vincolo di CTL che ogni operatore temporale
+sia preceduto da un quantificatore sui cammini.
+Un esempio di FBF di $\text{CTL}^*$, ma non CTL e LTL, è:
+\[
+    A \finallyOp \globallyOp p \lor A \finallyOp E \globallyOp q
+\]
+
+
+\section{Insiemi parzialmente ordinati e reticoli}
+Un insieme parzialmente ordinato $(A, \le)$, detto anche poset, è una struttura
+algebrica formata da un insieme di elementi $A$ e una relazione d'ordine parziale
+$\le$ definita su $A$.
+Una relazione binaria è una relazione d'ordine parziale sse è riflessiva,
+antisimmetrica e transitiva.
+In una relazione d'ordine parziale $R$, non è garantito che
+$\forall x, y \in A, (x,y) \in R \lor (y,x) \in R$, ovvero non è garantito
+che tutti gli elementi siano confrontabili.
+
+Sia $B \subseteq A$ un sottoinsieme di elementi di $A$:
+\begin{itemize}
+    \item $x \in A$ è un maggiorante di $B$ sse $\forall y \in B, y \le x$.
+    \item $x \in A$ è un minorante di $B$ sse $\forall y \in B, x \le y$.
+\end{itemize}
+Non è sempre garantito che qualsiasi sottoinsieme $B$ ammetta maggiorante
+e minorante.
+Se $B$ ammette almeno un maggiorante, allora si dice che $B$ è limitato
+superiormente.
+Se $B$ ammette almeno un minorante, allora si dice che $B$ è limitato
+inferiormente.
+
+$x \in B$ è il minimo di $B$ sse $\forall y \in B, x \le y$.
+$x \in B$ è il massimo di $B$ sse $\forall y \in B, y \le x$.
+
+L'estremo inferiore di $B$ è il massimo dei minoranti.
+L'estremo superiore di $B$ è il minimo dei maggioranti.
+
+\begin{defn}
+    Un \textbf{reticolo} (detto anche lattice) è un insieme parzialmente ordinato $(L, \le)$ in cui
+    qualsiasi coppia di elementi ammette un estremo superiore e un estremo
+    inferiore, ovvero:
+    \[
+        \forall x, y \in L, \exists x \bigvee y \land \exists x \bigwedge y
+    \]
+\end{defn}
+
+\begin{defn}
+    Un reticolo è un \textbf{reticolo completo} sse
+    \[
+        \forall B \subseteq L, \exists \bigvee B \land \exists \bigwedge B
+    \]
+\end{defn}
+
+\section{Funzioni monotone e teoremi}
+\begin{defn}
+    Dati due poset $(L_1, \le_1)$ e $(L_2, \le_2)$.
+    Una funzione $f: L_1 \rightarrow L_2$ si dice \textbf{monotona} sse
+    \[
+        \forall x,y \in L_1, \quad x \le_1 y \rightarrow f(x) \le_2 f(y)
+    \]
+\end{defn}
+
+\begin{defn}
+    Data una funzione generica $f: X \rightarrow X$.
+    Un elemento $x \in X$ è un punto fisso per la funzione $f$ sse $f(x) = x$.
+\end{defn}
+
+\begin{exmp}
+    I punti fissi della funzione $f: \mathbb{R} \rightarrow \mathbb{R}, f(x) = x^2$
+    sono 0 e 1.\\
+    La funzione $f: \mathbb{R}^+ \rightarrow \mathbb{R}, f(x) = \log_2(x)$
+    non ha alcun punto fisso.
+\end{exmp}
+
+Si consideri ora
+
+\subsection{Teorema di Knaster-Traski}
+
+\subsection{Teorema di Kleene}

@@ -1,7 +1,380 @@
-\chapter{Calculus of Communicating Systems}
-Il Calculus of Communicating System (CCS) è un linguaggio per descrivere i processi di sistemi anche concorrenti, e offre un modo di eseguire operazioni sui processi.
-
-Il linguaggio dei processi CCS, ovvero espressioni CCS che descrivono processi validi, è definito dalla seguente grammatica:
+\chapter{Sistemi concorrenti}
+Un sistema concorrente è composta da diverse parti che:
 \begin{itemize}
-    \item 
+    \item competono per l'accesso a risorse condivise
+    \item cooperano per un obiettivo comune
+    \item si coordinano
 \end{itemize}
+
+\chapter{Calculus of Communicating Systems}
+PARAGRAFO DA SPOSTARE IN INTRODUZIONE
+Il comportamento di un sistema concorrente è non deterministico e non composizionale
+e, di conseguenza, la logica di Hoare non si rileva adatta a descrivere
+il comportamento di un sistema concorrente e verificarne le proprietà.
+Di conseguenza, vengono adottate altre tecniche. Una di queste è il Calculus
+of Communicating Systems, che permette di descrivere la semantica di sistemi
+concorrenti, paralleli e distribuiti.
+
+\section{Introduzione}
+Il Calculus of Communicating System (CCS) è un algebra di processi
+\footnote{Altri esempi di algebre di processi sono Communicating Sequential
+Processes, Algebra of Communicating Processes, il $\pi$-calcolo, l'ambient
+calculus e il join-calculus.}
+\footnote{Una delle caratteristiche che distinguono le algebre di processi
+da altri modelli che permettono di modellare la concorrenza, come le reti
+di Petri, è che le algebre di processi utilizzano il concetto di canale
+per la comunicazione tra processi. Il concetto di canale delle algebre di
+processi astrae quello che nell'implementazione è un canale ben definito con
+una complessa struttura, che permette di far comunicare i vari processi.}
+usata per modellare i sistemi concorrenti. Il CCS permette di descrivere
+i processi che compongono il sistema concorrente come espressioni, che combinano
+vecchi processi per generarne di nuovi. Permette, inoltre, di modellare
+le interazioni e le sincronizzazioni tra i processi del sistema utilizzando
+le azioni.
+Come tutte le algebre di processi, si assume che i processi interagiscano
+tramite scambio di messaggi, e che quindi non condividano memoria.
+
+Il CCS, essendo un algebra di processi, non permette di esprimere la true
+concurrency del sistema concorrente, ma la modellazione del sistema altro non
+è che una simulazione sequenziale non deterministica.
+Se l'obiettivo è quello di rappresentare la true concurrency, altri modelli
+formali si rivelano più adatti, come le reti di Petri.
+
+Il principale utilizzo del CCS è quello di verificare se sistemi concorrenti
+sono corretti dal punto di vista di proprietà desiderate sul sistema, come
+l'assenza di deadlock e livelock.
+
+\section{Sintassi e semantica}
+Il CCS è fortemente legato al concetto di azione, che modella la comunicazione
+che avviene tra due processi. Proprio perchè la comunicazione coinvolge due
+processi, ogni azione ha una rispettiva coazione, che rappresenta
+l'azione opposta effettuata dall'altro processo coinvolto nell'interazione.
+Un esempio che permette di capire facilmente questo concetto è quello
+che coinvolge le azioni \verb|prendere| e \verb|dare|: se una persona
+prende un oggetto da un'altra persona, allora quest'ultima avrà dato l'oggetto
+alla prima.
+
+\begin{rem}
+    $\overline{a}$ è la coazione dell'azione $a$. $\overline{\overline{a}}$,
+    ovvero la coazione della coazione di $a$, è l'azione $a$ stessa. ovvero:
+    \[
+        \overline{\overline{a}} = a
+    \]
+\end{rem}
+
+Sia quindi $A$ l'insieme dei nomi di azioni che possono effettuate nel sistema e
+$\overline{A}$ l'insieme dei nomi delle coazioni delle azioni contenute in $A$.
+L'insieme di tutte le possibili azioni Act è definito come:
+\[
+    \text{Act} = A \cup \overline{A} \cup \cbra{\tau}
+\]
+dove $\tau$ è l'azione di sincronizzazione tra processi, che avviene
+quando due processi effettuano azione e coazione l'uno nei confronti dell'altro.
+
+I processi CCS non sono altro che espressioni CCS, che combinano altri processi
+CCS usando appositi operatori.
+L'insieme $P$ delle espressioni CCS valide è quindi definito come:
+\begin{itemize}
+    \item processo nullo:
+    \[
+        \text{NIL } \in P
+    \]
+    dove NIL è il processo che non fa niente.
+    \item azione/prefisso:
+    \[
+        \alpha.p_1 \in P, \quad \alpha \in \text{Act}, p_1 \in P
+    \]
+    \item identificazione di processo:
+    \[
+        A \in P
+    \]
+    dove $A = p_1$ è un identificatore per il processo $p_1$.
+    \item somma:
+    \[
+        p_1 + p_2 \in P, \quad p_1, p_2 \in P
+    \]
+    \item composizione parallela:
+    \[
+        p_1 \,|\, p_2 \in P, \quad p_1, p_2 \in P
+    \]
+    \item restrizione:
+    \[
+        p_1 \setminus \alpha \in P, \quad p_1 \in P, \alpha \in \text{Act}
+    \]
+    \item renaming:
+    \[
+        p_1[\sfrac{\beta}{\alpha}], \quad p_1 \in P, \alpha, \beta \in \text{Act}
+    \]
+\end{itemize}
+RIVEDERE OPERATORI CCS PRIMO FILE SLIDE 10-14
+
+La semantica degli operatori CCS è la seguente:
+\begin{itemize}
+    \item processo nullo: NIL è il processo che non fa niente.
+    \item azione/prefisso: $\alpha.p_1$ è il processo che può effettuare
+    l'azione $\alpha$ per poi comportarsi come il processo $p_1$.
+    \item identificazione di processo: $A = p_1$ permette di far riferimento
+    al processo $p_1$ usando l'identificatore $A$. Nel processo $p_1$ può
+    a sua volta comparire l'identificatore $A$, permettendo quindi definizioni
+    ricorsive.
+    \item somma: $p_1 + p_2$ è il processo che può comportarsi come il
+    processo $p_1$ o come il processo $p_2$.
+    \item composizione parallela: nel processo $p_1 \,|\, p_2$,
+    i processi $p_1$ e $p_2$ esistono contemporaneamente e vengono eseguiti
+    in maniera concorrente.
+    \item restrizione: $p_1 \setminus \alpha$ è il processo $p_1$ che però
+    non può compiere l'azione $\alpha$.
+    \item renaming: $p_1[\sfrac{\beta}{\alpha}]$ è il processo $p_1$ in
+    cui tutte le azioni di nome $\alpha$ sono state rinominate come $\beta$.
+\end{itemize}
+
+\section{Processi CCS come sistemi di transizioni etichettati}
+I processi CCS sono di fatto espressioni manipolabili algebricamente.
+Può però essere utile interpretare i processi CCS come sistemi di transizione
+etichettati, in modo da facilitare la loro comprensione, trattazione
+e renderli rappresentabili graficamente.
+
+Si ricorda che un sistema di transizioni etichettato è una quadrupla
+$(S, E, T, s_0)$ dove $S$ è un insieme di stati, $E$ è un insieme di etichette,
+$T$ è un insieme di archi etichettati, e $s_0$ è lo stato iniziale.
+Tradurre un processo CCS in un LTS è molto semplice: $S$ è infatti l'insieme
+dei possibili processi CCS raggiungibili a partire dal processo considerato,
+mentre $E = Act$, ovvero è l'insieme di tutte le possibili azioni.
+Si possono poi facilmente definire anche $T$ e $s_0$.
+
+\section{Equivalenza semantica tra processi}
+Può essere utile, in alcuni casi, stabilire se due processi si comportano allo
+stesso modo quando interagiscono con un particolare sistema concorrente:
+in questo caso, infatti, i due processi sono intercambiali all'interno del
+sistema, e l'utilizzo di un processo o dell'altro all'interno del sistema
+concorrente non fa variare il comportamento dell'intero sistema concorrente.
+Due processi, però, possono comportarsi allo stesso modo anche se diversi tra
+loro, e per questo viene introdotta la nozione di equivalenza all'osservazione:
+due processi sono equivalenti all'osservazione sse interagiscono allo stesso
+modo con un particolare sistema concorrente, e il loro comportamento
+risulta identico a un osservatore esterno. I due processi possono quindi
+essere considerati congruenti, ed essere sostituiti nel sistema
+concorrente senza mofificare il comportamento del sistema.
+Si deve quindi definire un criterio con cui sia possibile stabilire se
+due processi siano effettivamente equivalenti all'osservazione.
+
+La relazione di equivalenza tra processi che si sta cercando deve avere
+le seguenti proprietà:
+\begin{itemize}
+    \item se due processi sono isomorfi, allora sicuramente sono equivalenti
+    secondo la relazione di equivalenza.
+    \item se due processi sono equivalenti secondo la relazione, allora
+    sicuramente sono equivalenti alle tracce.
+    \item la relazione deve astrarre dagli stati e dalle azioni di sincronizzazione.
+    \item la relazione deve preservare i deadlock.
+    \item la relazione deve essere una congruenza rispetto agli operatori del
+    CCS.
+\end{itemize}
+
+D'ora in poi, i processi CCS verranno interpretati come sistemi di transizione
+etichettati, in modo da definire più facilmente l'equivalenza semantica
+tra processi.
+
+\subsection*{Isomorfismo}
+Il primo approccio che si può usare per affrontare il problema dell'equivalenza
+all'osservazione è quello di verificare se due processi CCS, o meglio i loro
+LTS, sono isomorfi.
+
+Due sistemi di transizioni etichettati $(S_1, \text{Act}_1, T_1, s_1)$ e
+$(S_2, \text{Act}_2, T_2, s_2)$ sono isomorfi sse esistono due funzioni biunivoche
+$\alpha: S_1 \rightarrow S_2$ e $\beta: \text{Act}_1 \rightarrow \text{Act}_2$
+tali che:
+\begin{itemize}
+    \item $\alpha(s_1) = s_2$
+    \item $\forall s,s' \in S_1, \forall a \in \text{Act}_1 \quad
+    (s,a,s') \in T_1 \leftrightarrow (\alpha (s), \beta (a), \alpha (s')) \in T_2$
+\end{itemize}
+
+L'isomorfismo tra LTS è una congruenza rispetto agli operatori CCS, ma
+non astrae dagli stati e non preserva i deadlock. L'isomorfismo si rivela
+quindi essere troppo stringente per verificare l'equivalenza
+all'osservazione.
+
+\subsection*{Equivalenza forte alle tracce}
+Si introduce quindi la nozione di equivalenza alle tracce, in particolare
+di equivalenza forte alle tracce.
+Le tracce forti di un processo $p \in P$ sono tutte le possibili sequenze
+di azioni eseguibili all'interno del sistema concorrente a partire dal processo
+$p$ considerato.
+\[
+    \text{Tracce}(p) = \cbra{w \in \text{Act}^* |
+    \exists p' \in \text{Proc. CCS}, p \strongTrans{w} p'}
+\]
+Due processi si dicono equivalenti alle tracce forti $P_1 \strongTrace P_2$ sse
+$\text{Tracce}(P_1) = \text{Tracce}(P_2)$.
+
+L'equivalenza alle tracce forte è implicata dall'isomorfismo ed è una congruenza
+rispetto agli operatori CCS, ma non astrae dalle azioni si sincronizzazione
+e non preserva i deadlock. Di conseguenza, anche l'equivalenza forte
+alle tracce si rivela essere troppo restrittiva per analizzare l'equivalenza
+semantica tra processi.
+
+\subsection*{Equivalenza debole alle tracce}
+Si può quindi provare a definire la nozione di equivalenza debole alle tracce.
+Per definire l'equivalenza alle tracce debole è necessario prima definire
+la relazione di transizione debole $\weakTrans{\alpha}$.
+\begin{defn}
+    Siano $p, p' \in P$ due processi CCS e $\alpha \in \text{Act}$,
+    allora $p \weakTrans{\alpha} p'$ sse:
+    \begin{itemize}
+        \item $p \strongTrans{\tau*} p'$ se $\alpha = \tau$
+        \item $p \strongTrans{\tau*} \ldots \strongTrans{\alpha} \ldots \strongTrans{\tau*} p'$
+        se $\alpha = \tau$
+    \end{itemize}
+
+    Sia ora $w \in \text{Act}^*$, $w = a_1 \ldots a_n$. $p \weakTrans{w} p'$ sse:
+    \begin{itemize}
+        \item $p \strongTrans{\tau*} p'$ se $w = \tau^* \lor w = \epsilon$
+        \item $p \weakTrans{a_1} \ldots \weakTrans{a_n} p'$
+        se $\alpha = \tau$
+    \end{itemize}
+\end{defn}
+
+\begin{defn}
+    Siano $p, q \in \text{Proc. CCS}$ due processi CCS. I due processi sono
+    debolmente equivalenti alle tracce, ovvero $p \weakTrace q$, sse
+    $\text{Tracce}_{\Rightarrow}(p) = \text{Tracce}_{\Rightarrow}(q)$.
+
+    Con $\text{Tracce}_{\Rightarrow}(p)$ si intendono tutte le transizioni deboli
+    che è possibile compiere a partire da $p$, ovvero:
+    \[
+        \text{Tracce}_{\Rightarrow}(p) = \cbra{w \in (A \cup \overline{A})* |
+        p \weakTrans{w} p', p' \in P}
+    \]
+\end{defn}
+
+L'equivalenza alle tracce debole $\weakTrace$ è ovviamente meno restrittiva dell'equivalenza
+alle tracce forte.
+Di conseguenza, se due processi sono fortemente equivalenti alle tracce,
+essi implicitamente sono debolemente equivalenti alle tracce. Vale quindi
+$\weakTrace \, \subseteq \, \strongTrace$.
+
+L'equivalenza alle tracce debole è implicata dall'isomorfismo,
+è una congruenza rispetto agli operatori CCS, e permette di astrarre
+dagli stati e dalle azioni di sincronizzazione.
+Come per la sua versione forte, però, l'equivalenza alle tracce debole non
+permette però di preservare i deadlock: di conseguenza, anche l'equivalenza
+debole alle tracce non è adatta per confrontare i processi.
+
+\subsection*{Bisimulazione forte}
+Si introduce quindi la nozione di bisimulazione.
+
+\begin{defn}
+    La relazione di bisimulazione forte
+    $\strongBisim \subseteq P \times P$
+    è una relazione binaria tale che $\forall p, q \in P$, $p \strongBisim q$ sse:
+    \begin{itemize}
+        \item $\forall \alpha \in \text{Act}, \quad p \strongTrans{\alpha} p'
+        \implies \exists q' \in P : q \strongTrans{\alpha} q' \land p' \strongBisim q'$
+        \item $\forall \alpha \in \text{Act}, \quad q \strongTrans{\alpha} q'
+        \implies \exists p' \in P : p \strongTrans{\alpha} p' \land p' \strongBisim q'$
+    \end{itemize}
+\end{defn}
+
+\begin{rem}
+    La relazione di bisimulazione forte è riflessiva, simmetrica e transitiva.
+    Di conseguenza, la bisimulazione forte è una relazione di equivalenza.
+\end{rem}
+
+\begin{rem}
+    Due processi sono fortemente bisimili sono sicuramente equivalenti alle
+    tracce forte.
+    Non è detto però che, viceversa, due processi equivalenti alle tracce
+    forte siano fortemente bisimili.
+\end{rem}
+
+\begin{rem}
+    La bisimulazione forte è più restrittiva dell'equivalenza alle tracce forte.
+\end{rem}
+
+La bisimulazione forte è implicata dall'isomorfismo, preserva i deadlock ed è
+una congruenza rispetto agli operatori CCS. Non permette, però, di astrarre dalle
+azioni di sincronizzazione, e non si rivela quindi adatta a verificare
+l'equivalenza semantica di processi.
+
+\subsection*{Bisimulazione debole e congruenza tra processi}
+\begin{defn}
+    Una relazione di bisimulazione debole $\weakBisim$ è una relazione
+    binaria tale che $\forall p, q \in P$, $p \weakBisim q$ sse:
+    \begin{itemize}
+        \item $\forall \alpha \in \text{Act}, \quad p \strongTrans{\alpha} p'
+        \implies \exists q' \in P : q \weakTrans{\alpha} q' \land p' \weakBisim q'$
+        \item $\forall \alpha \in \text{Act}, \quad q \strongTrans{\alpha} q'
+        \implies \exists p' \in P : p \weakTrans{\alpha} p' \land p' \weakBisim q'$
+    \end{itemize}
+\end{defn}
+
+La bisimulazione debole $\weakBisim$ è ovviamente meno restrittiva della bisimulazione
+forte $\strongBisim$. Di conseguenza, $\strongBisim \subseteq \weakBisim$.
+
+\begin{rem}
+    La bisimulazione debole è più restrittiva dell'equivalenza alle tracce debole.
+    Se due processi sono debolmente bisimili, allora sono anche debolmente
+    equivalenti alle tracce. Non è sempre vero il contrario.
+\end{rem}
+La bisimulazione debole è una relazione di equivalenza.
+Permette di preservare i deadlock nell'interazione con l'ambiente.
+Permette di astrarre l'equivalenza da azioni non osservabili, ovvero azioni
+$\tau$, e cicli non osservabili, ovvero cicli $\tau$.
+La bisimulazione debole non è però una congruenza per gli operatori del CCS.
+è infatti una congruenza per tutti gli operatori CCS tranne per + e la ricorsione.\\
+
+Di conseguenza, è possibile definire una nuova relazione che goda
+di tutte le proprietà possedute dalla bisimulazione debole, ma che al contempo
+sia una anche una relazione di congruenza rispetto a tutti gli operatori
+del CCS, compresi + e ricorsione.
+Per farlo, però, la nuova relazione dovrà necessariamente essere definita tramite
+assiomi.
+Viene quindi definita $\congr$ come la più grande
+relazione di congruenza contenuta in $\weakBisim$ per il CCS senza ricorsione,
+e con agenti finiti.
+
+Assiomi della relazione $\congr$:
+\begin{itemize}
+    \item $p+(q+r) \congr (p+q)+r \quad \land \quad
+    p\,|\,(q\,|\,r) \congr (p\,|\,q)\,|\,r$
+    \item $p+q \congr q+p \quad \land \quad p\,|\,q \congr q\,|\,p$
+    \item $p+p \congr p \quad \land \quad p\,|\,p \notCongr p$
+    \item $p+\text{NIL} \congr p \quad \land \quad p\,|\,\text{NIL} \congr p$
+    \item $p+\tau .p \congr \tau .p$
+    \item $\mu . \tau .p \congr \mu .p$
+    \item $\mu .(p+ \tau .q) \congr \mu .(p+ \tau .q) + \mu .q$
+    \item $p\,|\,q \congr \sum_i \alpha_i .(p_i \,|\,q) +
+    \sum_j \beta_j .(p \,|\,q_j) + \sum_{\alpha_i = \overline{\beta_j}}
+    \tau .(p_i, q_j)$ \\ (teorema di espansione di Miller)
+    \item $p\sbra{f} \congr \sum_i f(\alpha_i).(p_i\sbra{f}) \quad
+    \forall f \tn{ funzione di etichettatura}$
+    \item $p \setminus L \congr \sum\limits_{\alpha_i, \overline{\alpha_i} \notin L}
+    \alpha_i.(p_i \setminus L) \quad \forall L \subseteq A$
+\end{itemize}
+Gli assiomi della relazione di congruenza $\congr$ sono corretti e completi.
+
+\subsection*{Processi deterministici}
+\begin{defn}
+    Un processo CCS si dice \textbf{processo deterministico} sse
+    \[
+        \forall x \in \text{Act}, \quad
+        p \strongTrans{x} p' \land p \strongTrans{x} p" \implies p' = p"
+    \]
+    ovvero da uno stesso stato non può partire la stessa azione verso due stati
+    diversi. Con azione si intende anche l'azione di sincronizzazione $\tau$.
+\end{defn}
+
+\begin{defn}
+    Se due processi sono deterministici, allora:
+    \begin{itemize}
+        \item $p \strongTrace q \implies p \strongBisim q$
+        \item $p \weakTrace q \implies p \weakBisim q$
+    \end{itemize}
+    Ciò non è sempre garantito se almeno uno dei due processi è non deterministico.
+\end{defn}
+
+
+
+\section{Gioco dell'attaccante-difensore}
+FINIRE SLIDE 3

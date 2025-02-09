@@ -1,9 +1,9 @@
 \documentclass[nobib, oneside, openany]{tufte-book}
-% nobib     =   do not use package natbib, default in tufte-book. 
+% nobib     =   do not use package natbib, default in tufte-book.
 %               it conflicts with biblatex.
 % oneside   =   no blank page between chapters and page do not move
 %               left or right based on the page number.
-% openany   = 
+% openany   =
 
 % ------------------------------------
 % |            GEOMETRY              |
@@ -83,6 +83,7 @@
 % ------------------------------------
 % Math
 \usepackage{amsmath,amsthm,amssymb,amsfonts}
+\usepackage{stmaryrd}
 \usepackage{relsize, xfrac}
 
 % Pseudocode
@@ -144,9 +145,9 @@
 \usepackage{pgf,tikz,tikz-cd}
 
 \usepackage{fancyhdr}               % Custom headers and footers.
-\pagestyle{fancyplain}              % Makes all pages in the document conform 
+\pagestyle{fancyplain}              % Makes all pages in the document conform
                                     % to the custom headers and footers.
-\fancyhead{}                        % No page header - if you want one, create 
+\fancyhead{}                        % No page header - if you want one, create
                                     % it in the same way as the footers below.
 \fancyfoot[L]{}                     % Empty left footer.
 \fancyfoot[C]{}                     % Empty center footer.
@@ -234,9 +235,19 @@
 % Utilities for Hoare logic
 \newcommand{\Hoaretriple}[3]{
     \left\{\,#1\,\right\}
-    \mathrel{#2}\nolinebreak 
+    \mathrel{#2}\nolinebreak
     \left\{\,#3\,\right\}
 }
+
+% Utilities for CCS
+\newcommand{\strongTrans}[1]{\overset{#1}{\longrightarrow}}
+\newcommand{\weakTrans}[1]{\overset{#1}{\Longrightarrow}}
+\newcommand{\strongTrace}{\overset{\tn{T}}{\sim}}
+\newcommand{\weakTrace}{\overset{\tn{T}}{\approx}}
+\newcommand{\strongBisim}{\overset{\tn{BIS}}{\sim}}
+\newcommand{\weakBisim}{\overset{\tn{BIS}}{\approx}}
+\newcommand{\congr}{\overset{C}{\approx}}
+\newcommand{\notCongr}{\overset{C}{\not\approx}}
 
 % Utilities for Petri's nets
 \newcommand{\event}{\mathrel{\fbox{$\phantom{\circ}$}}\,}
@@ -260,7 +271,8 @@
 \newcommand{\finallyOp}{\tn{\textbf{F}}}
 \newcommand{\globallyOp}{\tn{\textbf{G}}}
 \newcommand{\untilOp}{\tn{\textbf{U}}}
-
+\newcommand{\weakOp}{\tn{\textbf{W}}}
+\newcommand{\releaseOp}{\tn{\textbf{R}}}
 
 
 % ------------------------------------
@@ -268,7 +280,7 @@
 % ------------------------------------
 
 \title{
-    Modelli della Concorrenza
+    Model Checking
 }
 \author{Mattia Bolognini}
 \date{Ultima modifica: \today}
@@ -282,7 +294,7 @@
 \include{chap/logica_hoare}
 \include{chap/ccs}
 \include{chap/reti_petri}
-\include{chap/logiche_temporali_lineari}
+\include{chap/logiche_temporali}
 
 \printbibliography
 
