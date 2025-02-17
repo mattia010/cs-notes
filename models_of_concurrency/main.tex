@@ -1,8 +1,9 @@
-\documentclass[nobib, oneside, openany]{tufte-book}
+\documentclass[nobib, notoc, nolof, oneside, openany]{tufte-book}
 % nobib     =   do not use package natbib, default in tufte-book.
 %               it conflicts with biblatex.
 % oneside   =   no blank page between chapters and page do not move
 %               left or right based on the page number.
+% symmetric = move left or right based on the page number
 % openany   =
 
 % ------------------------------------
@@ -280,7 +281,8 @@
 % ------------------------------------
 
 \title{
-    Model Checking
+    Modelli della\\
+    Concorrenza
 }
 \author{Mattia Bolognini}
 \date{Ultima modifica: \today}
@@ -294,7 +296,7 @@
 \include{chap/logica_hoare}
 \include{chap/ccs}
 \include{chap/reti_petri}
-\include{chap/logiche_temporali}
+\include{chap/model_checking}
 
 \printbibliography
 

@@ -1,67 +1,82 @@
 \chapter{Reti di Petri}
 \section{Introduzione}
 Le reti di Petri sono un modello formale per la descrizione di sistemi
-distribuiti a tempo discreto. A differenza delle algebre di processo, come il CCS,
+distribuiti a tempo discreto \footnote{Le reti di Petri possono essere
+generalizzate, in modo da trattare anche sistemi distribuiti a tempo
+continuo.}. A differenza delle algebre di processo, come il CCS,
 le reti di Petri permettono di descrivere la true concurrency di un
 sistema concorrente, usando una semantica a ordine parziale.
-A differenza del CCS, che analizza lo stato globale del sistema concorrente,
-le reti di Petri permettono di rappresentare l'evoluzione degli stati
-delle singole parti che compongono il sistema, senza dover esplicitamente
-trattare lo stato globale del sistema concorrente (che molto spesso è
-sconosciuto).\\
-Le reti di Petri sono utili per verificare le proprietà di un sistema concorrente,
-come liveness e assenza di deadlock, in modo da dimostrarne la correttezza.
+Le algebre di processo, infatti, descrivono l'evoluzione (sequenziale) dello
+stato globale del sistema. Molto spesso, però, lo stato globale del sistema
+concorrente non è conosciuto, e risulta più rilevante trattare gli stati
+locali e la loro evoluzione: le reti di Petri, quindi, permettono di
+rappresentare gli stati locali, senza dover essere necessariamente
+a conoscenza dello stato globale.
+
+Le reti di Petri, oltre che rappresentare formalmente sistemi concorrenti,
+permettono anche di verificarne alcune proprietà.
+In particolare, come si vedrà, proprietà importanti come la raggiungibilità o
+presenza di deadlock possono essere verificate usando il grafo dei casi,
+mentre proprietà più complesse possono essere verificate tramite il model
+checking con formule HTL.
 Alcuni problemi di decisione su reti di Petri sono stati studiati da
 Esparza e Nielsen (1995) METTERE CITAZIONE.
 
-\section{Reti, eventi e grafi dei casi}
-Le reti di Petri sono sistemi a transizione di stati che estendono la
-classe delle reti elementari.
-\begin{defn}
-    Una \textbf{rete} è
-\end{defn}
+\section{Reti elementari e grafi dei casi}
+Il tipo di rete di Petri più basilare è una rete elementare, detta anche
+sistema elementare.
+In questo tipo di rete, tutti gli stati hanno una capacità massima di un token,
+gli archi hanno peso 1 e non sono presenti token colorati, ovvero tutti i
+token rappresentano lo stesso tipo di dato.
 
 \begin{defn}
-    Una \textbf{rete elementare} è
-\end{defn}
-
-\begin{defn}
-    Una \textbf{rete di Petri} è una quadrupla $N = (P, T, F, m_0, W)$ tale che:
+    Una \textbf{rete} è una tripla $(P, T, F)$, dove:
     \begin{itemize}
-        \item $P$ è un insieme finito di \textbf{posti}
-        \footnote{Con posto si intende lo stato di una parte del sistema
-        che si vuole rappresentare. Lo stato globale farà invece riferimento a
-        tutto il sistema.}.\\
-        Un posto può essere visto come una condizione sul sistema che
-        si vuole rappresentare.
-        \item $T$ è un insieme finito di \textbf{transizioni}, dette anche
-        eventi.
-        \item $F \subseteq (B\times E)\cup(E\times B)$
-        è una \textbf{relazione di flusso}, ovvero un insieme di
-        archi diretti che collegano i posti alle transizioni e le transizioni
-        ai posti. Gli archi non possono essere definiti tra posti e tra
-        transizioni
+        \item $P$ è l'insieme finito dei posti che compongono la rete.
+        \item $T$ è l'insieme finito delle transizioni che compongono la rete.
+        \item $F \subseteq (P \cup T) \times (T \times P)$ è la relazione
+        di flusso, che stabilisce quali posti e transizioni sono collegati
+        da archi diretti
         \footnote{Si può osservare che una rete definisce un grafo bipartito,
         dove i due sottoinsiemi che definiscono la partizione sono $P$ ed $T$.}.
-        Per definizione, inoltre, ogni evento della rete ha almeno uno stato
-        locale di ingresso e almeno uno stato locale di uscita.
-        \[
-            \forall e \in E, \exists p, q \in B : (p, e) \in F \land
-            (e, q) \in F.
-        \]
-        \item $m_0$ è la marcatura iniziale della rete, che specifica quanti
-        token sono presenti in ogni posto della rete di Petri.
-        \item $W: F \rightarrow \mathbb{Z}$ è una funzione che assegna a ogni
-        arco della rete un peso, rappresentante la sua molteplicità.
+        La relazione di flusso non può collegare tra loro posti o transizioni.
     \end{itemize}
 \end{defn}
-Senza perdere di generalità, si possono considerare le sole reti di Petri
-in cui la funzione $W$ assegna a ogni arco della rete un peso pari a 1,
-e in cui ogni posto ha una capacità di token massima pari a 1.
-In questo caso, inoltre, la marcatura della rete di Petri collassa a una semplice
-configurazione, ovvero a un sottoinsieme di posti della rete.
-D'ora in poi verranno trattate solo reti di Petri di questo tipo, in modo
-da semplificarne la trattazione.
+
+\begin{rem}
+    Le reti vengono solitamente assunte T-ristrette, ovvero ogni transizione
+    deve avere almeno una precondizione (e quindi un arco entrante) e
+    almeno una postcondizione (e quindi un arco uscente).
+\end{rem}
+
+\begin{defn}
+    Siano $N_1 = (P_1, T_1, F_1)$ e $N_2 = (P_2, T_2, F_2)$ due reti,
+    $N_2$ è \textbf{sottorete} di $N_1$ sse:
+    \begin{itemize}
+        \item $P_2 \subseteq P_1$
+        \item $T_2 \subseteq T_1$
+        \item $F_2 = F_1 \cap \bra{\bra{P_2 \times T_2} \cup \bra{T_2 \times P_2}}$
+    \end{itemize}
+\end{defn}
+
+\begin{defn}
+    Una \textbf{configurazione di una rete} è semplicemente un sottoinsieme
+    di posti della rete.
+\end{defn}
+
+\begin{defn}
+    Un \textbf{sistema elementare} è una quadrupla  $(P, T, F, c_{\text{start}})$
+    dove:
+    \begin{itemize}
+        \item $(P, T, F)$ è una rete.
+        \item $c_{\text{start}}$ è la configurazione iniziale della rete, ovvero
+        quali posti della rete risultano veri all'inizio della simulazione
+        \footnote{Come si vedrà più avanti, reti di Petri più generali
+        definiscono ua configurazione come una funzione che assegna a ogni
+        posto un certo numero di token. In questo caso, la configurazione
+        prende il nome di \textit{marcatura}.}.
+    \end{itemize}
+\end{defn}
 
 Graficamente, gli elementi di una rete di Petri sono rappresentati come:
 \begin{itemize}
@@ -92,7 +107,7 @@ Graficamente, gli elementi di una rete di Petri sono rappresentati come:
 \end{defn}
 
 \begin{defn}
-    Una rete di Petri è \textbf{semplice} sse:
+    Una rete è \textbf{semplice} sse:
     \[
         \forall x, y \in B \cup E, \preCond{x} = \preCond{y} \land
         \postCond{x} = \postCond{y} \rightarrow x = y
@@ -105,7 +120,7 @@ Graficamente, gli elementi di una rete di Petri sono rappresentati come:
 \end{defn}
 
 \begin{defn}
-    Una rete di Petri è \textbf{pura} sse:
+    Una rete è \textbf{pura} sse:
     \[
         \forall e \in E, \preCond{e} \cap \postCond{e} = \emptyset
     \]
@@ -117,110 +132,97 @@ Graficamente, gli elementi di una rete di Petri sono rappresentati come:
 \end{defn}
 
 \begin{defn}
-    Un evento $e$ è \textbf{abilitato} in una rete $N$ per la configurazione
-    corrente $c$ sse:
+    Una transizione $t$ è \textbf{abilitata} in una rete $N$ per la
+    configurazione corrente $c$, e quindi $\canFire{c}{t}{}$, sse:
     \[
-        \preCond{e} \subseteq c \land \postCond{e} \cap c = \emptyset
+        \preCond{t} \subseteq c \land \postCond{t} \cap c = \emptyset
     \]
     ovvero tutte le sue pre-condizioni sono vere, mentre tutte le sue
     post-condizioni sono false.\\
-    La configurazione del sistema dopo aver eseguito $e$, indicata con $c'$,
+    La configurazione del sistema dopo aver eseguito $t$, indicata con $c'$,
     sarà:
     \[
-        c' = \bra{c \setminus \preCond{e}} \cup \postCond{e}
+        c' = \bra{c \setminus \preCond{t}} \cup \postCond{t}
     \]
-    L'occorrenza di un evento $e$ nella configurazione corrente $c$ che porta
-    alla configurazione $c'$ viene indicata con $\canFire{c}{e}{c'}$.
+    Se una transizione può essere eseguita a partire dalla configurazione $c$,
+    e a seguito della transizione si raggiunge la configurazione $c'$, allora
+    si scrive $\canFire{c}{t}{c'}$.
 \end{defn}
 
 \begin{defn}
-    Un insieme di eventi $U \subseteq T$ è un \textbf{passo} sse tutti i suoi
-    eventi sono indipendenti, ovvero eventi diversi di $U$ non condividono
-    alcuno stato locale.
+    Un \textbf{passo} è un sottoinsieme di transizioni $U \subseteq T$
+    indipendenti tra loro, ovvero che non condividono alcuno stato locale.
     \[
-        \forall e_1, e_2 \in U, e_1 \neq e_2 \rightarrow
-        (\preCond{e_1} \cup \postCond{e_1}) \cap
-        (\preCond{e_2} \cup \postCond{e_2}) = \emptyset
+        \forall t_1, t_2 \in U, t_1 \neq t_2 \rightarrow
+        (\preCond{t_1} \cup \postCond{t_1}) \cap
+        (\preCond{t_2} \cup \postCond{t_2}) = \emptyset
     \]
 \end{defn}
 
 \begin{defn}
-    Un insieme di eventi $U \subseteq T$ è un \textbf{passo abilitato}
-    per la configurazione corrente $c$ sse:
+    Un \textbf{passo abilitato} per la configurazione corrente $c$ è un passo
+    $U \subseteq T$ per cui:
     \[
-        U \tn{ è un passo } \land \forall e \in U, \canFire{c}{e}{}
+        \forall t \in U, \canFire{c}{t}{}
     \]
+    ovvero tutte le transizioni che compongono il passo sono abilitate
+    per la configurazione attuale.
+    Di conseguenza, tutte le precondizioni delle transizioni che compongono
+    il passo devono essere verificate, mentre tutte le postcondizioni devono
+    essere false.
+
+    Le transizioni di un passo abilitato possono essere eseguite in maniera
+    concorrente, ovvero possono essere eseguite contemporaneamente,
+    o sequenzialmente in qualsiasi ordine.
 \end{defn}
 
 \begin{defn}
-    Siano $N_1 = (B_1, E_1, F_1)$ e $N_2 = (B_2, E_2, F_2)$ due sistemi
-    elementari, $N_2$ è \textbf{sottorete} di $N_1$ sse:
-    \begin{itemize}
-        \item $B_2 \subseteq B_1$
-        \item $E_2 \subseteq E_1$
-        \item $F_2 = F_1 \cap \bra{\bra{B_2 \times E_2} \cup \bra{E_2 \times B_2}}$
-    \end{itemize}
-\end{defn}
-
-\begin{defn}
-    Sia $N = (B, E, F)$ una rete, la \textbf{sottorete generata da
-    un sottoinsieme di stati locali} $B_1 \subseteq B$ è la rete
-    $N_1 = (B_1, E_1, F_1)$ con:
-    \begin{itemize}
-        \item $E_1 = \preCond{B_1} \cup \postCond{B_1}$
-        \item $F_1 = F \cap\bra{\bra{B_1 \times E_1} \cup \bra{E_1 \times B_1}}$
-    \end{itemize}
-\end{defn}
-
-\begin{defn}
-    Sia $N = (B, E, F)$ una rete, la \textbf{sottorete generata da un
-    sottoinsieme di eventi} $E_1 \subseteq E$ è la rete
-    $N_1 = (B_1, E_1, F_1)$ con:
-    \begin{itemize}
-        \item $B_1 = \preCond{E_1} \cup \postCond{E_1}$
-        \item
-        $F_1 = F \cap \bra{\bra{B_1 \times E_1} \cup \bra{E_1 \times B_1}}$
-    \end{itemize}
+    DIAMOND PROPERTY DA FINIRE.
 \end{defn}
 
 \subsection*{Grafo dei casi e grafo dei casi sequenziale}
 \begin{defn}
     L'\textbf{insieme delle configurazioni raggiungibili}
-    $C_{\Sigma} \subseteq 2^{B}$ nella rete di Petri $(P, T, F, c_{\tn{start}})$
+    $C_{\Sigma} \subseteq 2^{B}$, detto anche spazio degli stati,
+    di un sistema elementare $\Sigma = (P, T, F, c_{\tn{start}})$
     è definito come:
     \begin{itemize}
         \item $c_{\tn{start}} \in C_{\Sigma}$
         \item $\bra{c \in C_{\Sigma} \land \exists U \subseteq T :
         \canFire{c}{U}{c'}} \rightarrow c' \in C_{\Sigma}$
     \end{itemize}
+    ovvero è l'insieme di tutte le possibili configurazioni che si possono
+    raggiungere all'interno del sistema elementare durante l'esecuzione.
 \end{defn}
 
 \begin{defn}
-    L'\textbf{insieme dei passi} $U_{\Sigma}$ di un sistema elementare $\Sigma$
-    sono tutti i passi possibili che il sistema $\Sigma$ può compiere.
+    L'\textbf{insieme dei passi} $U_{\Sigma} \subseteq 2^{T}$ di un sistema
+    elementare $\Sigma$ è definito come:
     \[
         U_{\Sigma} = \cbra{U \subseteq E \, | \,
         \exists c_1, c_2 \in C_{\Sigma} : \canFire{c_1}{U}{c_2}}
     \]
+    ovvero è l'insieme di tutti i possibili passi abiltati del sistema elementare.
 \end{defn}
 
-Il comportamento di una rete di Petri
+Il comportamento di un sistema elementare
 può essere descritto completamente con un grafo dei casi, in cui ogni nodo
 rappresenta una delle possibili configurazioni raggiungibili della rete
-e ogni arco $(c_i, c_j)$ etichettato con $U$ rappresenta l'esecuzione
+e ogni arco $(c_i, U, c_j)$ rappresenta l'esecuzione
 $\canFire{c_i}{U}{c_j}$ di un passo abilitato $U$ per $c_i$.
-Essendo un arco etichettato con un passo abilitato del sistema, il grafo
+Essendo gli archi etichettati con passi abilitati del sistema, il grafo
 dei casi $CG_{\Sigma}$ descrive la \textbf{step semantics} del sistema
 considerato.
 
 \begin{defn}
-    Il \textbf{grafo dei casi} $CG_{\Sigma}$ di una rete di Petri $\Sigma$ è
+    Il \textbf{grafo dei casi} $CG_{\Sigma}$ di un sistema elementare $\Sigma$ è
     formalmente definito come la quadrupla
     $(C_{\Sigma}, U_{\Sigma}, A, c_{\tn{start}})$ dove:
     \begin{itemize}
         \item $C_{\Sigma}$, l'insieme dei casi raggiungibili, è l'insieme
         dei nodi.
-        \item $U_{\Sigma}$, l'insieme dei passi, è l'alfabeto del grafo.
+        \item $U_{\Sigma}$, l'insieme dei passi, sono le possibili etichette
+        degli archi.
         \item $A = \cbra{(c, U, c') \, | \, c, c' \in C_{\Sigma} \land
         U \in U_{\Sigma} \land \canFire{c}{U}{c'}}$
         è l'insieme degli archi
@@ -245,43 +247,32 @@ considerato.
         \label{fig:diamond_property}
     \end{marginfigure}
 \end{property}
+
 Gli archi del grafo dei casi sono etichettati
-con un \textit{sottoinsieme} di eventi concorrenti che possono scattare dalla
-configurazione di partenza. Questa semantica, come già detto, prende il nome di
-step semantic.
-Se però si è interessati a descrivere il comportamento del sistema concorrente
-preso in analisi analizzando le possibili sequenze di eventi
-che sono possibili al suo interno, senza interessarsi a quali eventi
-possono essere eseguiti in maniera concorrente, allora è possibile definire
-un grafo dei casi sequenziale. Il grafo dei casi sequenziale si differenzia
-dal grafo dei casi solo per il fatto che i suoi archi sono etichettati con un
-\textit{singolo evento}, senza quindi esplicitare un insieme di eventi
-eseguibili concorrentemente.
+con \textit{sottoinsiemi} di eventi concorrenti e, per questo, la
+semantica di un grafo dei casi viene detta step semantic.
+In alcuni casi, però, potrebbe essere utile analizzare le possibili
+sequenze di transizioni che possono essere compiute dal sistema elementare,
+e queste informazioni non potrebbero essere facilmente ottenute dal grafo
+dei casi.
+Si può quindi definire un grafo dei caso sequenziale, in cui ogni arco è etichettato
+con una singola transizione del sistema elementare e non si esprime alcuna
+informazione su quali eventi possono essere eseguiti in maniera concorrente.
 La semantica descritta dal grafo dei casi sequenziale prende il nome
 di semantica a \textbf{interleaving}, e altro non è
 che una simulazione sequenziale non deterministica del sistema.
 
-Il grafo dei casi sequenziale, inoltre, è, di fatto, un sistema a transizioni
-etichettato che modella il sistema concorrente preso in analisi,
-e può quindi essere usato per verificare alcune proprietà del sistema
-concorrente che si sta analizzando.
-Data una rete di Petri, però, trovare l'insieme delle configurazioni raggiungibili
-può essere complesso e portare a un'esplosione combinatoria:
-per verificare proprietà su un sistema concorrente, quindi, spesso
-si preferisce ridursi a sottocasi di reti di Petri più facili da gestire,
-o si preferiscono altri metodi formali, come le logiche temporali.
-
 \begin{defn}
     Il \textbf{grafo dei casi sequenziale} $SCG_{\Sigma}$ di una rete
-    di Petri $\Sigma$ è una quadrapla $(C_{\Sigma}, E, A, c_{\tn{start}})$
+    di Petri $\Sigma$ è una quadrapla $(C_{\Sigma}, T, A, c_{\tn{start}})$
     dove:
     \begin{itemize}
         \item $C_{\Sigma}$, l'insieme dei casi raggiungibili, è l'insieme dei
         nodi.
-        \item $E$, l'insieme degli eventi, è l'alfabeto del grafo con cui
+        \item $T$, l'insieme delle transizioni, è l'alfabeto del grafo con cui
         verranno etichettati gli archi.
-        \item $A = \cbra{(c, e, c') \, | \, c, c' \in C_{\Sigma} \land
-        e \in E \land \canFire{c}{e}{c'}}$
+        \item $A = \cbra{(c, t, c') \, | \, c, c' \in C_{\Sigma} \land
+        t \in T \land \canFire{c}{t}{c'}}$
         è l'insieme degli archi.
         \item $c_{\tn{start}}$ è la configurazione di partenza.
     \end{itemize}
@@ -293,124 +284,158 @@ o si preferiscono altri metodi formali, come le logiche temporali.
     \label{fig:sequential_case_graph}
 \end{marginfigure}
 
+Il grafo dei casi sequenziale è un \textit{sistema a transizioni
+etichettato} che modella il sistema concorrente preso in analisi,
+e può quindi essere usato per verificare alcune proprietà del sistema
+concorrente che si sta analizzando, come la presenza di deadlock.
+Data una rete di Petri, però, trovare l'insieme delle configurazioni
+raggiungibili, necessario per costruire il grafo dei casi sequenziale,
+può essere complesso e portare a un'esplosione combinatoria: per questo motivo,
+le reti di Petri vengono usate per verificare solo alcune proprietà facilmente
+determinabili, mentre negli altri casi si preferiscono altri modelli
+formali, come le logiche temporali.
+
 \begin{property}
     Il grafo dei casi $CG_{\Sigma}$ e il grafo dei casi sequenziale
-    $SCG_{\Sigma}$ della stessa rete di Petri $\Sigma$ sono
+    $SCG_{\Sigma}$ dello stesso sistema elementare $\Sigma$ sono
     \textbf{sintatticamente equivalenti}, ovvero è possibile ottenere uno a
     partire dall'altro usando solo procedimenti di modifica sintattica.
+    In particolare, un grafo dei casi sequenziale può essere costruito
+    da un grafo dei casi semplicemente rimuovendo tutti gli archi
+    etichettati con un passo di cardinalità strettamente maggiore di 1.
+    Viceversa, un grafo dei casi può essere costruito a partire da un
+    grafo dei casi sequenziale usando la diamond property.
 \end{property}
 
 \begin{rem}
-    Il grafo dei casi è un sistema di transizioni etichettato per il sistema
-    concorrente descritto dalla rete.
-    Trovare quindi un sistema di transizioni etichettato che esprime il
-    comportamento del sistema è molto semplice: esso coincide infatti con
-    il grafo dei casi.
-    Trovare invece una rete elementare con grafo dei casi isomorfo a un
-    sistema di transizioni etichettato dato risulta più complicato,
-    e prende il nome di problema della sintesi. Esso viene risolto con la
-    teoria delle regioni.
+    Dato un sistema elementare, trovare un sistema di transizioni etichettato
+    che modella il suo comportamento è molto semplice: basta infatti costruire
+    il grafo dei casi sequenziale.
+    Trovare invece un sistema elementare il cui grafo dei casi sequenziale
+    è isomorfo a un dato sistema a transizioni etichettato risulta più
+    complicato. Il problema viene comunque risolto usando la teoria delle regioni.
 \end{rem}
-
-\subsection*{Equivalenza semantica tra reti di Petri}
-    Due reti di Petri $\Sigma_1$ e $\Sigma_2$ sono equivalenti sse
-    i loro grafi dei casi (e di conseguenza anche i loro grafi dei casi
-    sequenziali, in quanto sintatticamente equivalenti) sono isomorfi, ovvero
-    $\exists \alpha: S_1 \rightarrow S_2 \land \exists \beta: E_1 \rightarrow E_2$
-    funzioni biunivoche tali che DA SISTEMARE LE LETTERE:
-    \begin{itemize}
-        \item $\alpha(s_1) = s_2$, ovvero la configurazione di partenza di
-        $S_1$ viene mappata nella configurazione di partenza di $S_2$;
-        \item $\forall s_i, s_j \in S_1 \land \forall e \in E_1, \quad
-        (s_i, e, s_j) \in T_1 \leftrightarrow (\alpha(s_i), \beta(e), \alpha(s_j)) \in T_2$.
-    \end{itemize}
 
 \section{Situazioni particolari}
 \subsection*{Contatto}
 \begin{defn}
-    Siano $\Sigma = (B, E, F, c_{\tn{start}})$ un sistema elementare, $e \in E$
-    un evento e $c \in C_{\Sigma}$ una possibile configurazione di $\Sigma$,
-    $(e, c)$ è un \textbf{contatto} sse:
+    Siano $\Sigma = (P, T, F, c_{\tn{start}})$ un sistema elementare, $t \in T$
+    una transizione e $c \in C_{\Sigma}$ una possibile configurazione di $\Sigma$,
+    $(t, c)$ è un \textbf{contatto} sse:
     \[
-        \preCond{e} \subseteq c \land \postCond{e} \cap c \neq \emptyset
+        \preCond{t} \subseteq c \land \postCond{t} \cap c \neq \emptyset
     \]
-    ovvero tutte le pre-condizioni di $e$ sono vere, ma almeno una
-    post-condizione di $e$ è vera.\\
-    Un evento che si trova in uno stato di contatto non è abilitato.
+    ovvero tutte le pre-condizioni di $t$ sono vere, ma almeno una
+    post-condizione di $t$ è vera.\\
+    Una transizione che si trova in uno stato di contatto non è abilitata.
 \end{defn}
 
 \begin{rem}
-    Un evento senza precondizioni è sicuramente un contatto: viene infatti
-    eseguito subito, in quanto l'insieme vuoto delle precondizioni è sempre
-    vero, e quindi le post-condizioni diventano vere. Ma poi l'evento, non
+    Una transizione senza precondizioni è sicuramente un contatto: viene
+    infatti eseguita subito, in quanto l'insieme vuoto delle precondizioni
+    è sempre vero, e quindi le post-condizioni diventano vere.
+    Ma poi la transizione, non
     avendo pre-condizioni, avrà sicuramente le pre-condizioni vere e tutte
     le post-condizioni vere. Di conseguenza si ha un contatto.
 \end{rem}
 
 \begin{defn}
-    Un sistema elementare $\Sigma = (B, E, F, c_{\tn{start}})$ è un
+    Un sistema elementare $\Sigma = (P, T, F, c_{\tn{start}})$ è un
     \textbf{sistema senza contatti} sse:
     \[
-        \forall e \in E, \forall c \in C_{\Sigma} \quad
-        \preCond{e} \subseteq c \rightarrow \postCond{e} \cap c = \emptyset
+        \forall t \in T, \forall c \in C_{\Sigma} \quad
+        \preCond{t} \subseteq c \rightarrow \postCond{t} \cap c = \emptyset
     \]
-    ovvero se, qualunque sia la configurazione del sistema, le pre-condizione
-    di un evento sono vere, allora sicuramente tutte le sue post-condizioni
-    sono false, e l'evento è abilitato \footnote{In un sistema elementare
-    senza contatti, per stabilire se un evento è abilitato non è necessario
+    ovvero, qualunque sia la configurazione del sistema, se le pre-condizioni
+    di una transizione sono vere, allora sicuramente tutte le sue post-condizioni
+    sono false, e la transizione è abilitata \footnote{In un sistema elementare
+    senza contatti, per stabilire se una transizione è abilitata non è necessario
     effettuare alcun controllo sulle post-condizioni: se le pre-condizioni
     sono vere, infatti, le post-condizioni saranno sicuramente false.}.
+    Un sistema senza contatti ha un importante vantaggio: per stabilire
+    se una transizione è abilitato non è necessario analizzare le sue
+    post-condizione, ma serve solo verificare se tutte le pre-condizioni
+    sono vere.
 \end{defn}
 
-\begin{rem}
-    Ogni sistema elementare $\Sigma$ con contatti può essere trasformato in un
-    sistema elementare $\Sigma'$ senza contatti e con grafo dei casi isomorfo.\\
-    Per farlo, per ogni stato $s$ che può essere contatto deve essere aggiunto
-    uno stato complementare $\overline{s}$, vero solo quando $s$ è falso.
-\end{rem}
+\subsection*{Rimozione dei contatti}
+Ogni sistema elementare $\Sigma$ con contatti può essere trasformato in un
+sistema elementare $\Sigma'$ senza contatti e con grafo dei casi isomorfo.
+\begin{defn}
+    Due posti $p, q \in P$ sono \textbf{complementari} sse:
+    \[
+        \preCond{p} = \postCond{q} \land \preCond{q} = \postCond{p}
+        \land \bra{p \in c_{\tn{start}} \oplus q \in c_{\tn{start}}}
+    \]
+    ovvero le post-condizioni di uno sono le pre-condizioni dell'altro
+    e viceversa, ed esattamente uno dei posti appartiene alla configurazione
+    iniziale del sistema elementare.
+\end{defn}
 
-\begin{marginfigure}[-10cm]
-    \includegraphics[width=1\linewidth]{img/contatto_complementare.png}
+\begin{marginfigure}
+    \includegraphics[width=0.85\linewidth]{img/contatto_complementare.png}
     \caption{Rimozione di un contatto tramite l'aggiunta dello stato complementare.}
     \label{fig:sistema_con_contatti}
 \end{marginfigure}
 
+Per rimuovere tutti i contatti da un sistema elementare devono essere
+aggiunti posti complementari ad ogni posto del sistema elementare,
+se non sono ancora presenti, e si deve garantire che esattamente
+un posto tra posto e posto complementare appartenga alla configurazione
+iniziale.
+L'insieme delle transizioni del sistema elementare rimane invece invariato,
+ovvero non vengono aggiunte o rimosse transizioni dal sistema.
+
+\begin{figure}
+    \centering
+    \includegraphics[width=\linewidth]{img/sistema_senza_contatti.png}
+    \caption{Rimozione dei contatti da un sistema con contatti.}
+    \label{fig:sistema_senza_contatti}
+\end{figure}
+
 \subsection*{Conflitto}
 \begin{defn}
-    Siano $\Sigma = (B, E, F, c_{\tn{start}})$ un sistema elementare,
-    $e_1, e_2 \in E$ due evento e $c \in C_{\Sigma}$ una possibile
-    configurazione di $\Sigma$, $e_1$ ed $e_2$ sono in \textbf{conflitto}
+    Siano $\Sigma = (P, T, F, c_{\tn{start}})$ un sistema elementare,
+    $t_1, t_2 \in T$ due transizioni e $c \in C_{\Sigma}$ una possibile
+    configurazione di $\Sigma$, $t_1$ ed $t_2$ sono in \textbf{conflitto}
     in $c$ sse:
     \[
-        \canFire{c}{e_1}{} \land \canFire{c}{e_2}{} \land
-        \lnot \canFire{c}{\cbra{e_1, e_2}}{}
+        \canFire{c}{t_1}{} \land \canFire{c}{t_2}{} \land
+        \lnot \canFire{c}{\cbra{t_1, t_2}}{}
     \]
-    ovvero entrambi gli eventi sono abilitati, ma il verificarsi di uno rende
-    l'altro non abilitato. Di conseguenza, i due eventi non possono essere
-    eseguiti in maniera concorrente. Non sapendo quale dei due eventi verrà
-    effettivamente eseguito, un conflitto esprime non determinismo.
+    ovvero entrambe le transizioni sono abilitate, ma il verificarsi di una
+    rende l'altra non abilitata. Di conseguenza, le due transizioni non
+    possono essere eseguite in maniera concorrente. Non sapendo quale
+    delle due transizioni verrà effettivamente eseguite, un conflitto esprime
+    non determinismo.
 
-    Esistono due tipi di conflitti:
-    \begin{itemize}
-        \item in avanti: due eventi abilitati hanno la stessa pre-condizione.
-        Il verificarsi di un evento rende falsa la pre-condizione in comune,
-        disabilitando l'altro evento;
-        \item all'indietro: due eventi abilitati hanno la stessa
-        post-condizione. Il verificarsi di un evento rende vera la
-        post-condizione in comune, disabilitando l'altro evento.
-    \end{itemize}
-
-    \begin{marginfigure}[-11cm]
+    \begin{marginfigure}
         \includegraphics[width=0.75\linewidth]{img/conflitto_avanti.png}
-    \caption{Conflitto in avanti.}
-    \label{fig:conflitto_avanti}
+        \caption{Conflitto in avanti.}
+        \label{fig:conflitto_avanti}
     \end{marginfigure}
 
-    \begin{marginfigure}[-3cm]
+    \begin{marginfigure}
         \includegraphics[width=0.75\linewidth]{img/conflitto_indietro.png}
         \caption{Conflitto all'indietro.}
         \label{fig:conflitto_indietro}
     \end{marginfigure}
+
+    Esistono due tipi di conflitti:
+    \begin{itemize}
+        \item in avanti: due transizioni abilitate condividono almeno una
+        pre-condizione.
+        Il verificarsi di una transizione rende falsa la pre-condizione in comune,
+        disabilitando l'altra transizione;
+        \item all'indietro: due transizioni abilitate condividono almeno una
+        post-condizione. Il verificarsi di una transizione rende vera la
+        post-condizione in comune, disabilitando l'altra transizione.
+    \end{itemize}
+
+    \begin{rem}
+        Un conflitto tra transizioni rappresenta una competizione
+        per l'utilizzo di risorse condivise.
+    \end{rem}
 \end{defn}
 
 \subsection*{Confusione}
@@ -429,15 +454,15 @@ stato risolto un conflitto tra $e_1$ ed $e_2$ o tra $e_2$ ed $e_3$.
 Un altro esempio di confusione si verifica nella mutua esclusione.
 
 \subsection*{Sequenza}
-Siano $\Sigma = (B, E, F, c_{\tn{start}})$ un sistema elementare,
-$e_1, e_2 \in E$ due eventi e $c \in C_{\Sigma}$ una possibile configurazione
-di $\Sigma$, $e_1$ ed $e_2$ sono in \textbf{sequenza} in $c$ sse:
+Siano $\Sigma = (P, T, F, c_{\tn{start}})$ un sistema elementare,
+$t_1, t_2 \in E$ due transizioni e $c \in C_{\Sigma}$ una possibile configurazione
+di $\Sigma$, $t_1$ ed $t_2$ sono in \textbf{sequenza} in $c$ sse:
 \[
-    \canFire{c}{e_1}{} \land \lnot \canFire{c}{e_2}{} \land
-    \canFire{\canFire{c}{e_1}{c'}}{e_2}
+    \canFire{c}{t_1}{} \land \lnot \canFire{c}{t_2}{} \land
+    \canFire{\canFire{c}{t_1}{c'}}{t_2}
 \]
-ovvero $e_2$ può essere eseguito sse prima viene eseguito $e_1$.
-C'è quindi una dipendenza causale tra gli eventi $e_1$ ed $e_2$.
+ovvero $t_2$ può essere eseguito sse prima viene eseguito $t_1$.
+C'è quindi una dipendenza causale tra le transizioni $t_1$ ed $t_2$.
 
 \begin{figure}
     \centering
@@ -447,23 +472,70 @@ C'è quindi una dipendenza causale tra gli eventi $e_1$ ed $e_2$.
 \end{figure}
 
 \subsection*{Concorrenza}
-Siano $\Sigma = (B, E, F, c_{\tn{start}})$ un sistema elementare,
-$e_1, e_2 \in E$ due eventi e $c \in C_{\Sigma}$ una possibile configurazione
-di $\Sigma$, $e_1$ ed $e_2$ sono \textbf{concorrenti} in $c$ sse:
+Siano $\Sigma = (P, T, F, c_{\tn{start}})$ un sistema elementare,
+$t_1, t_2 \in E$ due transizioni e $c \in C_{\Sigma}$ una possibile configurazione
+di $\Sigma$, $t_1$ ed $t_2$ sono \textbf{concorrenti} in $c$ sse:
 \[
-    \canFire{c}{\cbra{e_1, e_2}}{}
+    \canFire{c}{\cbra{t_1, t_2}}{}
 \]
-ovvero $\cbra{e_1, e_2}$ è un passo abilitato. Questo significa che i due
-eventi $e_1$ ed $e_2$ sono indipendenti ed entrambi abilitati in $c$.
+ovvero $\cbra{t_1, t_2}$ è un passo abilitato. Questo significa che le due
+transizioni $t_1$ ed $t_2$ sono indipendenti ed entrambe abilitate in $c$:
+esse possono essere eseguite contemporaneamente o sequenzialmente in qualsiasi
+ordine.
 
 \begin{figure}
     \centering
     \includegraphics[width=0.5\linewidth]{img/eventi_concorrenti.png}
-    \caption{Due eventi concorrenti.}
+    \caption{Due transizioni concorrenti.}
     \label{fig:eventi_concorrenti}
 \end{figure}
 
-\section{Processi non sequenziali e processi ramificati}
+\begin{thm}
+    Si considerino solo le relazioni di sequenza, conflitto e concorrenza tra
+    transizioni.
+    Se una transizione si trova in una delle tre relazioni ad una certa configurazione,
+    allora sicuramente non si troverà mai nelle altre due relazioni, qualsiasi
+    sia la configurazione in cui si trovi la rete.
+\end{thm}
+
+\section{Equivalenza semantica tra sistemi elementari}
+Il primo approccio che si può utilizzare per verificare l'equivalenza
+semantica di due sistemi elementari è verificare l'isomorfismo
+dei due sistemi elementari stessi. L'isomorfismo è, però, una relazione
+di equivalenza troppo restrittiva per l'equivalenza semantica: di fatto,
+un certo tipo di comportamento sarebbe descritto solo da un tipo di rete.\\
+Si può quindi provare a verificare l'isomorfismo dei grafi dei casi
+sequenziale: risulta, infatti, una relazione di equivalenza meno
+restrittiva e permette di considerare semanticamente equivalenti anche
+sistemi elementari diversi, a patto che abbiano lo stesso caso dei grafi
+sequenziale. Un esempio di sistemi elementari diversi ma con lo stesso
+caso dei grafi sequenziale è quello dei sistemi senza contatto: un sistema
+con contatti e il relativo sistema senza contatti, infatti, hanno
+grafo dei casi isomorfo.\\
+Anche l'isomorfismo dei grafi dei casi sequenziale può risultare, però,
+troppo restrittivo per analizzare l'equivalenza semantica di due sistemi
+elementari. Si può notare, però, che i grafi dei casi sono sistemi
+di transizione etichettati, e di conseguenza è possibile definire la nozione
+di bisimulazione, allo stesso modo del CCS. Allo stesso modo del CCS,
+inoltre, la bisimulazione può essere verificata usando il gioco
+dell'attaccante-difensore.
+
+
+\section{Processi non sequenziali e processi ramificati FINIRE}
+DA SISTEMARE L'ITALIANO
+Grafo dei casi e grafo dei casi sequenziale esprimono rispettivamente
+la step semantic e la semantica a interleaving del sistema elementare
+a cui fanno riferimento.
+Entrambe le semantiche, però, esprimono il comportamento del sistema
+elementare come una simulazione sequenziale non deterministica: nel primo caso,
+le sequenze sono composte da passi abilitati, mentre nel secondo sono composte
+da transizioni. Non è quindi possibile ottenere informazioni riguardo
+all'indipendeza e la causalità tra le transizioni, e anche riguardo la
+concorrenza nel solo grafo dei casi sequenziale.
+Le reti di Petri offrono però un metodo formale per descrivere il comportamento
+della rete evidenziando causalità e concorrenza tra transizioni, in modo
+che queste informazioni siano facilmente ottenibili, e questo prende
+il nome di semantica a processi.
 Prima di poter spiegare cosa sono i processi non sequenziali e i processi
 ramificati, è necessario introdurre alcune nozioni.
 
@@ -617,9 +689,25 @@ ramificati, è necessario introdurre alcune nozioni.
     indipendente da almeno un elemento di $C$, o viceversa.
 \end{defn}
 
+\begin{defn}
+    Una rete è \textbf{\textit{k}-densa} se ogni linea si interseca una singola
+    volta con ogni altro taglio e, viceversa, ogni taglio si interseca una
+    singola volta con ogni altra linea.
+\end{defn}
+
+Un taglio e una linea si intersecano esattamente in un punto perchè se si
+incontrassero in più punti, allora tutti i punti di intersezione
+rappresenterebbero elementi che sono contemporaneamente casualmente
+dipendenti (li) e casualmente indipendenti (co), violando quindi i tagli
+e le linee definite.
+
+\begin{rem}
+    Una rete finita è sicuramente $k$-densa.
+\end{rem}
+
 \subsection*{Processo ramificato}
 \begin{defn}
-    Una rete di Petri è una \textbf{rete di occorrenze} sse:
+    Una \textbf{rete di occorrenze} è una rete $(P, T, F)$ tale che:
     \begin{itemize}
         \item $\forall p \in P, |\preCond{p}| = 1$, ovvero non sono
         accettati conflitti all'indietro. Sono invece accettati
@@ -653,21 +741,36 @@ numerabile.
 \end{rem}
 
 \begin{defn}
-    Un \textbf{processo ramificato} di una rete di Petri $N_1 = (P_1, T_1, F_1, c_1)$
-    senza contatti e finita (e quindi $k$-densa), è una coppia
-    $(N_2, \phi), N_2 = (P_2, T_2, F_2, c_2)$ tale che:
+    Un \textbf{processo ramificato} di un sistema elementare
+    $\Sigma_1 = (P_1, T_1, F_1, c_1)$ senza contatti e finito (e quindi $k$-densa),
+    è una coppia $(\Sigma_2, \phi), \Sigma_2 = (P_2, T_2, F_2, c_2)$ tale che:
     \begin{itemize}
-        \item $N_2$ è una rete di occorrenze;
+        \item $\Sigma_2$ è una rete di occorrenze;
         \item $\phi: P_2 \cup T_2 \rightarrow P_1 \cup T_1$ è una funzione
         tale che:
         \begin{itemize}
-            \item $\phi(P_2) \subseteq P_1 \land \phi(T_2) \subseteq T_1$
+            \item $\phi(P_2) \subseteq P_1 \land \phi(T_2) \subseteq T_1$,
+            ovvero gli elementi della rete $\Sigma_2$ del processo ramificato
+            rappresentano elementi del sistema elementare $\Sigma$.
             \item $\forall e_1, e_2 \in T_2, \, (\preCond{e_1} = \preCond{e_2}
-            \land \phi(e_1) = \phi(e_2)) \implies e_1 = e_2$
-            \item FINIRE DEFINIZIONE
+            \land \phi(e_1) = \phi(e_2)) \implies e_1 = e_2$, ovvero
+            se due transizioni della rete $\Sigma_2$ associata al processo
+            ramificato hanno le stesse pre-condizioni e rappresentano lo
+            stesso elemento del sistema elementare $\Sigma_1$, allora sono
+            lo stesso elemento nella rete $\Sigma_2$ del processo ramificato
+            SISTEMARE ITALIANO.
+            \item MANCA 1
+            \item MANCA 2
         \end{itemize}
     \end{itemize}
 \end{defn}
+
+\begin{rem}
+    La configurazione iniziale di un processo ramificato comprende tutti i
+    posti della sua rete che non presentano archi in ingresso, e rappresenta
+    la configurazione raggiugibile del sistema elementare che si sta trattando
+    da cui inizia l'esecuzione descritta dal processo ramificato.
+\end{rem}
 
 \begin{rem}
     Un processo ramificato contiene una o più run della rete di Petri da cui
@@ -677,64 +780,48 @@ numerabile.
 \subsection*{Processo non sequenziale}
 Una rete causale è un tipo particolare di rete di occorrenze, che non presenta
 alcun conflitto.\\
-Una \textbf{rete causale} è una rete di Petri tale che
-\footnote[][-1cm]{L'ulteriore condizione presente nelle reti di occorrenza,
-ovvero che la relazione di conflitto sia irriflessiva, collassa nella prima
-condizione per le reti clausali: non avendo alcun conflitto, per la rete
-clausale vale $\# = \emptyset$.}:
-\begin{itemize}
-    \item $\forall b \in B, \lvert \preCond{b} \rvert \le 1 \land \lvert \postCond{b} \rvert \le 1$,
-    ovvero non sono presenti conflitti \footnote[][1cm]{In un conflitto in
-    avanti, lo stato pre-condizione ha due post-eventi. In un conflitto
-    all'indietro, lo stato post-condizione ha due pre-eventi. Di conseguenza,
-    imporre un numero di pre-eventi e post-eventi minore o uguale a uno implica
-    l'assenza di conflitti.};
-    \item $\forall x, y \in B \cup E, \quad (x, y) \in F^+ \rightarrow (y, x) \notin F^+$,
-    ovvero non sono presenti cicli;
-    \item $\forall e \in E$, la cardinalità dell'insieme $\cbra{x \in B \cup E | x \, F^* e}$
-    è finita, ovvero i predecessori di un qualsiasi evento sono in numero
-    finito.
-\end{itemize}
+\begin{defn}
+    Una \textbf{rete causale} è una rete $(P, T, F)$ tale che:
+    \footnote[][-1cm]{L'ulteriore condizione presente nelle reti di occorrenza,
+    ovvero che la relazione di conflitto sia irriflessiva, collassa nella prima
+    condizione per le reti clausali: non avendo alcun conflitto, per la rete
+    clausale vale $\# = \emptyset$.}:
+    \begin{itemize}
+        \item $\forall p \in P, \lvert \preCond{p} \rvert \le 1 \land \lvert \postCond{p} \rvert \le 1$,
+        ovvero non sono presenti conflitti \footnote[][1cm]{In un conflitto in
+        avanti, lo stato pre-condizione ha due post-eventi. In un conflitto
+        all'indietro, lo stato post-condizione ha due pre-eventi. Di conseguenza,
+        imporre un numero di pre-eventi e post-eventi minore o uguale a uno implica
+        l'assenza di conflitti.};
+        \item $\forall x, y \in P \cup T, \quad (x, y) \in T^+ \rightarrow (y, x) \notin T^+$,
+        ovvero non sono presenti cicli;
+        \item $\forall t \in T$, la cardinalità dell'insieme $\cbra{x \in P \cup T | x \, T^* e}$
+        è finita, ovvero i predecessori di un qualsiasi evento sono in numero
+        finito.
+    \end{itemize}
+\end{defn}
 
 \begin{rem}
     Una rete causale ammette elementi isolati, ovvero elementi senza archi
     in ingresso e archi in uscita.
 \end{rem}
 
-Una rete causale rappresenta una sola delle possibili esecuzioni del sistema
-concorrente, ovvero un suo processo non sequenziale.
-La coppia $(N, \phi)$ che definisce un processo non sequenziale
-è quindi il processo non sequenziale costruito dalla rete $N$ usando la
-funzione $\phi$. Diversi processi non sequenziali per la stessa rete
-definiranno la funzione $\phi$ in maniera diversa ($\phi$ deve comunque
-rispettare tutte le caratteristiche che deve avere la funzione che permette
-di definire un processo non sequenziale).
-
 \begin{defn}
-    Un \textbf{processo non sequenziale} di una rete di Petri $N_1$
-    senza contatti e finita (e quindi $k$-densa) è una coppia $(N_2, \phi)$
-    tale che:
+    Un \textbf{processo non sequenziale} di un sistema elementare
+    $\Sigma_1 = (P_1, T_1, F_1, c_1)$ senza contatti e finito (e quindi $k$-densa),
+    è una coppia $(\Sigma_2, \phi), \Sigma_2 = (P_2, T_2, F_2, c_2)$ tale che:
     \begin{itemize}
-        \item $N_2$ è una rete causale;
-        \item $\phi: B \cup E \rightarrow S \cup T$ è una funzione tale che
-        FINIRE DEFINIZIONE
+        \item $\Sigma_2$ è una rete causale;
+        \item $\phi: P_2 \cup T_2 \rightarrow P_1 \cup T_1$ è una funzione tale che:
+        \begin{itemize}
+            \item FINIRE
+        \end{itemize}
     \end{itemize}
 \end{defn}
 
-\begin{defn}
-    Una rete è \textbf{\textit{k}-densa} se ogni linea si interseca una singola
-    volta con ogni altro taglio e, viceversa, ogni taglio si interseca una
-    singola volta con ogni altra linea.
-\end{defn}
-
-Un taglio e una linea si intersecano esattamente in un punto perchè se si
-incontrassero in più punti, allora tutti i punti di intersezione
-rappresenterebbero elementi che sono contemporaneamente casualmente
-dipendenti (li) e casualmente indipendenti (co), violando quindi i tagli
-e le linee definite.
-
 \begin{rem}
-    Una rete finita è sicuramente $k$-densa.
+    Un processo non sequenziale rappresenta una sola delle possibili
+    esecuzioni del sistema concorrente.
 \end{rem}
 
 \subsection*{Prefisso e unfolding}
@@ -768,57 +855,64 @@ del sistema elementare. Questo prefisso prende il nome di prefisso completo.
 
 
 \section{Estensioni}
-AGGIUNGERE RETI COLORATE, DOVE TOKEN HANNO COLORE DIVERSO.
-Fino ad ora sono state considerate solo reti elementari, ovvero reti di Petri
-che tollerano al massimo un token per stato e che prevedono che ogni evento
-sottragga un token da ogni precondizione, e aggiunga un token a ogni
-precondizione.
+Fino ad ora sono state considerate solo le reti elementari, ovvero
+reti di Petri che tollerano al massimo un token per stato e che
+prevedono che ogni transizione sottragga un token da ogni precondizione, e
+ne aggiunga uno a ogni postcondizione.
 
-è possibile però anche definire reti di Petri che tollerano più token
-per ogni stato (ogni stato ha una certa capacità massima) e ogni evento
-può richiedere che in una sua precondizione siano presenti più di un token.
-Quando l'evento scatta verranno rimossi più token da una precondizione.
-Stesso ragionamento può essere applicato alle post-condizioni, in cui l'evento
-aggiunge più di un token.
-In entrambi casi, il fatto che vengano usati più token viene specificato mettendo
-un numerino vicino all'arco che collega l'evento alla pre-condizione o alla
-post-condizione.
+\upperAccE possibile, però, definire reti di Petri in cui ogni stato
+può contenere più token, e in cui ogni arco assume un peso, ovvero elabora
+un numero di token, diverso da 1 \footnote{In entrambi i casi,
+la capacità del posto e il peso dell'arco vengono indicati graficamente
+affiancando il numero all'elemento considerato.}. D'ora in poi, queste
+reti verranno definite \textit{reti ad alto livello}.
 
-Queste reti di Petri più ad alto livello prendono il nome di reti Posti e Transizioni.
-Reti elementari e reti Posti e Transizioni hanno la stessa capacità espressiva:
-le reti Posti e Transizioni permettono semplicemente di definire una rete
-più compatta, e quindi più facile da rappresentare.
+Queste reti di Petri non hanno però una maggiore capacità espressiva
+dei sistemi elementari: si può dimostrare, infatti, che
+ogni sistema elementare può essere simulato usando una rete ad alto livello
+e, viceversa, una rete ad alto livello può essere simulata con
+un sistema elementare.
+Le reti ad alto livello presentano, però, un vantaggio rispetto ai sistemi
+elementari: esse risultano, infatti, più compatte rispetto ai sistemi
+elementari e, di conseguenza, più facilmente trattabili.
+Proprietà come la boundness, la safeness, la terminazione,
+la presenza di deadlock e la liveness possono, infatti, essere verificate
+algoritmicamente, in un tempo accettabile, su reti di questo tipo.
 
-Su una rete Posti e Transizioni in cui ogni stato ha capacità infinita
-e non sono presenti cappi, allora è possibile definire una matrice di incidenza:
-le righe corrispondono agli stati, mentre le colonne alle transizioni;
-il peso degli archi sarà semplicemente il numero di token rimossi, se l'arco
-va da precondizione a evento, o token aggiunti, se l'arco va da evento a
-post-condizione.
+Un'altra possibile estensione ai sistemi elementari riguarda la tipologia
+dei token: in un sistema elementare, e più in generale in una rete di
+Petri, tutti i token rappresentano lo stesso tipo di dato astratto, e
+ogni transizione può trattare qualsiasi token che circola nella rete.
+\upperAccE possibile, però, definire reti di Petri in cui i token
+possono assumere colori differenti, e in cui le transizioni possono
+trattare solo i token dei colori su cui sono state definite.
+Questo tipo di rete prende il nome di \textit{rete colorata}, e permette
+di rappresentare, tramite i diversi colori che i token possono assumere,
+diversi tipi di dati astratti che circolano nella rete.
 
-La matrice di incidenza può essere usata per simulare le transizioni.
-Sia infatti $M_i$ la configurazione corrente della rete, rappresentata come
-una colonna "in più" della matrice in cui si associa a ogni stato il numero
-di token, allora si può trovare la prossima configurazione della rete
-allo scattare dell'evento $t$ semplicemente sommando la colonna associata
-alla configurazione di partenza e la colonna associata a $t$.
-La nuova colonna ottenuta è la nuova configurazione.
+\subsection*{Rappresentazione algebrica delle reti di Petri}
+Una rete ad alto livello in cui ogni stato ha capacità infinita
+e non sono presenti cappi è rappresentabile usando una matrice di incidenza,
+in cui le righe corrispondono ai posti della rete, mentre le colonne
+rappresentano le transizioni della rete.
+Una generica cella della matrice $(i, j)$ contiene il peso
+dell'arco che collega il posto di indice $i$ alla transizione di indice $j$ o,
+viceversa, l'arco che collega la transizione di indice $j$ al posto
+di indice $i$. Se un arco non è presente nella rete, allora la relativa
+cella nella matrice di incidenza rimane vuota.\\
+Le configurazioni della rete, invece, vengono specificate
+come colonne aggiuntive, che si affiancano alle colonne delle transizioni:
+una colonna rappresentante una configurazione conterrà, nella sua $i$-esima
+riga, il numero di token contenuti all'interno dello stato di indice $i$.
 
-Si può affermare quindi che una configurazione $M_1$ è raggiungibile
-da $M_0$ allo scattare di $t$, ovvero $M_0[t>M_1$ sse $M_0 + t = M_1$.
-Questa equazione prende il nome di equazione di stato.
+La matrice di incidenza è utile per descrivere algebricamente
+le transizioni che avvengono nella rete.
+Sia infatti $M_i$ la configurazione corrente della rete, rappresentata
+da un'apposita colonna, allora la configurazione della rete raggiunta
+a seguito della transizione abilitata $t$ può essere facilmente trovata
+sommando la colonna associata a $M_i$ e la colonna associata a $t$.\\
+Si può affermare, quindi, che una configurazione $M_1$ è raggiungibile
+da $M_0$ allo scattare di $t$, ovvero $M_0[t>M_1$, sse $M_0 + t = M_1$.
+Questa equazione prende il nome di \textit{equazione di stato}.
 
-Sulle reti Posti e Transizioni con capacità infinita per ogni stato
-possono essere definite delle proprietà:
-\begin{itemize}
-    \item la rete è limitata (bounded)  sse
-    \item safe
-    \item terminante sse non ammette sequenze infinite
-    \item deadlock-free
-    \item live sse
-    \item reversibile/ciclico
-    \item FINIRE
-\end{itemize}
-
-Queste proprietà possono essere verificate algoritmicamente (non visto durante
-il corso).
+\section{CAAL: un tool per le reti di Petri}

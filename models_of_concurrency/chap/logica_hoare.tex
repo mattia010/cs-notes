@@ -3,18 +3,17 @@
 La logica di Hoare è una logica utilizzata per dimostrare la correttezza di
 programmi sequenziali imperativi. Come tutte le logiche, la logica di Hoare
 ha una propria sintassi, una propria semantica e un proprio apparato deduttivo,
-che permette di ottenere nuove formule ben formute.
+che permette di ottenere nuove formule ben formate.
 In particolare, la logica di Hoare si basa sul concetto di tripla, che definisce
 quali proprietà debbano essere vere prima e dopo l'esecuzione del programma
 considerato.
 
-Sia $V$ l'insieme delle variabili utilizzare dal programma di cui si vuole
+Sia $V$ l'insieme delle variabili utilizzate dal programma di cui si vuole
 dimostrare la correttezza.
 $\sigma: V \rightarrow \mathbb{Z}$ è la funzione che assegna
 a ogni variabile un valore intero\footnote{Non si perde di generalità
-considerando sole variabili intere.}. Di conseguenza, si può dire
-che la funzione $\sigma$ definisce lo \textbf{stato della memoria},
-ovvero i valori assunti dalle variabili, i quali risiedono in memoria.
+considerando sole variabili intere.}, e di conseguenza è la funzione
+che determina lo \textbf{stato della memoria} ad un certo istante di tempo.
 Una formula della logica proposizionale è vera in uno stato della memoria
 (definito da una certa funzione $\sigma$) sse la funzione $\sigma$
 considerata assegna un valore alle variabili coinvolte nella formula tale
@@ -28,23 +27,23 @@ dove:
 \begin{itemize}
     \item $\alpha$, detta precondizione, è una WFF della logica proposizionale
     che deve essere vera sullo stato della memoria prima di eseguire $C$;
-    \item $C$, detto comando, è il codice che deve essere eseguito;
+    \item $C$, detto comando, è il programma che deve essere eseguito;
     \item $\beta$, detta post-condizione, è una WFF della logica proposizionale
     che deve essere vera sullo stato della memoria dopo l'esecuzione di $C$.
 \end{itemize}
 Di conseguenza una tripla di questo tipo viene letta come:
 \begin{center}
-    \textit{Se $\alpha$ è vera sullo stato della memoria prima di eseguire $C$
-    e $C$ termina, allora $\beta$ deve essere vero per lo stato della memoria
-    dopo l'esecuzione di $C$.}
+    \textit{Se $C$ viene eseguito a partire da uno stato della memoria in
+    cui vale $\alpha$, e $C$ termina, allora nello stato della memoria
+    finale raggiunto a seguito dell'esecuzione di $C$ vale $\beta$.}
 \end{center}
 Se si dimostra questa affermazione, allora il programma \tn{C} considerato
 risulta corretto.
 
 
 \subsection*{Sintassi}
-La sintassi della logica considera come formule valide tutte le triple
-definite come
+La sintassi della logica di Hoare considera come formule valide tutte
+le formule della logica proposizionale e tutte le triple della forma:
 \[
     \Hoaretriple{p}{C}{q}
 \]
@@ -65,8 +64,8 @@ Grammatica delle espressioni aritmetiche:
 Grammatica delle espressioni booleane:
 \begin{itemize}
     \item $\textnormal{true}, \textnormal{false} \in B$;
-    \item $\forall b_1, b_2 \in B$, $(b_1 \AND b_2), (b_1 \OR b_2), \NOT b_1 \in B$;
-    \item $\forall e_1, e_2 \in E$, $(e_1 < e_2), (e_1 = e_2), (e_1 != e_2), (e_1 \le e_2) \in B$.
+    \item $\forall b_1, b_2 \in B$, $(b_1 \land b_2), (b_1 \lor b_2), \lnot b_1 \in B$;
+    \item $\forall e_1, e_2 \in E$, $(e_1 < e_2), (e_1 = e_2), (e_1 \neq e_2), (e_1 \le e_2) \in B$.
 \end{itemize}
 
 Si può ora definire l'insieme dei programmi validi nella logica di Hoare.
@@ -97,7 +96,7 @@ allora la grammatica per $C$ è:
 
 \subsection*{Apparato deduttivo}
 L'apparato deduttivo contiene tutte le regole di inferenza, che permettono di
-derivare nuove triple valide a partire da triple già presenti e di
+derivare nuove triple valide a partire da formule ben formate già dimostrate e di
 dimostrare la correttezza di un programma.
 Tutte le regole di inferenza sono corrette, ovvero se le triple
 premesse sono dimostrate e si può derivare da esse una nuova tripla
@@ -448,39 +447,116 @@ Siano $t(\sigma)$ la funzione che restituisce l'insieme delle formule valide
 nello stato della memoria $\sigma$, e sia $m(p)$ la funzione che ritorna
 l'insieme degli stati della memoria in cui vale $p$.
 
-Per dimostrare la correttezza di una tripla, bisogna individuare, dati
-un comando e una post-condizione, una precondizione, per cui se il comando
+Per dimostrare la correttezza di una tripla, bisogna individuare una
+precondizione che permetta di costruire una tripla valida
+con il comando e la post-condizione dati, ovvero per cui se il comando
 è eseguito da uno stato della memoria in cui vale la pre-condizione, allora
 nello stato finale della memoria dopo l'esecuzione vale la post-condizione.
-Una precondizione non è altro che un vincolo sui possibili stati della memoria
-che vengono accettati. Ovviamente, sono ammesse più precondizioni valide per
-una dimostrazione, ovvero sottoinsiemi di stati della memoria in cui se viene
-eseguito il comando si raggiunge uno stato in cui vale la post-condizione.
+Una precondizione, però, non è altro che un vincolo sui possibili stati della memoria
+che vengono accettati. Più sottoinsiemi di stati della memoria possono
+portare alla costruzione di una tripla valida.
 
-La weakest precondition è quindi la precondizione che comprende più stati
-della memoria, ovvero la precondizione più generica.
-è la precondizione che impone meno vincoli sullo stato iniziale del programma.
-Di fatto, la weakest precondition comprende tutti i possibili stati per cui
-se viene eseguito il comando, si raggiunge uno stato della memoria in cui vale
-la post-condizione.
+La weakest precondition è quindi la precondizione più generica, che impone
+meno vincoli sullo stato iniziale del programma. Essa è la pre-condizione
+di cardinalità massima, ovvero quella che comprende più stati della memoria
+possibili che, a seguito dell'esecuzione di $C$, permettono di raggiungere
+uno stato in cui vale la post-condizione.
 
-Dato un comando $C$ e una post-condizione $q$, per trovare la precondizione più debole $wp(C, q)$
-per cui la tripla risulta valida può essere fatto nel seguente modo:
+Dato un comando $C$ e una post-condizione $q$, per trovare la precondizione
+più debole $wp(C, q)$ per cui la tripla risulta valida possono essere
+usate le seguenti regole:
 \begin{itemize}
-    \item la regola dell'assegnamento restituisce sempre la precondizione più debole.
-    \item sequenza: $wp(C_1;C_2, q) = wp(C_1, wp(C_2, q))$
-    \item scelta: $wp(if B then C else D endif, q) = (B \land wp(C, q)) \lor
-    (\lnot B \land wp(D, q))$
-    \item iterazione: $wp(while B do C endwhile, q) = (\lnot B \land q)) \lor
-    (B \land wp(C;while B do C endwhile, q))$.\\
+    \item assegnamento:
+    \[
+        wp(x:=E \; , \; q) = q[\sfrac{E}{x}]
+    \]
+    \item sequenza:
+    \[
+        wp(C_1;C_2 \; , \; q) = wp(C_1 \; , \; wp(C_2 \; , \; q))
+    \]
+    \item scelta:
+    \[
+        wp \bra{\begin{aligned}
+            & \text{if } \beta\\
+            & \text{then } C\\
+            & \text{else } D\\
+            & \text{endif}
+        \end{aligned} \; , \; q} =
+        (B \land wp(C \; , \; q)) \lor (\lnot B \land wp(D \; , \; q))
+    \]
+    \item iterazione:
+    \[
+        wp \bra{\begin{aligned}
+            & \textnormal{while } \beta\\
+            & \textnormal{do } C\\
+            & \textnormal{endwhile}
+        \end{aligned} \; , \; q} =
+        (\lnot \beta \land q) \lor (\beta \land
+        wp \bra{\begin{aligned}
+            & C;\\
+            & \text{while } \beta\\
+            & \text{do } C\\
+            & \text{endwhile}
+        \end{aligned} \; , \; q})
+    \]
     Ovviamente questa definizione ricorsiva non può essere tradotta in una procedura
-    automatica. è comunque corretta.
+    automatica. Risulta comunque essere corretta.
 \end{itemize}
 
 \section{Design by Contract}
-Una tripla di Hoare può essere usata per un particolare tipo di programmazione,
-detta programming by contract: la precondizione funge da un'obbligazione
-del cliente, la post condizione un'obbligazione del fornitore.
-Di conseguenza la precondizione è qualcosa che il cliente che vuole il
-software garantisce, mentre la postcondizione è qualcosa che noi sviluppatori
-garantiamo al cliente.
+Design by Contract è un paradigma di programmazione le cui radici affondano
+nella verifica formale dei sistemi e nella logica di Hoare.
+Questo paradigma, infatti, richiede che il programmatore specifichi, per
+ogni componente software del sistema, interfacce formali, precise e verificabili:
+queste interfacce si traducono di fatto con l'affiancamento, a ogni metodo/funzione,
+di una precondizione, una postcondizione e una o più invarianti.
+Queste specifiche prendono il nome di contratto.
+Il Design by Contract chiama poi il metodo/funzione con il nome di
+\textit{supplier}, mentre fa riferimento al chiamante con il nome di
+\textit{client}.
+
+Design by Contract assume inoltre che le funzioni non debbano verificare
+se gli argomenti, ricevuti a seguito di una chiamata, rispettino
+la precondizione: è infatti compito del chiamante assicurarsi che i valori
+effettivi passati alla funzione rispettino il contratto associato alla
+funzione stessa.
+Al contrario, una funzione deve assicurare che la postcondizione sia
+rispettata, e deve quindi effettuare adeguati controlli al termine della
+sua esecuzione.\\
+Nel caso in cui le funzioni sia particolarmente critiche, però,
+è solitamente consigliato implementare controlli anche sulla precondizione.
+
+\section{Logica di Hoare e la sua inadeguatezza per i sistemi reattivi}
+La logica di Hoare è un formalismo utile per modellare sistemi (programmi)
+sequenziali e dimostrarne la correttezza, secondo una certa specifica.
+Si basa sul concetto di comando per il modello, e su
+pre-condizione e post-condizione per esso. La pre-condizione deve
+valere nello stato iniziale del sistema, mentre la post-condizione deve
+valere nello stato finale.
+
+Nei sistemi concorrenti
+\footnote{Un sistema concorrente è un sistema composto da diverse parti che:
+\begin{itemize}
+    \item competono per l'accesso a risorse condivise
+    \item cooperano per un obiettivo comune
+    \item si coordinano
+\end{itemize}}, però, l'esecuzione risulta essere non deterministica
+e non composizionale: di conseguenza, la logica di Hoare non si
+rivela adatta a descriverne il comportamento e verificarne le proprietà.
+Inoltre, i sistemi concorrenti, molto spesso, sono sistemi reattivi,
+ovvero sistemi che non hanno alcuno stato iniziale
+\footnote{Nella pratica, anche i sistemi reattivi hanno uno stato di
+partenza.} e alcuno stato finale, e il cui obiettivo è quello di mantenere
+la sua esecuzione. Non seguendo il tradizionale paradigma
+input-computazione-output, i sistemi reattivi non possono essere modellati
+tramite logica di Hoare.\\
+La logica di Hoare rimane comunque utile nel model checking di sistemi
+concorrenti: essi sono infatti molto spesso formati da sottosistemi
+sequenziali, la cui correttezza può essere verificata tramite la logica
+di Hoare.
+
+Nei prossimi capitoli verranno introdotti alcuni modelli formali
+utili per la trattazione di sistemi concorrenti e
+distribuiti. Verrà anche introdotta la tecnica del model checking, che
+permette di stabilire se un sistema concorrente gode o meno di una
+certa proprietà.
