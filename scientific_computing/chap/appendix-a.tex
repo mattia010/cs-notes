@@ -1,0 +1,98 @@
+\appendix
+\chapter{Rappresentazione dei numeri}
+Un numero può essere rappresentato in una base $b$ usando un sistema
+di numerazione posizionale, in cui i valori delle cifre cambiano in base
+alle posizioni in cui esse compaiono all'interno del numero.
+
+\begin{rem}
+    Un numero reale può ammettere più rappresentazioni in una base $b$, ma
+    non è detto che tutte queste rappresentazioni siano finite.
+\end{rem}
+
+\begin{example}
+    \[
+        1 = 0,\overline{9}
+    \]
+    \begin{proof}
+        $0,\overline{9}$ può essere scritto come $0,9 + 0,09 + 0,009 + \ldots$,
+        ovvero come:
+        \[
+            \sum_{i=1}^{+\inf} 9 \cdot 10^{-i} =
+            9 \cdot \sum_{i=1}^{+\inf} 10^{-i} =
+            9 \cdot \sum_{i=0}^{+\inf} 10^{-i-1} =
+            9 \cdot \sum_{i=1}^{+\inf} 10^{-i} 10^{-1} =
+            \frac{9}{10} \cdot \sum_{i=1}^{+\inf} 10^{-i}
+        \]
+        Ma si può osservare che $\sum_{i=1}^{+\inf} 10^{-i}$ è una serie
+        geometrica, e quindi:
+        \[
+            \frac{9}{10} \cdot \sum_{i=1}^{+\inf} 10^{-i} =
+            \frac{9}{10} \cdot \frac{1}{1-\frac{1}{10}} =
+            \frac{9}{10} \cdot \frac{10}{9} = 1
+        \]
+        Si è quindi dimostrato che $0,\overline{9} = 1$.
+    \end{proof}
+\end{example}
+
+\begin{thm}
+    Dato un numero razionale scritto nella forma $\frac{p}{q}$ e già
+    ridotto ai minimi termini, ovvero la cui frazione non può essere
+    ulteriormente semplificata, allora esso ammette rappresentazione
+    finita in una base $b$ sse tutti i fattori primi di $q$ dividono $b$.
+\end{thm}
+\begin{example}
+    $0,\overline{3}$ non ammette rappresentazione finita in base $10$.
+    Esso può, infatti, essere scritto come $\frac{1}{3}$. I divisori primi
+    del denominatore sono $\cbra{1, 3}$. $3$ non divide però $b=10$,
+    e quindi non è ammessa rappresentazione finita.
+
+    Se però si considera $b=3$, allora $0,\overline{3}$ ammette rappresentazione
+    finita: tutti i divisori primi del denominatore, ovvero $\cbra{1, 3}$,
+    dividono $b=3$.
+\end{example}
+
+\chapter{Aritmetica floating point}
+L'aritmetica floating point è un'aritmetica che permette di operare su un
+sottoinsieme dei numeri reali, i cui elementi possono essere rappresentati
+nella forma
+\[
+    \pm M_b \cdot b^E \quad E \in \mathbb{Z}
+\]
+dove $M_b$, un numero intero in base $b$, prende il nome di mantissa,
+$b$ è la base in cui si sta rappresentando il numero e $E$ è l'esponente.
+Dando per scontato che si stia operando in un sistema di numerazione in
+base $b$, $b$ può essere dato per scontato, e si può identificare univocamente
+un numero in aritmetica floating point usando segno, mantissa e esponente.
+
+Si consideri ora solo l'aritmetica floating point in base $2$, ovvero quella
+utilizzata dai calcolatori moderni.
+Il calcolatore rappresenta i numeri floating point, e
+in particolare mantissa ed esponente, con un numero costante di
+bit. Ha quindi senso dire che con un numero costante di bit è
+possibile rappresentare tutti gli esponenti da un minimo esponente $L$
+a un massimo esponente $U$. Lo stesso ragionamento può essere applicato
+anche ai valori interi che la mantissa può assumere.
+
+I calcolatori moderni usano lo standard IEEE 754, che definisce come
+rappresentare i numeri floating point e definisce diversi gradi di precisione
+che richiedono un numero diverso di bit. Uno di questi gradi di precisione
+è il \verb|double|: un numero floating point a doppia precisione utilizza
+$64$ bit, di cui $1$ viene usato per specificare il segno, $52$ per la mantissa
+e $11$ per l'esponente ($1+52+11=64$).
+Il valore che l'esponente può assumere è limitato tra $L=-1022$ e $U=1023$.
+Si può osservare però che $11$ bit permettono di rappresentare i numeri con
+segno compresi tra $-1023$ e $1024$, e quindi due valori sono mancanti.
+Queste due rappresentazioni mancanti sono utilizzate per rappresentare
+\verb|NaN| (Not a Number) e \verb|Inf| (Infinity).
+Per quanto riguarda la mantissa, essa viene rappresentata come un intero
+ma in realtà questo intero è implicitamente la parte decimale di un numero
+decimale la cui parte intera è 0. Inoltre, la prima cifra decimale
+del numero decimale rappresentato dalla mantissa è sempre diversa da $0$,
+perchè altrimenti esso potrebbe riscritto come un numero con prima cifra
+decimale diversa da $0$ modificando semplicemente l'esponente.
+Questo bit sempre diverso da $0$ viene quindi sottointeso, e si può rappresentare
+questo numero decimale usando un bit in meno. La mantissa utilizza
+effettivamente 52 bit e, di conseguenza, essa permette di rappresentare
+in realtà un numero binario decimale con 53 bit dopo la virgola.
+
+\chapter{Algebra lineare}

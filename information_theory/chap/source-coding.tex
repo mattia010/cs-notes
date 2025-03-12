@@ -1,0 +1,79 @@
+\chapter{Codifica di sorgente}
+Per poter parlare della codifica di sorgente, è prima necessario capire
+cosa sia una sorgente, e cosa essa faccia.\\
+La sorgente è l'"entità" mittente che produce, in sequenza e con una certa probabilità,
+i simboli che devono essere inviati sul canale e recapitati al destinatario.
+Esistono diversi tipi di sorgente. D'ora in poi si considereranno solo sorgenti
+con le seguenti caratteristiche:
+\begin{itemize}
+    \item discreta: la sorgente ha un alfabeto finito e non vuoto di simboli
+    che può emettere \footnote{Una sorgente continua emette, invece, un segnale
+    continuo nel tempo, e non ha quindi un vero e proprio alfabeto finito
+    di simboli.}.
+    \item stocastica: ogni simbolo dell'alfabeto ha una certa probabilità
+    di essere prodotto a un determinato istante di tempo.
+    Se un simbolo può essere prodotto con una probabilità pari a 0,
+    allora si può affermare che esso non sarà mai prodotto dalla sorgente.
+    Se invece esso può essere prodotto con una probabilità pari a 1,
+    allora gli altri simboli non saranno mai prodotti, e la sorgente si
+    comporterà in maniera deterministica \footnote{Se la sorgente
+    è senza memoria e deterministica, allora essa produce sempre lo stesso
+    simbolo. Se invece essa è dotata di memoria ed è deterministica,
+    allora produrrà sempre la stessa sequenza di simboli.}.
+    \item senza memoria: la sorgente emette un nuovo simbolo senza tenere
+    conto di quali simboli sono stati precedentemente inviati, e quindi
+    ogni simbolo ha la stessa probabilità di essere prodotto dalla sorgente.
+    \footnote{Un esempio di sorgente con memoria è, invece, un libro: la probabilità
+    che sia presente una certa lettera in una posizione, infatti, dipende
+    dalle precedenti parole e dalle lettere più usate in una certa lingua. Ad
+    esempio, la \verb|e| è molto usata in inglese, e di conseguenza avrà
+    più probabilità di essere prodotto da una sorgente che utilizza l'inglese.}.
+\end{itemize}
+
+Si può ora introdurre il concetto di codifica di sorgente.
+La codifica di sorgente è quel processo con cui un messaggio, prodotto
+dalla sorgente, viene compresso, in modo da sfruttare efficientemente il canale
+di comunicazione quando effettivamente il messaggio verrà inviato.
+Formalmente, la codifica di sorgente è una funzione:
+\[
+    f: S \rightarrow \Gamma^*
+\]
+dove $S$ è l'alfabeto della sorgente, $\Gamma$ è l'alfabeto di canale.
+In pratica, è una funzione che associa a ogni simbolo prodotto dalla sorgente
+una codeword, formata da soli simboli dell'alfabeto di canale.
+
+L'obiettivo della codifica di canale è di comprimere il messaggio. Per
+raggiungere questo obiettivo, cerca di minimizzare lunghezza media
+delle codeword associate ai simboli, ovvero la somma pesata sulle
+probabilità della lunghezza delle codeword associate ai simboli contenuti
+nell'alfabeto di sorgente.
+\[
+    \min \sum_{s_i \in S} p_i \cdot |\text{cod}(s_i)|
+\]
+dove $s_i$ è l'$i$-esimo simbolo contenuto nell'alfabeto di sorgente $S$,
+$p_i$ è la probabilità che il simbolo $s_i$ venga prodotto dalla sorgente,
+e $\text{cod}(s_i)$ è la codeword associata al simbolo $s_i$, ovvero $f(s_i)$.
+
+Esistono due tipi di codifiche di sorgente:
+\begin{itemize}
+    \item a blocchi: tutte le codeword associate ai simboli sono di uguale
+    lunghezza. L'unico modo di ottimizzare la somma pesata delle lunghezze delle
+    keyword è quello di utilizzare keyword di lunghezza $\log_{|\Gamma|}|S|$
+    per ogni simbolo di sorgente.
+    Esempi di codifiche di sorgente a blocchi sono ASCII e UTF-8.
+    \item a lunghezza variabile: le codeword associate ai simboli hanno
+    lunghezze differenti. Ciò permette di assegnare ai simboli più
+    frequenti codeword di lunghezza minore, mentre assegnare ai simboli
+    meno frequenti codeword di lunghezza maggiore \footnote{
+    Il primo a notare i vantaggi dell'utilizzo di una codifica di sorgente
+    a lunghezza variabile è stato Morse, che già nel suo codice Morse codifica
+    le lettere più frequenti, come la \verb|e|, con codifiche piccole, mentre
+    codifica lettere meno frequenti, come la \verb|y|, con codifiche più lunghe.}.
+    L'utilizzo di codici a lunghezza variabile introduce però un nuovo
+    problema per il destinatario: esso deve possedere un criterio con cui
+    identificare correttamente le codeword ricevute che, presentando
+    lunghezze diverse, non possono essere distinte facilmente.
+\end{itemize}
+
+\section{Altri codici di sorgente}
+\subsection{Codice di Van Duuran}

@@ -1,0 +1,66 @@
+\chapter{Introduzione}
+La teoria dell'informazione è una teoria matematica che, utilizzando i
+formalismi tipici della matematica, definisce e descrive i concetti
+di informazione, comunicazione e canale di comunicazione. In pratica,
+la teoria dell'informazione è una disciplina che tratta la comunicazione
+come un processo statistico e studia formalmente la comunicazione su canale
+e le informazioni che vengono trasmesse.
+
+L'obiettivo principale della teoria dell'informazione è quello di rimuovere
+il più possibile la ridondanza dal messaggio che si vuole inviare sul canale,
+tramite un processo chiamato codifica di sorgente, per poi aggiungere
+una piccola quantità di ridondanza mirata, tramite un processo chiamato
+codifica di canale. L'eliminazione della ridondanza tramite codifica di
+sorgente permette di ridurre la dimensione del messaggio, in modo
+da sfruttare al meglio il canale di comunicazione, mentre la ridondanza
+introdotta dalla codifica di canale permette al destinatario di correggere
+eventuali errori del messaggio ricevuto causati dal rumore che affligge il canale
+di comunicazione, senza necessità di chiedere al mittente di rinviare il messaggio.
+Il continuo rinvio sarebbe infatti molto inefficiente e, essendo i canali
+di comunicazione reali sempre afflitti da rumore, non garantirebbe che prima
+o poi il messaggio venga consegnato senza errori.
+
+\begin{figure}
+    \centering
+    \includegraphics[width=\linewidth]{img/communication-model.jpg}
+    \caption{Modello della comunicazione.}
+    \label{fig:communication-model}
+\end{figure}
+
+La comunicazione è strutturata in cinque fasi:
+\begin{enumerate}
+    \item codifica di sorgente: il mittente rimuove la ridondanza dal messaggio.
+    Di fatto, il messaggio viene compresso in maniera loss-less.
+    \item codifica di canale: il mittente aggiunge ridondanza mirata al messaggio
+    compresso, in modo da permettere al destinatario di rilevare e correggere
+    eventuali errori presenti nel messaggio ricevuto.
+    La codifica di canale è fondamentale in quanto, a seguito della
+    codifica di sorgente, i bit del messaggio compresso assumono un'importanza
+    maggiore rispetto a quelli del messaggio di partenza, in quanto sono
+    in numero ridotto rispetto ad essi, ma trasportano la stessa quantità di
+    informazione. La perdita o modifica di uno di questi bit, quindi,
+    porterebbe a importanti modifiche nell'informazione trasmessa e quindi
+    a una grave distorsione.
+    \item trasmissione su canale, e quindi introduzione di errori nel messaggio,
+    causati dal rumore.
+    \item decodifica di canale: il destinatario verifica se il messaggio ricevuto
+    è afflitto da errori, ed eventualmente li corregge.
+    \item decodifica: il messaggio ricevuto e corretto viene decompresso,
+    in modo che il destinatario ottenga il messaggio originale.
+\end{enumerate}
+
+Questi principi non sono del tutto estranei a fenomeni reali e "naturali":
+il linguaggio umano, infatti, prevede che le parole più usate siano
+molto spesso quelle più corte, e che il destinatario possa capire il senso
+di una frase anche se alcune sue parole vadano perse, sia in una comunicazione
+orale che in una comunicazione scritta.
+
+La teoria dell'informazione può essere utilizzata anche in altri campi
+diversi dalla comunicazione fisica su canale tra due entità: ad esempio,
+essa permette di modellare correttamente l'evoluzione, nel corso del tempo,
+di un messaggio che si trova nello stesso posto, impresso su un mezzo fisico.
+Un esempio può essere un uomo primitivo che incide una pietra: esso si comporta
+come il mittente, che "invia" il messaggio sulla pietra, ovvero lo incide;
+nel corso del tempo, però, il messaggio inciso viene modificato da fenomeni
+naturali (rumore). Il destinatario è colui che osserva le incisioni dopo
+moltissimi tempo, come ad esempio un archeologo.
