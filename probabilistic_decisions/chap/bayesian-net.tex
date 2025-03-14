@@ -1,1 +1,85 @@
 \chapter{Reti Bayesiane}
+Le reti Bayesiane sono un modello grafico probabilistico che,
+attraverso i concetti di indipendenza condizionata tra variabili, permette
+di memorizzare e trattare efficientemente le distribuzioni di probabilità
+congiunta che, se memorizzate esplicitamente tramite tabella delle
+probabilità congiunte, richiederebbero una grandissima quantità di memoria,
+oltre che un elevato tempo di calcolo.
+\footnote{Nel caso di 100 variabili booleane, la tabella delle probabilità
+congiunte presenta $2^100$ celle, ognuna contiene una probabilità congiunta
+che deve essere calcolata. Eventuali aggiornamenti causati dall'osservazione
+di una variabile, porterebbe al ricalcolo di moltissime celle.}.
+Un altro svantaggio, parzialmente risolto nelle reti Bayesiana, è che le
+probabilità congiunte richiedono moltissimi dati per essere stimate.
+
+Formalmente, una rete Bayesiana è un grafo diretto aciclico (d'ora in poi
+DAG), i cui nodi rappresentano le variabili aleatorie che si stanno considerando,
+e gli archi le relazioni di dipendenza causale diretta tra esse.
+Inoltre, ogni nodo è etichettato con una tabella di probabilità condizionata (CPT),
+in cui è espressa la distribuzione di probabilità condizionata della variabile
+associata al nodo condizionata dalla congiunzione di tutti i genitori,
+ovvero le variabili associate ai nodi genitori del nodo considerato.
+Una tabella delle probabilità congiunte "quantifica" l'impatto che i nodi
+genitori hanno sul valore che la variabile associata al nodo considerato
+può assumere.
+Se un nodo non presenta nodi genitori, ovvero archi entranti, la sua tabella
+delle probabilità congiunte conterrà semplicemente la distribuzione
+a priori (non condizionata) della variabile associata al nodo.
+
+La topologia della rete, ovvero i nodi presenti e gli archi tra essi, e le
+tabelle di probabilità condizionata permettono di definire completamente
+la distribuzione di probabilità congiunta di tutte le variabili aleatorie
+che si stanno considerando.
+Come la tabella delle probabilità congiunte, una rete Bayesiana permette di
+fare inferenza, ovvero interrogare il modello in modo tale da calcolare una
+probabilità desiderata: questo è possibile proprio grazie al fatto che
+una rete Bayesiana permette di descrivere completamente, anche se non
+in maniera esplicita, la distribuzione di probabilità congiunta su tutte le
+variabile considerate.
+Si può calcolare la probabilità di un evento atomico che coinvolge tutte
+le variabili della rete come:
+\[
+    P(x_1, \ldots, x_n) = \Pi_{i=1}^{n} P(x_i | \text{parents}(x_i))
+\]
+dove con $x_i$ si intende che la variabile $X_i$ assume il valore $x_i$,
+mentre $\text{parents}(x_i)$ (con la p minuscola) si indicano che
+le variabili associate ai nodi genitori assumono i valori dettati
+dall'evento atomico considerato.
+In realtà, la probabilità può essere calcolata anche sulla congiunzione
+di un sottoinsieme di variabili, anche se in questo caso il calcolo risulta
+più complesso.
+
+Sia $x_i$ la variabile considerata, e $\text{Parents}(x_i)$ l'insieme
+delle variabili associate ai nodi genitori. Allora la tabella delle
+probabilità condizionate associata al nodo di $x_i$ avrà un numero
+di parametri, ovvero un numero di entrate/probabilità pari a
+$\sum_{p \in \text{Parents}(x_i)} |p|$, dove $|p|$ è il numero di valori
+che la variabile $p$ può assumere.
+
+Per quanto riguarda la complessità di una rete Bayesiana, meno complessa
+è la topologia della rete, minore è la complessità: si riducono infatti
+sia il numero di parametri contenuti nelle tabelle di probabilità
+condizionata, sia i nodi da aggiornare quando vengono modificate le distribuzioni
+di probabilità associate a un sottoinsieme di variabili.
+Per questo motivo, è importante definire la rete in modo che essa esprima
+il dominio desiderato, mantenendo comunque una bassa complessità della topologia.
+Esistono comunque tecniche che, data una rete Bayesiana, permettono di
+semplificare la topologia, introducendo però errori quantificabili. In questo
+caso, però, bisogna valutare i tradeoff tra complessità e qualità del modello
+richiesta.
+
+\section{Costruire una rete Bayesiana}
+Per costruire una rete Bayesiana, è necessario innanzitutto aver studiato
+il dominio che si sta considerando, ed aver raccolto dei dati che
+permettano di stimare i parametri della rete (ed eventualmente anche
+stabilire le relazione di dipendenza condizionale).
+
+L'algoritmo per la sua costruzione si divide in cinque fasi:
+\begin{enumerate}
+    \item seleziono le variabili da modellare;
+    \item scelgo l'ordinamento corretto delle variabili, in modo che
+    se due variabili sono legate da una relazione di causa ed effetto,
+    allora la variabile rappresentante l'effetto compare successivamente
+    nell'ordinamento rispetto alla causa;
+    \item inizializzo la rete;
+\end{enumerate}

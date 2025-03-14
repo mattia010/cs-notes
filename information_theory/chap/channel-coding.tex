@@ -1,0 +1,189 @@
+\chapter{Codifica di canale}
+La codifica di canale è quel processo di aggiunta parziale, al messaggio
+già compresso tramite codifica di sorgente, di ridondanza mirata, la quale
+può essere utilizzata dal destinatario per rilevare errori che il messaggio
+ha subito durante la trasmissione, ed eventualmente correggerli.
+Senza la codifica di canale, il destinatario dovrebbe infatti chiedere
+al mittente di rinviare il messaggio, ogni qual volta esso subisca una modifica
+durante la trasmissione. Ma per la natura dei canali, che sono sempre rumorosi,
+una consegna senza errori potrebbe richiedere molte ritrasmissioni, e addirittura
+non sarebbe garantita: i codici di canale risolvono proprio questo problema.
+
+Si introducono alcuni concetti che risulteranno utili nello studio dei codici
+di canale.
+\begin{defn}
+    La ridondanza introdotta da un codice di canale è il rapporto
+    tra numero di bit effettivamente immessi sul canale e numero di bit
+    del messaggio di partenza (ma comunque dopo la codifica di sorgente).
+    \[
+        R = \frac{\text{n° bit del nuovo messaggio dopo codifica di canale}}
+                 {\text{n° bit del messaggio prima del codice di canale}}
+    \]
+\end{defn}
+\begin{remark}
+    La ridondanza assume sempre, a seguito dell'applicazione di un codice di canale,
+    un valore maggiore o uguale a 1. Questo perchè un codice di canale aumenta
+    sempre la dimensione del messaggio.
+\end{remark}
+\upperAccE possibile definire poi l'eccesso di ridondanza introdotto
+da un codice di canale come:
+\[
+    \text{Eccesso di ridondanza} = R - 1
+\]
+Ovviamente, si può affermare che un codice di canale porta ad avere un
+eccesso di ridondanza maggiore o uguale a 0.
+
+\section{Controllo di parità semplice}
+Il controllo di parità semplice si può considerare come il più semplice codice di canale:
+esso prevede, nella sua versione più banale, di aggiungere al messaggio un nuovo bit $c$,
+detto bit di controllo, e far sì che $c=1$ se il messaggio di partenza presenta un numero
+dispari di bit, $c=0$ altrimenti \footnote{\upperAccE possibile
+definire anche un controllo di parità in cui $c=1$ sse il messaggio da codificare
+presenta un numero pari di 1. Le proprietà dei due codici sono equivalenti,
+ma i due risultano adatti a contesti applicativi diversi.}.
+Questo codice è talmente banale che viene usato da molti anni e su qualsiasi
+dispositivo che richiede una codifica di canale, tra cui anche i primi
+microprocessori creati.
+Il nome "controllo di parità" deriva proprio dal fatto che il destinatario,
+quando riceve il messaggio, verifica semplicemente se il messaggio presenta
+un numero pari di bit, e adotta le azioni corrette in base al risultato del controllo.
+
+Sia $X = (x_1, \ldots, x_n)$ il messaggio da codificare, e $c$ il bit di controllo,
+allora il valore assunto da $c$ è calcolato tramite una funzione
+$f: \cbra{0,1}^+ \rightarrow \cbra{0,1}$ definita come:
+\[
+    c = f(X) = \bigoplus_{i=1}^{n} x_i
+\]
+Questa funzione può essere calcolata in tre modi diversi:
+\begin{itemize}
+    \item a livello software come $c = \sum_{i=}^{n}x_i \mod 2$;
+    \item tramite appositi circuiti elettronici, in cui viene sfruttata
+    la proprietà associativa dello XOR per parallelizzare il calcolo;
+    \item tramite automa a stati finiti. Questa ultima modalità si rivela
+    particolarmente utile quando il messaggio su cui deve essere
+    calcolato $c$ è di grandi dimensioni.
+\end{itemize}
+
+Il controllo di parità con singolo bit di controllo ha ridondanza pari a:
+\[
+    R = \frac{n+1}{n}
+\]
+dove $n$ è il numero di bit da cui è composto il messaggio di partenza a cui
+viene applicato il codice di canale.
+
+\subsection{Fallimento del controllo di parità semplice in caso di rumore bianco}
+Il controllo di parità non permette al destinatario di rilevare qualsiasi
+errore che avviene nel messaggio, ma solo di verificare se esso ha subito
+un numero dispari di errori: nel caso in cui il messaggio abbia subito un numero
+di errori pari, infatti, esso presenta ancora un numero pari di bit impostati
+a 1, e ciò non permetterà al destinatario di rilevare alcun errore.
+
+Si vuole quindi calcolare la probabilità che il controllo di parità semplice fallisca.
+In particolare, si analizzerà il caso in cui il canale presenta un rumore
+bianco, ovvero un rumore in cui le posizioni del messaggio vengono modificate
+indipendentemente e ognuna di esse ha la stessa probabilità di subire un errore.
+
+Sia $p$ la probabilità di errore di un bit nel rumore bianco,
+si ricorda che la probabilità che si verifichino $k$ errori in un messaggio
+di $n$ bit afflitto da rumore bianco è pari a:
+\[
+    \binom{n}{k} \cdot p^k \cdot (1-p)^{n-k} \approx \binom{n}{k} \cdot p^k
+\]
+ovvero il numero di possibili combinazioni di $k$ errori in $n$ bit per
+la probabilità che $k$ bit siano errati per la probabilità che gli altri $n-k$
+siano corretti.
+
+La probabilità che in un messaggio di $n$ bit si verifichino un numero pari
+di errori è pari a:
+\[
+    P[0 \text{ err}] + P[2 \text{ err}] + \ldots + P[n-2 \text{ err}] + P[n \text{ err}]
+\]
+Ma $P[0 \text{ err}]$ è la probabilità che il messaggio venga ricevuto corretto,
+e non deve essere tenuto in considerazione nell'analisi di un possibile
+fallimento del controllo di parità.
+Di conseguenza, si dovrà calcolare:
+\[
+    P[2 \text{ err}] + \ldots + P[n-2 \text{ err}] + P[n \text{ err}]
+\]
+\upperAccE possibile definire:
+\[
+    \sum_{k=0}^{n} \binom{n}{k} \cdot p^k \cdot (1-p)^{n-k} =
+    [(1-p)-p]^n = (1-2p)^n
+\]
+come la quantità ottenuta sommando tutte le probabilità che si verifichino
+$k$ errori con $k$ pari, e sottraendo tutte le probabilità
+che si verifichino $k$ errori, con $k$ dispari.
+Se questa quantità viene sommata alla somma di tutte le probabilità di $k$
+errori per ogni $k$, ovvero $\sum_{k=0}^{n} \binom{n}{k} p^k (1-p)^{n-k}$,
+allora la quantità ottenuta sarà due volte la probabilità che si verifichi
+un numero pari di errori. Dividendo per due si otterrà quindi
+la probabilità che si verifichi un numero pari di errori. Non essendo però
+interessati al caso in cui si verifichino 0 errori, alla quantità ottenuta
+viene sottratta la $P[0 \text{ err}]$, ovvero $\binom{n}{0} p^0 (1-p)^{n-0} = (1-p)^n$
+\[
+    P[\text{fallimento}] = \frac{1 + (1-2p)^n}{2} - (1-p)^n
+\]
+
+Si vuole ora capire quanti bit di controllo sono necessari per far sì che
+il controllo di parità non fallisca, o che comunque lo faccio con una probabilità
+molto bassa.
+La probabilità che si verifichi un errore nel rumore bianco è pari a
+$P[1 \text{ err}] = np$. Si consideri una probabilità di errore $p$ realistica,
+e che quindi assuma valore $p=0.01$ \footnote{Una probabilità di errore
+pari a $p = 0.1$ è in realtà irrealistica: i canali di comunicazione moderni
+presentano probabilità di errore di almeno 2 ordini di grandezza più piccoli,
+e si possono quindi considerare più affidabili.}: la probabilità che il
+messaggio subisca 1 errore è pari a $P[1 \text{ err}] = n \cdot 0.01$.
+Ma se si calcola
+
+\subsection{Controllo di parità e burst}
+In un canale reale, il rumore molto spesso modifica i bit in burst,
+ovvero sono presenti intervalli di tempo in cui i bit che attraversano il canale
+sono notevolmente afflitti dal rumore, mentre altri intervalli di tempo in cui
+il rumore è notevolmente ridotto.
+Di conseguenza, un rumore di questo tipo può portare a una concentrazione
+elevata di errori nel messaggio durante periodi di burst e quindi a
+una maggiore probabilità di fallimento del controllo di parità semplice,
+soprattutto se la durata del burst è più piccola dell'intervallo
+di tempo necessario a una codeword per attraversare il canale.
+
+In questo caso, quindi, il controllo di parità è leggermente diverso.
+Supponendo di voler inviare $n$ codeword $C^i$ di lunghezza fissata, allora
+è possibile calcolare una codeword $P$ composta da soli bit di parità,
+in cui $p_k = \bigoplus_{i=1}^{n} C^{i}_{k}$.
+Tutte le codeword vengono poi inviate al destinatario, e infine viene mandata
+la codeword di controllo: il destinatario semplicemente ricalcola la
+codeword di controllo, e verifica se coincide con quella ricevuta.
+Questo approccio, oltre a tollerare un numero maggiore di errori, permette
+di tollerare parzialmente un numero pari di errori: se infatti il messaggio
+subisce un numero pari di errori, ma almeno in una colonna $K_k$ formata
+da tutti i bit di posizione $k$ delle codeword si verifica un numero dispari di errori,
+allora il destinatario individua correttamente l'errore; se invece ogni
+colonna subisce un numero di errori pari, allora il destinatario non rileverà
+alcun errore.
+
+\section{Codice pesato semplice}
+Un codice pesato semplice è molto simile al controllo di parità semplice,
+in quanto introduce bit di controllo, calcolati in funzione del contenuto
+del messaggio, che permettono al destinatario di rilevare alcuni errori.
+A differenza del controllo di parità, però, i bit di controllo del
+codice pesato semplice non vengono calcolati in base al numero di bit impostati
+a 1, ma contenuto il risultato di un'operazione di modulo.
+
+Si assume di analizzare un messaggio $M = (m_1, \ldots, m_n)$ composto
+da soli numeri interi.
+Un codice pesato semplice assegna a ogni posizione $i$ del messaggio un peso $w_i=n-i+1$.
+Viene scelto poi un numero primo \footnote{Perchè un numero primo?
+Effettuando un operazione di modulo con l'obiettivo di ottenere una quantità
+congruente a 0, un numero non primo porterebbe ad avere divisori dello zero.}
+$p$ \footnote{Il numero primo che solitamente viene scelto è il minor
+numero primo maggiore della cardinalità di canale.},
+che permette di calcolare di calcolare un numero intero corrispondente alla cifra di controllo:
+\[
+    c = \sum_{i=1}^{n} m_i \cdot w_i \equiv 0 \mod p
+\]
+Il numero primo scelto per l'operazione di modulo influisce sul numero di cifre
+aggiunte al messaggio per rappresentare la cifra di controllo: un codice
+pesato semplice, infatti, aggiunge a un messaggio un numero di cifre pari a
+$\lceil \log_{|\Rho|} p \rceil$, dove $\Rho$ è la cardinalità dell'alfabeto
+di canale.

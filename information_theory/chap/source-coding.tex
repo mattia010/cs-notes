@@ -69,6 +69,11 @@ Esistono due tipi di codifiche di sorgente:
     a lunghezza variabile è stato Morse, che già nel suo codice Morse codifica
     le lettere più frequenti, come la \verb|e|, con codifiche piccole, mentre
     codifica lettere meno frequenti, come la \verb|y|, con codifiche più lunghe.}.
+    Ovviamente l'utilizzo di codici a lunghezza variabile è sensato se la sorgente
+    produce i simboli con probabilità differenti: nel caso in cui tutti
+    i simboli abbiano la stessa probabilità di essere prodotti, allora
+    un codice a lunghezza variabile non porta ad alcun vantaggio e, anzi,
+    può aumentare la lunghezza media delle codeword.
     L'utilizzo di codici a lunghezza variabile introduce però un nuovo
     problema per il destinatario: esso deve possedere un criterio con cui
     identificare correttamente le codeword ricevute che, presentando
@@ -76,4 +81,53 @@ Esistono due tipi di codifiche di sorgente:
 \end{itemize}
 
 \section{Altri codici di sorgente}
+I codici di sorgente fin'ora proposti sono i più conosciuti e utilizzati.
+Vengono proposti ora codici di sorgente meno utilizzati o storici.
+Un'osservazione importante riguarda i codici di sorgente storici,
+come il codice 0-1-2-4-7, che non rappresentano i simboli con il minor numero
+possibile di bit, nonostante l'obiettivo della codifica di sorgente sia
+quello di eliminare il più possibile la ridondanza. Questo deriva dal fatto
+che alcuni di essi si comportano anche come un codice di canale, aggiungendo
+bit per rilevare eventuali errori che il messaggio subisce durante la trasmissione.
+
 \subsection{Codice di Van Duuran}
+Il codice di Van Duuran è un codice 3-su-7, ovvero un codice a blocchi
+in cui ogni codeword è formata da 7 bit e presenta esattamente 3 bit
+impostati a 1.
+Di conseguenza, il codice di Van Duuran può essere usato solo per sorgenti
+che generano un numero di simboli minore o uguale a $\binom{7}{3}$.
+Esistono varianti del codice di Van Duuran definite su un numero diverso
+di bit, come il codice 2-su-5.
+
+\subsection{Codice 0-1-2-4-7}
+Il codice 0-1-2-4-7 è un codice a blocchi con codeword da 5 bit, che permette
+di rappresentare le cifre da 0 a 9. Come si vedrà, il codice 0-1-2-4-7
+è un codice 2-su-5, in quanto esattamente 2 bit sono impostati a 1.
+A ogni bit di queste codeword è associato un peso tra 0, 1, 2, 4 e 7:
+per convenzione, il bit più significativo della codeword assume peso 0,
+e, procedendo verso il bit meno significativo, si procede ad assegnare i pesi
+in ordine crescente. La codifica di una cifra $c$ sarà della forma
+$\text{cod}(c) = (x_0, x_1, x_2, x_3, x_4)$, tale che
+$\sum_{i=0}^{4} x_i \cdot 2^i = c$. L'unica eccezione a questa regola
+è lo 0, la cui rappresentazione in codice 0-1-2-4-7 è $(0,0,0,1,1).$
+
+% \usepackage{tabularray}
+\begin{table}
+    \centering
+    \caption{Rappresentazione in codice 0-1-2-4-7 delle cifre da 0 a 9.}
+    \begin{tblr}{
+      vline{1} = {-}{},
+      hline{1} = {-}{},
+    }
+    1 & 1 & 0 & 0 & 0 \\
+    1 & 0 & 1 & 0 & 0 \\
+    0 & 1 & 1 & 0 & 0 \\
+    1 & 0 & 0 & 1 & 0 \\
+    0 & 1 & 0 & 1 & 0 \\
+    0 & 0 & 1 & 1 & 0 \\
+    1 & 0 & 0 & 0 & 1 \\
+    0 & 1 & 0 & 0 & 1 \\
+    0 & 0 & 1 & 0 & 1 \\
+    0 & 0 & 0 & 1 & 1
+    \end{tblr}
+\end{table}

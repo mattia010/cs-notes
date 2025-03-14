@@ -1,0 +1,71 @@
+\chapter{Rumore}
+Con rumore si intende come i bit che compongono il messaggio che viaggia nel canale
+possono essere modificati, introducendo un errore all'interno del messaggio.
+
+\section{Rumore bianco}
+Il rumore bianco è un rumore in cui:
+\begin{itemize}
+    \item tutti i bit del messaggio $X = (x_1, \ldots, x_n)$ hanno la stessa
+    probabilità di subire un errore, ovvero:
+    \[
+        P(x_1) = \ldots = P(x_n)
+    \]
+    \item tutti bit del messaggio
+    vengono modificati in maniera indipendentemente l'uno dall'altro, ovvero la
+    modifica di un bit non fa variare la probabilità di errore degli altri bit
+    \footnote{Nel mondo reale, i bit non vengono modificati in maniera indipendente,
+    ma la modifica di uno aumenta la probabilità di errore nei bit a lui vicini.}.
+\end{itemize}
+Si può osservare che la probabilità di errore $P(x_i)$, per qualsiasi bit $x_i$
+del messaggio, è $0 < P(x_i) < \frac{1}{2}$. Per capirne il motivo, vengono
+analizzati tutti i possibili casi scartati:
+\begin{itemize}
+    \item $P(x_i) = 0$: questo caso non è possibile perchè si, avendo tutti
+    i bit la stessa probabilità di errore, significherebbe che ogni bit del messaggio
+    che viaggia nel canale non sarebbe affetto mai da alcun errore, e il
+    destinatario riceverebbe sempre il messaggio corretto.
+    Nella realtà, però, i canali sono sempre rumorosi e introdurranno sempre
+    errori, anche se ognuno in modi diversi.
+    \item $P(x_i) = 1$: per analizzare questo caso è possibile utilizzare
+    lo stesso tipo di ragionamento adottato per il punto 1. Se infatti
+    valesse $P(x_i) = 1$, allora il destinatario riceverebbe sempre un messaggio
+    in cui tutti i bit sono errati. Ma allora basterebbe applicare, lato destinatario,
+    una porta NOT, che permetta di ricostruire sempre il messaggio corretto semplicemente
+    invertendo ogni bit ricevuto. Anche questo caso è però irrealistico.
+    \item $\frac{1}{2} < P(x_i) < 1$: in questo caso, il destinatario potrebbe
+    utilizzare una porta NOT per invertire tutti i bit ricevuti.
+    A seguito dell'operazione di NOT sul messaggio, ogni bit del nuovo messaggio
+    avrebbe una probabilità $0 < P(x_i) < \frac{1}{2}$ di essere errato.
+    Si ricadrebbe quindi nel caso in cui il rumore bianco modifichi direttamente
+    i bit del messaggio con una probabilità $0 < P(x_i) < \frac{1}{2}$.
+    \item $P(x_i) = \frac{1}{2}$: una probabilità di modifica di bit pari
+    a $\frac{1}{2}$ significa che il destinatario riceve metà delle volte
+    il messaggio corretto, mentre l'altra metà lo riceve sbagliato.
+    Questo tipo di rumore sarebbe allora un ottimo generatore di numeri veramente casuali.
+    Ovviamente questa è una situazione irrealistica.
+\end{itemize}
+
+Dato un messaggio di $n$ bit, che viaggia sul canale afflitto da rumore bianco,
+la probabilità che esso abbia $k$ errori, con $0 \le k \le n$, è pari a:
+\[
+    P[k \text{ errori}] = \binom{n}{k} \cdot p^k \cdot (1-p)^{n-k}
+\]
+Calcolare la probabilità di $k$ errori in questo modo, però, può risultare complesso
+e inefficiente. \upperAccE possibile però definire un'approssimazione \footnote{
+L'approssimazione che viene fatta sfrutta la formula di Taylor
+$(1+x)^\alpha \approx 1 + \alpha \cdot x$},
+in modo tale da velocizzare il calcolo.
+\[
+    P[k \text{ errori}] = \binom{n}{k} \cdot p^k \cdot (1-p)^{n-k} \approx
+    \binom{n}{k} p^k
+\]
+
+\begin{remark}
+    La somma delle probabilità che si verifichino $k$ errori, per ogni $k$,
+    è pari a 1.
+    \[
+        \sum_{k=0}^{n} \binom{n}{k} p^k (1-p)^{n-k} = \text{\footnote{
+        Questa prima uguaglianza è data dalla formula per il binomio di Newton.}}
+        \sbra{p + (1-p)}^n = 1
+    \]
+\end{remark}
