@@ -1,0 +1,273 @@
+\chapter{Database centralizzati e relazionali}
+\section{Query compiler in db relazionali}
+quando si effettua una query all'interno di un sistema centralizzato, essa viene
+ricevuta da un query compiler. Il query compiler ne effettua il parsing,
+e costruisce un query tree, costituito da un query tree,
+che corrisponde alla traduzione in algebra relazionale
+della query ricevuta, usando info contenuto nel data catalog (che è un db secondario
+che contiene info riguarda a tutti i db). un query tree è un albero in cui
+le foglie sono tabelle del db relazionale, mentre i nodi interni sono l'applicazione
+di un operatore dell'algebra relazione.
+Il query tree viene poi ottimizzato utilizzando ottimizzazioni
+note, come cambiare l'ordine delle singole operazioni, ottenendo un query plan
+logico (che sarebbe un query tree ottimizzato).
+Il query plan logico viene poi convertito in un query plan fisico, e ulteriormente
+ottimizzato basandosi su statistiche di interrogazioni passate, contenute
+in un db secondario di sole statistiche, e costi delle operazioni fondamentali.
+Il query plan fisico altro non è che
+la traduzione delle operazioni algebriche del query plan logico in
+vere e proprie operazioni sulle strutture dati fisiche utilizzate per memorizzare i dati.
+Infine viene eseguito il query plan fisico, manipolando effettivamente i dati
+contenuti nel db.
+
+Il problema di ottimizzazione di una query ha complessità esponenziale.
+Per questo, nella pratica, le query vengono ottimizzate euristicamente,
+ovvero usando approssimazioni ragionevoli ma cui non è dimostrato portino
+effettivamente a una buona approssimazione.
+
+\section{Transazioni}
+Una transazione è un insieme di operazioni di lettura e scrittura sul database,
+che gode delle proprietà ACID, le quali permettono di garantire la corretta esecuzione
+in un ambiente concorrente e non affidabile.
+Ogni transazione iniziata termina con un operazione di commit (tutte le modifiche
+effettuate durante la transazione vengono confermate) o di rollback (tutte le
+operazioni effettuate durante la transazione vengono annullate).
+Le operazioni effettuate durante una transazione non vengono immediatamente
+effettuate sul database, ma vengono accumulate in memoria, solitamente usando
+il pattern unit of work. Solo al termine della transazione, la unit of work
+si occuperà di effettuare una singola interazione con il database, in cui
+tutte le operazioni verranno effettuato insieme.
+
+L'insieme delle operazioni effettuate durante una transazione gode appunto
+delle proprietà ACID, ovvero:
+- atomicity. Una transazione è un'unità atomica: tutte le operazioni vengono
+eseguite, o nessuna di esse viene eseguita. Questo permette di evitare di
+lasciare il db in uno stato intermedio: nel caso in cui si verifichi un errore
+nel corso della transazione, tutte le operazione sono revocate con un'operazione di
+rollback. a seguito di una commit, tutte le operazioni devono invece essere
+necessariamente effettuate.
+- consistency: la transazione mantiene l'integratà del db, ovvero non va a
+introdurre contraddizioni all'interno del db. Durante l'esecuzione
+della transazione si può ovviamente violare l'integrità, ma essa deve essere
+garantita al termine.
+- isolation: la transazione non risente degli effetti delle altre transizioni,
+e quindi le transazioni non devono esporre i propri stati intermedi.
+Questo significa che la concorrenza deve essere gestita correttamente.
+- durability: gli effetti di una transazione a seguito del commit non devono
+andare persi, anche se si verifica un guasto. Questo è garantito da una
+componente del dbms chiamata Recovery Manager, che appunto effettua la
+recovery basandosi su un file di log.
+
+
+Alcuni problemi risolti dalle transazioni sono quindi:
+- update loss
+- dirty read
+- non-repeatable read
+- phantom update
+
+\section{Gestione della concorrenza}
+è possibile definire il concetto di schedule come una sequenza di esecuzione
+di un insieme di transazioni.
+
+una schedule è detta seriale se tutte le operazioni di una transazione
+vengono eseguite prima di eseguire un'altra transazione, ovvero le transazioni
+non si sovrappongono.
+Una schedule seriale è un'esecuzione perfetta e ideale, in quanto non c'è
+alcuna concorrenza tra transazioni. Schedule seriali molto spesso non sono
+però ottimali dal punto di vista del tempo di esecuzione: si decide
+quindi di rendere le transazioni concorrenti, in modo da aumentarne il throughput.
+Se però si rendono concorrenti le transazioni di una schedule, bisogna prestare
+attenzione a continuare a garantire le proprietà ACID.
+
+Per farlo si può provare a definire il concetto di schedule serializzabile.
+Una schedule è serializzabile se l'esito della sua esecuzione è uguale
+qualsiasi sia l'ordine di esecuzione delle transazioni (non singole istruzioni)
+in essa contenute.
+
+Esistono diversi algo per controllare la concorrenza delle transazioni:
+quello che si vedrà sarà quello basato su lock, e in particolare
+il Two-Phase Locking e la gestione dei deadlock.
+
+Il protocollo Two-Phase Locking, gestito da un apposito scheduler, prevede che:
+- vengano aggiunte le primitive di lock all'interno delle sequenze di operazioni
+che compongono le transazioni, in modo da garantire la serializzabilità della
+schedule.
+- memorizzare come sono stati distribuite le primitive di lock in un apposita
+tabella di lock.
+- distribuire le primitive di lock all'interno delle transazioni in modo
+che in ogni transazione tutte le richieste di lock precedano tutte le richieste
+di unlock.
+
+\chapter{Database distribuiti}
+i sistemi distribuiti possono essere valutati su tre caratteristiche:
+- autonomia, ovvero al grado di indipendenza dei nodi. Esistono diverse
+forme di autonomia, db autonomi (detti anche peer-to-peer, ogni nodo è completamente
+autonomo e non è a conoscenza degli altri nodi), semi-autonomi (ogni data manager
+locale è autonomo ma partecipa a transazioni globali, e una parte dei dati è condivisa),
+o strettamente integrati (ogni nodo
+ha una porzione dei dati, ma i dati sono logicamente centralizzati. è presente
+un unico data manager centrale che gestisce le transazioni a livello applicativo,
+e coordina i data manager locali).
+- distribuzione, ovvero come sono distribuiti i dati nel ddbms. La distribuzione
+può essere client/server (i dati risiedono nel server, e il client fa solo
+da interfaccia per i dati), peer-to-peer (tutti i nodi hanno le stesse funzionalità
+all'interno del dbms) o senza distribuzione.
+- eterogeneità
+
+Queste tre caratteristiche vengono abbreviate in DEA.
+
+Quando si sviluppa un'architettura dati per un database centralizzato si fa prima
+lo schema esterno, poi un unico schema logico e infine un solo schema fisico.
+Nei database distribuiti, però, la base di dati deve essere progettata prima
+definendo lo schema esterno, poi un unico schema logico globale, poi si scompone
+lo schema logico globale in schemi logici locali (uno per ogni nodo), e infine
+ogni schema logico locale viene convertito in uno schema fisico locale.
+Di conseguenza, tra definizione dello schema logico globale e gli schemi logici
+locali si introduce una fase di decisione su come distribuire i dati all'interno
+del db distribuito.
+
+vantaggi di un db distribuito rispetto a db centralizzato:
+- località, ovvero i dati si trovano più vicino agli utilizzatori.
+- modularità, ovvero modifiche a db e applicazioni che interagiscono con db
+possono essere effettuate facilmente.
+- resistenza ai guasti. Nonostante si introduca la rete per comunicazioni tra
+nodi, e quindi un nuovo qualcosa che può fallire, si ha maggiore resistenza
+grazie alla presenza di ridondanza delle connessioni tra nodi.
+- maggiori prestazioni. i db locali possono essere più facilmente ottimizzati,
+maggiore parallelismo tra transizioni locali distribuite su nodi diversi, workload
+distribuito tra nodi.
+
+svantaggi (contenuti) dei db distribuiti:
+- richiesta coordinazione tra nodi.
+- presenza di traffico di rete, che riguarda distribuzione delle query e
+rispettivi risultati, richieste di transazioni e coordinamento tra nodi
+per eseguire le transazioni. i dati devono quindi essere distribuiti in
+modo da ridurre il traffico di rete, avendo comunque vantaggi in termini
+di prestazioni.
+
+
+Per definizione, il database distribuito è basato sulla frammentazione dei dati,
+ovvero sull'allocazione di porzioni diverse di dati su nodi diversi.
+Esistono due tipi di frammentazione:
+- verticale: alcune colonne di una tabella vengono memorizzate su un frammento
+diverso da quello usato per le altre colonne della tabella.
+la frammentazione verticale richiede di inserire in ogni frammento su cui
+vengono distribuiti i dati frammenti verticalmente le chiavi primarie, in modo
+da poter ricostruire la tabella di partenza.
+- orizzontale: righe diverse della stessa tabella vengono distribuite
+su frammenti diversi, seguendo un certo criterio. è possibile ricostruire la
+tabella di partenza semplicemente effettuando un unione dei frammenti orizzontali
+distribuiti.
+
+ogni frammentazione dovrebbe rispettare le seguenti regole di correttezza:
+- completezza: ogni dato del db completo deve poter essere trovato in almeno
+uno dei nodi.
+- ricostruibilità: deve essere possibile ricostruire l'intera base di dati
+a partire dai singoli frammenti distribuiti.
+
+
+I db distribuiti si possono caratterizzare anche in base alla loro trasparenza.
+esistono tre tipi di trasparenza:
+- trasparenza di frammentazione: l'applicazione ignora completamente la distribuzione
+dei dati all'interno del database, e non è quindi a conoscenza dei diversi frammenti.
+una query applicativo con trasparenza di frammentazione deve essere scomposta
+in sotto-query, ognuna da distribuire su uno specifico nodo. questo diminuisce
+parzialmente le performance.
+- trasparenza di allocazione: l'applicazione è a conoscenza dell'esistenza di
+diversi frammenti, ma ignora la loro allocazione sui nodi. in pratica ignora
+la loro reale collocazione fisica.
+- trasparenza di linguaggio: l'applicazione ignora i diversi tipi di interfacce
+esposte dai singoli nodi, e usa quindi lo stesso linguaggio per comunicare con
+tutti i nodi (es. SQL). l'applicazione deve però essere a conoscenza dell'esistenza
+dei frammenti e la loro allocazione sui nodi, che si traduce di fatto in un
+indirizzo IP associato a ogni frammento.
+
+
+Quando si progetta un db distribuito, si deve tenere conto di:
+\begin{itemize}
+    \item costi di comunicazione
+    \item topologia della rete
+    \item tipo di query distribuite eseguite e relative statistiche
+\end{itemize}
+
+\section{Query processing}
+In un database centralizzato, la compilazione della query e la sua ottimizzazione
+viene effettuato dall'unico dbms presente.
+In un sistema distribuito, però, si pone il problema di chi debba occuparsi
+del processing di una query, e di come essa debba essere distribuita tra i
+diversi nodi.
+
+Nei sistemi distribuiti, quindi, il query processing si divide in quattro fasi:
+\begin{itemize}
+    \item query decomposition: ragionando sullo schema logico globale,
+    la query viene ottimizzate tramite ottimizzazione algebrica, come
+    avviene nei db centralizzati. L'output è quindi un query tree ottimizzato
+    rispetto allo schema logico globale, ma non rispetto ai frammenti e ai
+    costi di comunicazione.
+    \item data localization: considerando la distribuzione dei dati all'interno
+    dei frammenti, ma non la loro posizione reale all'interno della rete, il query tree viene ulteriormente
+    ottimizzato tramite tecniche di riduzione. Ad esempio, se si è fatta frammentazione
+    orizzontale, e si sa che secondo la frammentazione orizzontale il dato cercato
+    risiede su un particolare frammento, allora si procederà a effettuare
+    la query solo su quel frammento e non su tutti i frammenti che coinvolgono la
+    tabella. L'output è ancora una singola query, detta fragment query (che è
+    sempre un query tree).
+    \item global query optimization: ragionando sulle statistiche associate a
+    ogni frammento, il query tree viene arricchito con operatori di comunicazione
+    tra frammenti, tenendo conto di certi criteri di ottimizzazione.
+
+    L'operazione a cui si fa particolare attenzione durante questa fase è
+    quella di join, in modo da evitare di spostare una grande quantità di dati
+    all'interno della rete. Si pone inoltre una scelta sull'uso di join
+    o semijoin: il semijoin risulta conveniente rispetto alla join solo se
+    il costo del suo calcolo e del trasferimento del risultato dell'operazione
+    è inferiore al costo di trasferimento dell'intera relazione e dell'intero join.
+
+    In questa fase, la query viene frammentata
+    in sotto-query, che verranno inviate ai singoli nodi coinvolti nella
+    query.
+
+    In questa fase, l'obiettivo di ottimizzazione varia in base a in che
+    tipo di rete comunica il ddbms: se infatti esso utilizza una rete geografica,
+    allora l'obiettivo deve essere quello di ridurre i costi di comunicazione;
+    se invece opera in una rete locale, allora l'obiettivo deve essere quello
+    di aumentare il più possibile il parallelismo.
+    \item local optimization: ogni nodo che riceve una sotto-query la ottimizza
+    in maniera indipendente dagli altri nodi, usando tecniche simili a quelle
+    usate nei db centralizzati.
+\end{itemize}
+
+COPIARE ESEMPIO DI QUERY PROCESSING
+
+\section{Proprietà ACID in db distribuiti}
+Come nei db centralizzati, sorgono problemi riguardo la concorrenza
+quando una transazione concorrente con altre esegue almeno un'operazione di
+scrittura.
+
+Una singola transazione, inoltre, può coinvolgere più di un nodo, e quindi
+dover essere in qualche modo distribuita tra i nodi che coinvolge.
+A differenza dei db centralizzati, però, nei db distribuiti bisogna rivedere
+le proprietà di isolamento (gestione della concorrenza) e atomicità (bisogna
+gestire il fatto che la transazione è distribuita su nodi diversi).
+
+\section{Gestione della concorrenza in db distribuiti}
+Quando si esegue una transazione distribuita, essa viene inviata a
+un manager centrale, che la raccoglie insieme ad altre transazioni che devono
+essere eseguite, definendouna schedule.
+Una volta ricevuta una transazione, il manager la scompone in sotto-transazioni,
+dove ogni sotto-transazione è una parte della transazione che deve essere
+eseguita su un particolare nodo. Le sotto-transazioni vengono poi inviate
+ai relativi nodi, che si occuperanno di fare lo scheduling delle proprie
+sotto-transazioni ricecvute definendo schedule locali.
+Lo stato della schedule globale dipende quindi dalle schedule locali definite
+dai nodi.
+
+La serializzabilità delle sotto-transazioni a livello locale non implica però
+la serializzabilità delle transizioni complete a livello globale.
+Si devono quindi stabilire dei criteri per cui una schedule globale sia serializzabile.
+Se il db distribuito non ha repliche e ogni schedule locale è serializzabile,
+allora la schedule globale è serializzabile se gli ordini di serializzazione
+sono gli stessi per tutti i nodi.
+Se invece sono presenti repliche, il problema si complica.
+Si introduce quindi il protocollo ROWA (Read Once Write All) per serializzabilità
+nel caso di presenza di repliche.
